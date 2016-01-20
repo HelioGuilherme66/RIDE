@@ -108,9 +108,9 @@ def _show_old_wxpython_warning_if_needed(parent=None):
     message = ('RIDE officially supports wxPython 2.8.12.1, 3.0.2 and newer releases in 3.0 series. '
                'Your current version is %s.\n\n'
                'Older wxPython versions are known to miss some features used by RIDE. '
-               'Notice also that wxPython 3.0 is not yet supported.\n\n'
-               'wxPython 2.8.12.1 packages can be found from\n'
-               'http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/.'
+               'From RIDE version 1.5.2, wxPython 2.9 and 3.0 are supported.\n\n'
+               'wxPython 2.8, 2.9 or 3.0 packages can be found from\n'
+               'http://sourceforge.net/projects/wxpython/files/wxPython/.'
                % wx.VERSION_STRING)
     style = wx.ICON_EXCLAMATION
     if not parent:
