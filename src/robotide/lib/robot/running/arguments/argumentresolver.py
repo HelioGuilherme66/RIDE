@@ -15,7 +15,7 @@
 
 from robotide.lib.robot.errors import DataError
 from robotide.lib.robot.utils import is_string, is_dict_like, split_from_equals
-from robotide.lib.robot.variables import VariableSplitter
+from robotide.lib.robot.variables import is_dict_variable
 
 from .argumentvalidator import ArgumentValidator
 
@@ -49,7 +49,7 @@ class NamedArgumentResolver(object):
         positional = []
         named = []
         for arg in arguments:
-            if self._is_dict_var(arg):
+            if is_dict_variable(arg):
                 named.append(arg)
             elif self._is_named(arg, named, variables):
                 named.append(split_from_equals(arg))
@@ -59,16 +59,15 @@ class NamedArgumentResolver(object):
                 positional.append(arg)
         return positional, named
 
-    def _is_dict_var(self, arg):
-        return (is_string(arg) and arg[:2] == '&{' and arg[-1] == '}' and
-                VariableSplitter(arg).is_dict_variable())
-
     def _is_named(self, arg, previous_named, variables=None):
         name, value = split_from_equals(arg)
         if value is None:
             return False
         if variables:
-            name = variables.replace_scalar(name)
+            try:
+                name = variables.replace_scalar(name)
+            except DataError:
+                return False
         argspec = self._argspec
         if previous_named or name in argspec.kwonlyargs or argspec.kwargs:
             return True

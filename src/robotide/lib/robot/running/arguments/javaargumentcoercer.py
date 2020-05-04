@@ -15,7 +15,7 @@
 
 from java.lang import Byte, Short, Integer, Long, Boolean, Float, Double
 
-from robotide.lib.robot.variables import contains_var
+from robotide.lib.robot.variables import contains_variable
 from robotide.lib.robot.utils import is_string, is_list_like
 
 
@@ -78,7 +78,7 @@ class _Coercer(object):
 
     def coerce(self, argument, dryrun=False):
         if not is_string(argument) \
-                or (dryrun and contains_var(argument)):
+                or (dryrun and contains_variable(argument)):
             return argument
         try:
             return self._coerce(argument)
