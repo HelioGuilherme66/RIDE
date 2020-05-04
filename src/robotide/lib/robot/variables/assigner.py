@@ -18,7 +18,7 @@ import re
 from robotide.lib.robot.errors import (DataError, ExecutionStatus, HandlerExecutionFailed,
                           VariableError)
 from robotide.lib.robot.utils import (ErrorDetails, format_assign_message, get_error_message,
-                         is_number, is_string, prepr, type_name)
+                         is_number, is_string, prepr, rstrip, type_name)
 
 
 class VariableAssignment(object):
@@ -67,7 +67,7 @@ class AssignmentValidator(object):
                             "variable.")
         if variable.endswith('='):
             self._seen_assign_mark = True
-            return variable[:-1].rstrip()
+            return rstrip(variable[:-1])
         return variable
 
     def _validate_state(self, is_list, is_dict):
