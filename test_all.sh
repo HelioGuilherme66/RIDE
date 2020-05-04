@@ -7,10 +7,10 @@ export PYTHONROOT=/usr/bin
 
 if [ $# -ge 1 ]
 then
-      PY=3.7
+      PY=3.8
       DIR="$1"
 else
-    PY=3
+    PY=3.8
     DIR="utest"
 fi
 
