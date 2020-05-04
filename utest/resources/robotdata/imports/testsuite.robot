@@ -1,6 +1,6 @@
 *** Settings ***
-Resource  res//existing.txt
-Resource  res//none_existing.txt
+Resource  res//existing.robot
+Resource  res//none_existing.robot
 Resource  ${RESU}
 Library   String  # A built in library from PYTHONPATH
 Library   libs//existing.py

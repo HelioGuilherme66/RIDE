@@ -62,7 +62,7 @@ class ResourceUsageTests(unittest.TestCase):
         self._verify_that_contains(self.resu, usages)
 
     def test_none_existing_import(self):
-        imp = self.ts1.imports.add_resource('this_does_not_exists.txt')
+        imp = self.ts1.imports.add_resource('this_does_not_exists.robot')
         assert_equal(imp.get_imported_controller(), None)
 
 if __name__ == '__main__':
