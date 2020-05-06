@@ -33,12 +33,12 @@ def VariableEditorChooser(plugin, parent, controller, tree):
 
 class EditorCreator(object):
     # TODO: Should not use robot.model classes here
-    _EDITORS = ((robotapi.TestDataDirectory, InitFileEditor),
+    _EDITORS = ((robotapi.File, InitFileEditor),             # DEBUG 3.2 TestDataDirectory
                 (robotapi.ResourceFile, ResourceFileEditor),
                 (robotapi.TestCase, TestCaseEditor),
-                (robotapi.TestCaseFile, TestCaseFileEditor),
-                (robotapi.UserKeyword, UserKeywordEditor),
-                (robotapi.Variable, VariableEditorChooser),
+                (robotapi.File, TestCaseFileEditor),         # DEBUG 3.2
+                (robotapi.UserKeyword, UserKeywordEditor),   # DEBUG 3.2 TestCaseFile
+                (robotapi.Variable, VariableEditorChooser),  # DEBUG 3.2
                 (TestDataDirectoryWithExcludes, InitFileEditor))
 
     def __init__(self, editor_registerer):

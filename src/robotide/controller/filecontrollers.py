@@ -29,7 +29,8 @@ from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
         RideDataChangedToDirty, RideDataDirtyCleared, RideSuiteAdded,
         RideItemSettingsChanged)
 from robotide.publish.messages import RideDataFileSet, RideOpenResource
-from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
+# REMOVED 3.2  from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
+from robotide.robotapi import File
 from robotide import utils
 
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
@@ -45,7 +46,7 @@ from .tablecontrollers import (VariableTableController, TestCaseTableController,
 
 
 def _get_controller(project, data, parent):
-    if isinstance(data, TestCaseFile):
+    if isinstance(data, File):
         return TestCaseFileController(data, project, parent)
     if isinstance(data, ExcludedDirectory):
         return ExcludedDirectoryController(data, project, parent)
@@ -448,7 +449,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
                 children.append(self._resource_controller(r))
 
     def _directory_controller(self, path):
-        dc = TestDataDirectoryController(TestDataDirectory(source=path),
+        dc = TestDataDirectoryController(File(source=path),
                                          project=self._project,
                                          parent=self)
         self._add_directory_children(dc.children, dc.source, None)
@@ -504,7 +505,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return True
 
     def reload(self):
-        self.__init__(TestDataDirectory(source=self.directory, parent=self.data.parent).populate(),
+        self.__init__(File(source=self.directory, parent=self.data.parent).populate(),
                       self._project, parent=self.parent)
 
     def remove(self):
@@ -601,7 +602,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
             if not dirname:
                 continue
             target_dir = os.path.join(target.directory, dirname)
-            dir_ctrl = TestDataDirectoryController(TestDataDirectory(source=target_dir),
+            dir_ctrl = TestDataDirectoryController(File(source=target_dir),
                                                    self._project, self)
             target._dir_controllers[target.directory] = dir_ctrl
             target.add_child(dir_ctrl)
@@ -698,7 +699,7 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def reload(self):
-        self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename).populate(),
+        self.__init__(File(source=self.filename).populate(),  # DEBUG 3.2 parent=self.data.parent,
                       project=self._project,
                       parent=self.parent)
 

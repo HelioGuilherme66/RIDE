@@ -80,7 +80,7 @@ class _InitFileLoader(_DataLoaderThread):
         self._path = path
 
     def _run(self):
-        result = robotapi.TestDataDirectory(source=os.path.dirname(self._path))
+        result = robotapi.File(source=os.path.dirname(self._path))
         result.initfile = self._path
         robotapi.FromFilePopulator(result).populate(self._path)
         return result
@@ -97,11 +97,11 @@ class _ResourceLoader(_DataLoaderThread):
         return self._loader(self._datafile)
 
 
-class TestDataDirectoryWithExcludes(robotapi.TestDataDirectory):
+class TestDataDirectoryWithExcludes(robotapi.File):
 
     def __init__(self, parent, source, settings):
         self._settings = settings
-        robotapi.TestDataDirectory.__init__(self, parent, source)
+        robotapi.File.__init__(self, parent, source)
 
     def add_child(self, path, include_suites, extensions=None,
                   warn_on_skipped=False):
@@ -116,8 +116,8 @@ def TestData(source, parent=None, settings=None):
     """Parses a file or directory to a corresponding model object.
 
     :param source: path where test data is read from.
-    :returns: :class:`~.model.TestDataDirectory`  if `source` is a directory,
-        :class:`~.model.TestCaseFile` otherwise.
+    :returns: :class:`~.model.File`  if `source` is a directory,
+        :class:`~.model.File` otherwise.
     """
     if os.path.isdir(source):
         # print("DEBUG: Dataloader Is dir getting testdada %s\n" % source)
@@ -126,14 +126,14 @@ def TestData(source, parent=None, settings=None):
         data.populate()
         # print("DEBUG: Dataloader after populate %s  %s\n" % (data._tables, data.name))
         return data
-    return robotapi.TestCaseFile(parent, source).populate()
+    return robotapi.File(parent, source).populate()
 
 
-class ExcludedDirectory(robotapi.TestDataDirectory):
+class ExcludedDirectory(robotapi.File):
     def __init__(self, parent, path):
         self._parent = parent
         self._path = path
-        robotapi.TestDataDirectory.__init__(self, parent, path)
+        robotapi.File.__init__(self, parent, path)
 
     def has_tests(self):
         return True

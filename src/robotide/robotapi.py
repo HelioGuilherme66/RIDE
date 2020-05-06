@@ -30,10 +30,12 @@ from robotide.lib.robot.output.loggerhelper import LEVELS as LOG_LEVELS
 #     TestDataDirectory, ResourceFile, TestCaseFile, UserKeyword,
 #     Variable, Step, VariableTable, KeywordTable, TestCaseTable,
 #     TestCaseFileSettingTable)
-from robotide.lib.robot.parsing.model import ( TestCase, File, KeywordSection,
-                                               Statement, ForLoop, VariableSection,
-                                               Keyword, TestCaseSection, CommentSection,
-                                               SettingSection)
+from robotide.lib.robot.parsing.model import (TestCase, File, KeywordSection,
+                                              Statement, ForLoop, VariableSection,
+                                              Keyword, TestCaseSection, CommentSection,
+                                              SettingSection)
+from robotide.lib.robot.running.model import (ResourceFile,  # DEBUG 3.2
+                                              UserKeyword, Variable)
 # REMOVED 3.2 from robotide.lib.robot.parsing.populators import FromFilePopulator
 from robotide.lib.robot.parsing import SuiteStructureBuilder, SuiteStructureVisitor
 # REMOVED 3.2  from robotide.lib.robot.parsing.settings import ( Library, Resource,

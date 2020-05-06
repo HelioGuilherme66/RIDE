@@ -20,9 +20,16 @@ from nose.tools import assert_equal, assert_raises
 from robotide.application.editorprovider import EditorProvider
 
 
-class TestObject(object): pass
-class TestEditor(object): pass
-class TestEditor2(object): pass
+class TestObject(object):
+    pass
+
+
+class TestEditor(object):
+    pass
+
+
+class TestEditor2(object):
+    pass
 
 
 class TestEditorProvide(unittest.TestCase):
