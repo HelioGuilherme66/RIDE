@@ -307,7 +307,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
 class TestCaseController(_WithStepsController):
 
-    _populator = robotapi.TestCasePopulator
+    _populator = robotapi.TestCaseFileSections  # DEBUG 3.2 TestCasePopulator
     filename = ""
 
     def _init(self, test):
@@ -391,7 +391,7 @@ class TestCaseController(_WithStepsController):
 
 
 class UserKeywordController(_WithStepsController):
-    _populator = robotapi.UserKeywordPopulator
+    _populator = robotapi.KeywordSection  # DEBUG 3.2 UserKeywordPopulator
     _TEARDOWN_NOT_SET = object()
     _teardown = _TEARDOWN_NOT_SET
 
@@ -413,7 +413,7 @@ class UserKeywordController(_WithStepsController):
 
     @property
     def info(self):
-        if isinstance(self.datafile, robotapi.ResourceFile):
+        if isinstance(self.datafile, robotapi.ResourceFile):  # DEBUG 3.2 ResourceFile
             return ResourceUserKeywordInfo(self.data)
         return TestCaseUserKeywordInfo(self.data)
 
