@@ -14,9 +14,13 @@
 #  limitations under the License.
 
 from robotide.publish.messages import RideModificationPrevented
+from robotide.robotapi import TestCase
 
 
-class _BaseController(object):
+class _BaseController(TestCase):
+
+    def __init__(self, header, body=None):
+        TestCase.__init__(header, body)
 
     @property
     def display_name(self):

@@ -50,6 +50,7 @@ from robotide.lib.robot.parsing.lexer.settings import (TestCaseFileSettings,
 from robotide.lib.robot.parsing.lexer.sections import (TestCaseFileSections,
                                                        ResourceFileSections,
                                                        InitFileSections)
+from robotide.lib.robot.parsing.lexer import Token
 # REMOVED 3.2 from robotide.lib.robot.parsing.txtreader import TxtReader
 from robotide.lib.robot.parsing.parser.fileparser import FileParser
 from robotide.lib.robot.running import TestLibrary, EXECUTION_CONTEXTS
@@ -62,6 +63,8 @@ from robotide.lib.robot.variables import is_scalar_var, is_list_var, is_var, is_
 # REMOVED 3.2 from robotide.lib.robot.variables import VariableSplitter
 from robotide.lib.robot.variables.filesetter import VariableFileSetter
 # REMOVED 3.2 from robotide.lib.robot.variables.tablesetter import VariableTableReader
+from robotide.lib.compat import TestDataDirectory, ResourceFile, TestCaseFile
+
 from robotide.lib.robot.version import get_version
 
 ROBOT_VERSION = get_version()

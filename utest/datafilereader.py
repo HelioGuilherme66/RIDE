@@ -14,6 +14,15 @@
 #  limitations under the License.
 
 import os
+import sys
+
+# Workaround for relative import in non-module
+# see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
+                                              os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+
 from resources import FakeSettings
 from robotide.controller import Project
 from robotide.controller.ctrlcommands import NullObserver
@@ -29,6 +38,7 @@ DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
 def _makepath(*elements):
     elements = [DATAPATH]+list(elements)
     return os.path.normpath(os.path.join(*elements)).replace('\\', '/')
+
 
 ALL_FILES_PATH = _makepath('all_files')
 RESOURCE_PATH = _makepath(RESOURCES_DIR, RESOURCES_HTML)
