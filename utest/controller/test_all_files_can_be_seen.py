@@ -14,7 +14,16 @@
 #  limitations under the License.
 
 import unittest
+import os
+import sys
 import datafilereader
+
+# Workaround for relative import in non-module
+# see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
+                                              os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 
 class TestAllFiles(unittest.TestCase):
@@ -30,6 +39,7 @@ class TestAllFiles(unittest.TestCase):
 
     def test_all_files_can_be_seen(self):
         all_files = self.project.data
+        print(f"DEBUG: test_all_files_can_be_seen: Project: {self.project}\n")
         self.assertEqual(all_files.name, 'All Files')
         self.assertEqual(len(all_files.suites), 3)
         self._verify_names(all_files, 'Used Resource', 'Unused Resource',

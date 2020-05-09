@@ -29,11 +29,14 @@ from robotide.spec.librarydatabase import DATABASE_FILE
 from robotide.spec.librarymanager import LibraryManager
 from robotide.spec.xmlreaders import SpecInitializer
 from robotide.utils import overrides
+from robotide.robotapi import Token
 
 
 class Project(_BaseController, WithNamespace):
 
     def __init__(self, namespace=None, settings=None, library_manager=None):
+        # _BaseController.__init__(self, Token.TESTCASE_HEADER)
+        # WithNamespace.__init__(self)
         self._library_manager = self._construct_library_manager(library_manager, settings)
         if not self._library_manager.is_alive():
             self._library_manager.start()
@@ -48,8 +51,7 @@ class Project(_BaseController, WithNamespace):
 
     def _construct_library_manager(self, library_manager, settings):
         return library_manager or \
-            LibraryManager(DATABASE_FILE,
-                SpecInitializer(settings.get('library xml directories', [])[:]))
+            LibraryManager(DATABASE_FILE, SpecInitializer(settings.get('library xml directories', [])[:]))
 
     def __del__(self):
         if self._library_manager:
