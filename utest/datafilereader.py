@@ -85,7 +85,7 @@ def construct_project(datapath, temp_dir_for_excludes=None):
     library_manager = LibraryManager(':memory:')
     library_manager.create_database()
     project = Project(Namespace(settings), settings, library_manager)
-    # print("DEBUG: construct_project Project: %s\n" % project.display_name)
+    print("DEBUG: construct_project Project: %s\n" % project.display_name)
     project.load_data(datapath)  #, NullObserver())
     # DEBUG
     # print("DEBUG: Path arg is: %s\n" % datapath)
