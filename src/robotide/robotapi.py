@@ -64,6 +64,7 @@ from robotide.lib.robot.variables import is_scalar_var, is_list_var, is_var, is_
 from robotide.lib.robot.variables.filesetter import VariableFileSetter
 # REMOVED 3.2 from robotide.lib.robot.variables.tablesetter import VariableTableReader
 from robotide.lib.compat import TestDataDirectory, ResourceFile, TestCaseFile
+from robotide.lib.robot.utils import FileReader
 
 from robotide.lib.robot.version import get_version
 

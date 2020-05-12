@@ -902,10 +902,10 @@ class RobotDataEditor(stc.StyledTextCtrl):
             return select
 
 
-class FromStringIOPopulator(robotapi.FromFilePopulator):
+class FromStringIOPopulator(robotapi.SuiteStructureVisitor):
 
     def populate(self, content):
-        robotapi.TxtReader().read(content, self)
+        robotapi.FileReader(self.visit_file(content.name)).read()
 
 
 class RobotStylizer(object):

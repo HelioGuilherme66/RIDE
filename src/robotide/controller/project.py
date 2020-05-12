@@ -35,7 +35,9 @@ from robotide.robotapi import Token
 class Project(_BaseController, WithNamespace):
 
     def __init__(self, namespace=None, settings=None, library_manager=None):
-        # _BaseController.__init__(self, Token.TESTCASE_HEADER)
+        # _header = {'name': 'None'}
+        #header = dict(header=_header)
+        # _BaseController.__init__(self, header)
         # WithNamespace.__init__(self)
         self._library_manager = self._construct_library_manager(library_manager, settings)
         if not self._library_manager.is_alive():
@@ -44,7 +46,8 @@ class Project(_BaseController, WithNamespace):
         self._settings = settings
         self._loader = DataLoader(namespace, settings)
         self._controller = None
-        self.name = None
+        # DEBUG RF 3.2
+        # self.name = None
         self.external_resources = []
         self._resource_file_controller_factory = ResourceFileControllerFactory(namespace, self)
         self._serializer = Serializer(settings, LOG)

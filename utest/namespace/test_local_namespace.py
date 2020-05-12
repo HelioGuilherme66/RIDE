@@ -22,6 +22,7 @@ class TestLocalNamespace(unittest.TestCase):
 
     def setUp(self):
         self._project = datafilereader.construct_project(datafilereader.SIMPLE_PROJECT)
+        print("DEBUG: setUp namespace Project: %s\n" % self._project.datafiles)
         self._test = datafilereader.get_ctrl_by_name('Test Case', self._project.datafiles[0].tests)
         self._keyword = datafilereader.get_ctrl_by_name('Keyword', self._project.datafiles[0].keywords)
         print(self._keyword)
