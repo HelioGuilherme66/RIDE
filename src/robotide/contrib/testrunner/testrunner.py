@@ -380,6 +380,8 @@ class Process(object):
         if not self._process:
             return
         if force:
+            self._process.stdout.close()
+            self._process.stderr.close()
             self._process.kill()
         self.resume()  # Send so that RF is not blocked
         if IS_WINDOWS and not self._kill_called and self._port is not None:

@@ -64,7 +64,10 @@ class ProcessUnicodeTestCase(unittest.TestCase):
         if max_time <= 0:
             p.kill()
             raise AssertionError('process did not stop in 7 second time')
-        return p.get_output(), p.get_errors()
+        output = p.get_output()
+        errors = p.get_errors()
+        p.kill(True)
+        return output, errors
 
     def test_stopping_robot_with_listener_should_generate_outputs(self):
         pass
