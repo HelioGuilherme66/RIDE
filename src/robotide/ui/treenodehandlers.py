@@ -259,8 +259,10 @@ class TestDataHandler(_ActionHandler):
         return not self._rendered
 
     def _has_children(self):
-        return (self.item.keyword_table or self.item.testcase_table or
-                self.item.variable_table)
+        print(f"DEBUG: Keywords {self.item.keywords} has_tests {self.item.has_tests}")
+        has_keywords = self.item.keywords is not None
+        return has_keywords or self.item.has_tests  # DEBUG Missing testing variables
+        # return (self.item.keyword_table or self.item.testcase_table or self.item.variable_table)
 
     def set_rendered(self):
         self._rendered = True

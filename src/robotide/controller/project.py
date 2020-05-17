@@ -112,7 +112,7 @@ class Project(_BaseController, WithNamespace):
         self._new_project(NewTestCaseFile(path))
 
     def _new_project(self, datafile):
-        self.update_default_dir(datafile.directory)
+        self.update_default_dir(os.path.dirname(datafile.source))
         self._controller = DataController(datafile, self)
         self._resource_file_controller_factory = ResourceFileControllerFactory(self._namespace,
                                                                                self)

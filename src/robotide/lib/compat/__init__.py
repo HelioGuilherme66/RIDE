@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""Compatability for RIDE with RF 3.2.1 from 3.1.2
+"""Compatibility for RIDE with RF 3.2.1 from 3.1.2
 
 This file serves to provide missing classes to robotapi.
 

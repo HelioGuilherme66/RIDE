@@ -32,8 +32,7 @@ from robotide.lib.robot.output.loggerhelper import LEVELS as LOG_LEVELS
 #     TestCaseFileSettingTable)
 from robotide.lib.robot.parsing.model import (TestCase, File, KeywordSection,
                                               Statement, ForLoop, VariableSection,
-                                              Keyword, TestCaseSection, CommentSection,
-                                              SettingSection)
+                                              Keyword, CommentSection, SettingSection)
 from robotide.lib.robot.running.model import (ResourceFile,  # DEBUG 3.2
                                               UserKeyword, Variable)
 # REMOVED 3.2 from robotide.lib.robot.parsing.populators import FromFilePopulator
@@ -65,6 +64,7 @@ from robotide.lib.robot.variables.filesetter import VariableFileSetter
 # REMOVED 3.2 from robotide.lib.robot.variables.tablesetter import VariableTableReader
 from robotide.lib.compat import TestDataDirectory, ResourceFile, TestCaseFile
 from robotide.lib.robot.utils import FileReader
+from robotide.lib.robot.api import TestSuite, SuiteVisitor
 
 from robotide.lib.robot.version import get_version
 

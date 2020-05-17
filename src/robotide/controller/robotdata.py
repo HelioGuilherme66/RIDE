@@ -17,11 +17,14 @@ import os
 
 from robotide import robotapi
 
-
-def NewTestCaseFile(path):
-    datafile = robotapi.TestCaseFile(source=path)
-    datafile.start_table(['Test Cases'])
-    _create_missing_directories(datafile.directory)
+def NewTestCaseFile(path, task=False):
+    # datafile = robotapi.TestCaseFile(source=path)
+    #datafile.start_table(['Test Cases'])
+    # .TestSuite(name='', doc='', metadata=None, source=None, rpa=False)
+    datafile = robotapi.TestSuite(source=path, rpa=task)
+    # datafile.start_table('Test Cases' if task else 'Tasks')
+    # print(f"Path is {datafile.source}")
+    _create_missing_directories(os.path.dirname(datafile.source))
     return datafile
 
 
