@@ -16,8 +16,8 @@
 import os
 
 from functools import total_ordering
-from robotide.lib.robot.libdocpkg.htmlwriter import DocToHtml
-from robotide import utils
+from ..lib.robot.libdocpkg.htmlwriter import DocToHtml
+from .. import utils
 
 
 class ItemInfo(object):

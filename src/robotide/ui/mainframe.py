@@ -17,23 +17,23 @@ import os
 import wx
 import wx.lib.agw.aui as aui
 from wx import Icon
-from robotide.lib.robot.utils.compat import with_metaclass
-from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
-from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
-from robotide.controller.ctrlcommands import SaveFile, SaveAll
-from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER,\
-    RideInputValidationError, RideTreeSelection, RideModificationPrevented
-from robotide.ui.tagdialogs import ViewAllTagsDialog
-from robotide.ui.filedialogs import RobotFilePathDialog
-from robotide.utils import RideEventHandler
-from robotide.widgets import Dialog, ImageProvider, HtmlWindow
-from robotide.preferences import PreferenceEditor
+from ..lib.robot.utils.compat import with_metaclass
+from ..action import ActionInfoCollection, ActionFactory, SeparatorInfo
+from ..context import ABOUT_RIDE, SHORTCUT_KEYS
+from ..controller.ctrlcommands import SaveFile, SaveAll
+from ..publish import (RideSaveAll, RideClosing, RideSaved, PUBLISHER,
+                       RideInputValidationError, RideTreeSelection, RideModificationPrevented)
+from ..ui.tagdialogs import ViewAllTagsDialog
+from ..ui.filedialogs import RobotFilePathDialog
+from ..utils import RideEventHandler
+from ..widgets import Dialog, ImageProvider, HtmlWindow
+from ..preferences import PreferenceEditor
 
 from .actiontriggers import (MenuBar, ToolBarButton, ShortcutRegistry, _RideSearchMenuItem)
 from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
 from .review import ReviewDialog
 from .pluginmanager import PluginManager
-from robotide.action.shortcut import localize_shortcuts
+from ..action.shortcut import localize_shortcuts
 from .treeplugin import Tree
 from .fileexplorerplugin import FileExplorer
 from .notebook import NoteBook
@@ -73,7 +73,7 @@ ID_SampleItem = ID_CustomizeToolbar + 1
 
 # Metaclass fix from http://code.activestate.com/recipes/
 # 204197-solving-the-metaclass-conflict/
-from robotide.utils.noconflict import classmaker
+from ..utils.noconflict import classmaker
 
 ### DEBUG some testing
 # -- SizeReportCtrl --

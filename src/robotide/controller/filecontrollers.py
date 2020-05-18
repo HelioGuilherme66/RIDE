@@ -18,25 +18,25 @@ import sys
 import stat
 from itertools import chain
 import shutil
-import robotide.controller.ctrlcommands
+from . import ctrlcommands
 try:
     import subprocess32 as subprocess
 except ImportError:
     import subprocess
-from robotide.controller.dataloader import ExcludedDirectory, TestData
+from .dataloader import ExcludedDirectory, TestData
 
-from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
+from ..publish import (RideDataFileRemoved, RideInitFileRemoved,
         RideDataChangedToDirty, RideDataDirtyCleared, RideSuiteAdded,
         RideItemSettingsChanged)
-from robotide.publish.messages import RideDataFileSet, RideOpenResource
+from ..publish.messages import RideDataFileSet, RideOpenResource
 # REMOVED 3.2  from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
-from robotide.robotapi import File, SuiteVisitor
-from robotide import utils
+from ..robotapi import File, SuiteVisitor
+from .. import utils
 
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
 from .macrocontrollers import UserKeywordController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
-from robotide.utils import overrides
+from ..utils import overrides
 from .settingcontrollers import (DocumentationController, FixtureController,
         TimeoutController, TemplateController, DefaultTagsController,
         ForceTagsController)

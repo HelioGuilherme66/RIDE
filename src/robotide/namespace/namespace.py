@@ -20,11 +20,11 @@ import operator
 import tempfile
 from itertools import chain
 
-from robotide import robotapi, utils
-from robotide.publish import PUBLISHER, RideSettingsChanged, RideLogMessage
-from robotide.robotapi import VariableFileSetter
-from robotide.spec.iteminfo import TestCaseUserKeywordInfo,\
-    ResourceUserKeywordInfo, VariableInfo, _UserKeywordInfo, ArgumentInfo
+from .. import robotapi, utils
+from ..publish import PUBLISHER, RideSettingsChanged, RideLogMessage
+from ..robotapi import VariableFileSetter
+from ..spec.iteminfo import (TestCaseUserKeywordInfo, ResourceUserKeywordInfo,
+                             VariableInfo, _UserKeywordInfo, ArgumentInfo)
 
 from .cache import LibraryCache, ExpiringCache
 from .resourcefactory import ResourceFactory

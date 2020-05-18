@@ -14,14 +14,13 @@
 #  limitations under the License.
 
 
-from robotide.controller import Project
-from robotide.controller.dataloader import TestDataDirectoryWithExcludes
-from robotide.controller.filecontrollers import ExcludedDirectoryController
-from robotide.controller.settingcontrollers import VariableController
-from robotide import robotapi
+from ..controller import Project
+from ..controller.dataloader import TestDataDirectoryWithExcludes
+from ..controller.filecontrollers import ExcludedDirectoryController
+from ..controller.settingcontrollers import VariableController
+from .. import robotapi
 
-from .editors import (
-    InitFileEditor, TestCaseFileEditor, WelcomePage, ResourceFileEditor)
+from .editors import (InitFileEditor, TestCaseFileEditor, WelcomePage, ResourceFileEditor)
 from .macroeditors import TestCaseEditor, UserKeywordEditor
 
 

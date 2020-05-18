@@ -15,9 +15,9 @@
 
 import wx
 from wx.lib.scrolledpanel import ScrolledPanel
-from robotide.context import LOG
-from robotide.publish import RideLogException
-from robotide.widgets import Label
+from ..context import LOG
+from ..publish import RideLogException
+from ..widgets import Label
 from wx.adv import HyperlinkCtrl
 
 

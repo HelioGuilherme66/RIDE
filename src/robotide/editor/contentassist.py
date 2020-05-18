@@ -18,9 +18,9 @@ from os.path import relpath, dirname, isdir
 import wx
 from wx.lib.expando import ExpandoTextCtrl
 from wx.lib.filebrowsebutton import FileBrowseButton
-from robotide import context, utils
-from robotide.namespace.suggesters import SuggestionSource
-from robotide.spec.iteminfo import VariableInfo
+from .. import context, utils
+from ..namespace.suggesters import SuggestionSource
+from ..spec.iteminfo import VariableInfo
 from sys import platform
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
 

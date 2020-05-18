@@ -16,10 +16,10 @@
 import wx
 import wx.grid
 
-from robotide.context import ctrl_or_cmd, bind_keys_to_evt_menu
-from robotide.editor.contentassist import ContentAssistFileButton
-from robotide.namespace.suggesters import SuggestionSource
-from robotide.widgets import Label
+from ..context import ctrl_or_cmd, bind_keys_to_evt_menu
+from ..editor.contentassist import ContentAssistFileButton
+from ..namespace.suggesters import SuggestionSource
+from ..widgets import Label
 
 from .contentassist import ContentAssistTextCtrl
 from .gridbase import GridEditor

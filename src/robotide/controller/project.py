@@ -17,19 +17,19 @@ import os
 import shutil
 import tempfile
 
-from robotide.context import LOG
-from robotide.controller.ctrlcommands import NullObserver, SaveFile
-from robotide.publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
+from ..context import LOG
+from ..controller.ctrlcommands import NullObserver, SaveFile
+from ..publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
 
 from .basecontroller import WithNamespace, _BaseController
 from .dataloader import DataLoader
 from .filecontrollers import DataController, ResourceFileControllerFactory
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
-from robotide.spec.librarydatabase import DATABASE_FILE
-from robotide.spec.librarymanager import LibraryManager
-from robotide.spec.xmlreaders import SpecInitializer
-from robotide.utils import overrides
-from robotide.robotapi import Token
+from ..spec.librarydatabase import DATABASE_FILE
+from ..spec.librarymanager import LibraryManager
+from ..spec.xmlreaders import SpecInitializer
+from ..utils import overrides
+from ..robotapi import Token
 
 
 class Project(_BaseController, WithNamespace):

@@ -14,9 +14,9 @@
 #  limitations under the License.
 
 import wx
-from robotide.controller.ctrlcommands import ChangeTag, ClearSetting
-from robotide.controller.tags import ForcedTag, DefaultTag
-from robotide.context import IS_WINDOWS
+from ..controller.ctrlcommands import ChangeTag, ClearSetting
+from ..controller.tags import ForcedTag, DefaultTag
+from ..context import IS_WINDOWS
 
 
 class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):

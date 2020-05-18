@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide import utils
-from robotide.spec.iteminfo import LocalVariableInfo
+from .. import utils
+from ..spec.iteminfo import LocalVariableInfo
 
 
 def LocalNamespace(controller, namespace, row=None):

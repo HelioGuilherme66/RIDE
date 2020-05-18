@@ -17,8 +17,8 @@ import wx
 import sys
 import re
 
-from robotide.widgets import Dialog
-from robotide.publish import RideParserLogMessage
+from ..widgets import Dialog
+from ..publish import RideParserLogMessage
 
 
 class Logger(object):

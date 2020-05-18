@@ -16,23 +16,23 @@
 import wx
 from wx import grid
 import json
-from robotide.editor.cellrenderer import CellRenderer
-from robotide import context
+from .cellrenderer import CellRenderer
+from .. import context
 from wx.grid import GridCellEditor
-from robotide.context import IS_MAC, IS_WINDOWS
-from robotide.controller.ctrlcommands import ChangeCellValue, ClearArea, \
+from ..context import IS_MAC, IS_WINDOWS
+from ..controller.ctrlcommands import ChangeCellValue, ClearArea, \
     PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, \
     UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, \
     AddKeywordFromCells, MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList, \
     InsertArea
-from robotide.controller.cellinfo import TipMessage, ContentType, CellType
-from robotide.publish import (RideItemStepsChanged, RideSaved,
+from ..controller.cellinfo import TipMessage, ContentType, CellType
+from ..publish import (RideItemStepsChanged, RideSaved,
                               RideSettingsChanged, PUBLISHER)
-from robotide.usages.UsageRunner import Usages, VariableUsages
-from robotide.ui.progress import RenameProgressObserver
-from robotide import robotapi, utils
-from robotide.utils import RideEventHandler, variablematcher
-from robotide.widgets import Dialog, PopupMenu, PopupMenuItems
+from ..usages.UsageRunner import Usages, VariableUsages
+from ..ui.progress import RenameProgressObserver
+from .. import robotapi, utils
+from ..utils import RideEventHandler, variablematcher
+from ..widgets import Dialog, PopupMenu, PopupMenuItems
 
 from .gridbase import GridEditor
 from .tooltips import GridToolTips
@@ -40,10 +40,10 @@ from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, \
     ListVariableDialog
 from .contentassist import ExpandingContentAssistTextCtrl
 from .gridcolorizer import Colorizer
-from robotide.lib.robot.utils.compat import with_metaclass
+from ..lib.robot.utils.compat import with_metaclass
 
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
-from robotide.utils.noconflict import classmaker
+from ..utils.noconflict import classmaker
 
 _DEFAULT_FONT_SIZE = 11
 

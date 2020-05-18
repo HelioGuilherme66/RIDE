@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.usages.commands import FindUsages, FindResourceUsages, FindVariableUsages
-from robotide.usages.usagesdialog import UsagesDialog, UsagesDialogWithUserKwNavigation, ResourceImportUsageDialog
+from ..usages.commands import FindUsages, FindResourceUsages, FindVariableUsages
+from ..usages.usagesdialog import UsagesDialog, UsagesDialogWithUserKwNavigation, ResourceImportUsageDialog
 from threading import Thread
 import wx
 import time

@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.publish.messages import RideModificationPrevented
-from robotide.robotapi import TestCase
+from ..publish.messages import RideModificationPrevented
+from ..robotapi import TestCase
 
 
 class _BaseController(TestCase):

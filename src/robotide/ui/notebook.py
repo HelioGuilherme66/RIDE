@@ -20,7 +20,7 @@ except ImportError:
 
 from wx import (Point, Size)
 
-from robotide.publish import RideNotebookTabChanging, RideNotebookTabChanged
+from ..publish import RideNotebookTabChanging, RideNotebookTabChanged
 
 
 class NoteBook(aui.AuiNotebook):

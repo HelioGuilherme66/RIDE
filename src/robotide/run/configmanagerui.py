@@ -16,8 +16,8 @@
 import wx
 from wx.lib.mixins.listctrl import TextEditMixin
 
-from robotide.editor.listeditor import AutoWidthColumnList, ListEditorBase
-from robotide.widgets import Dialog, HelpLabel
+from ..editor.listeditor import AutoWidthColumnList, ListEditorBase
+from ..widgets import Dialog, HelpLabel
 
 
 _CONFIG_HELP = """The specified command string will be split from whitespaces into a command

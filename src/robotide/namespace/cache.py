@@ -15,8 +15,8 @@
 
 import os
 import time
-from robotide.robotapi import normpath
-from robotide.spec.iteminfo import BlockKeywordInfo
+from ..robotapi import normpath
+from ..spec.iteminfo import BlockKeywordInfo
 
 
 class LibraryCache(object):

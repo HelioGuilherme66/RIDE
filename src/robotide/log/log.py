@@ -22,9 +22,9 @@ import glob
 import sys
 import io
 
-from robotide.pluginapi import Plugin, ActionInfo, RideLog
-from robotide import widgets
-from robotide import context
+from ..pluginapi import Plugin, ActionInfo, RideLog
+from .. import widgets
+from .. import context
 
 
 def _message_to_string(msg):

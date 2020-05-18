@@ -15,7 +15,7 @@
 
 import wx
 from functools import total_ordering
-from robotide.context import IS_MAC
+from ..context import IS_MAC
 
 
 CMD_CHAR = u'\u2318'

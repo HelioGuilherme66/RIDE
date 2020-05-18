@@ -13,18 +13,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.publish import RideTestCaseRemoved, RideVariableAdded, \
-    RideVariableRemoved, RideVariableMovedUp, RideVariableMovedDown, \
-    RideUserKeywordRemoved, RideUserKeywordAdded, RideTestCaseAdded
-from robotide.publish.messages import RideItemMovedUp, RideItemMovedDown
-from robotide.robotapi import is_list_var, is_scalar_var, is_dict_var
-from robotide import utils
+from ..publish import (RideTestCaseRemoved, RideVariableAdded, RideVariableRemoved, RideVariableMovedUp,
+                       RideVariableMovedDown, RideUserKeywordRemoved, RideUserKeywordAdded, RideTestCaseAdded)
+from ..publish.messages import RideItemMovedUp, RideItemMovedDown
+from ..robotapi import is_list_var, is_scalar_var, is_dict_var
+from .. import utils
 
 from .basecontroller import ControllerWithParent
 from .macrocontrollers import TestCaseController, UserKeywordController
-from robotide.utils import overrides, variablematcher
-from .settingcontrollers import MetadataController, ImportController, \
-    VariableController
+from ..utils import overrides, variablematcher
+from .settingcontrollers import MetadataController, ImportController, VariableController
 
 
 class _WithListOperations(object):

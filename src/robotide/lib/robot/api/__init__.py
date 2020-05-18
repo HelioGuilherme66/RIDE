@@ -65,10 +65,9 @@ See documentations of the individual APIs for more details.
         via the :mod:`robot` root package.
 """
 
-from robotide.lib.robot.model import SuiteVisitor
-from robotide.lib.robot.parsing import (get_tokens, get_resource_tokens, get_init_tokens,
-                           get_model, get_resource_model, get_init_model,
-                           Token)
-from robotide.lib.robot.reporting import ResultWriter
-from robotide.lib.robot.result import ExecutionResult, ResultVisitor
-from robotide.lib.robot.running import TestSuite, TestSuiteBuilder
+from ..model import SuiteVisitor
+from ..parsing import (get_tokens, get_resource_tokens, get_init_tokens,
+                       get_model, get_resource_model, get_init_model, Token)
+from ..reporting import ResultWriter
+from ..result import ExecutionResult, ResultVisitor
+from ..running import TestSuite, TestSuiteBuilder

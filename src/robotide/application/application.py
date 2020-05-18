@@ -20,22 +20,22 @@ locale.setlocale(locale.LC_ALL, 'C')
 
 from contextlib import contextmanager
 
-from robotide.namespace import Namespace
-from robotide.controller import Project
-from robotide.spec import librarydatabase
-from robotide.ui import LoadProgressObserver
-from robotide.ui.mainframe import RideFrame
-from robotide import publish
-from robotide import context, contrib
-from robotide.context import coreplugins
-from robotide.preferences import Preferences, RideSettings
-from robotide.application.pluginloader import PluginLoader
-from robotide.application.editorprovider import EditorProvider
-from robotide.application.releasenotes import ReleaseNotes
-from robotide.application.updatenotifier import UpdateNotifierController, UpdateDialog
-from robotide.ui.treeplugin import TreePlugin
-from robotide.ui.fileexplorerplugin import FileExplorerPlugin
-from robotide import utils
+from ..namespace import Namespace
+from ..controller import Project
+from ..spec import librarydatabase
+from ..ui import LoadProgressObserver
+from ..ui.mainframe import RideFrame
+from .. import publish
+from .. import context, contrib
+from ..context import coreplugins
+from ..preferences import Preferences, RideSettings
+from ..application.pluginloader import PluginLoader
+from ..application.editorprovider import EditorProvider
+from ..application.releasenotes import ReleaseNotes
+from ..application.updatenotifier import UpdateNotifierController, UpdateDialog
+from ..ui.treeplugin import TreePlugin
+from ..ui.fileexplorerplugin import FileExplorerPlugin
+from .. import utils
 
 
 class RIDE(wx.App):
@@ -99,8 +99,8 @@ class RIDE(wx.App):
                 contrib.CONTRIB_PATH]
 
     def _get_editor(self):
-        from robotide.editor import EditorPlugin
-        from robotide.editor.texteditor import TextEditorPlugin
+        from ..editor import EditorPlugin
+        from ..editor.texteditor import TextEditorPlugin
         for pl in self._plugin_loader.plugins:
             maybe_editor = pl._plugin
             if (isinstance(maybe_editor, EditorPlugin) or
@@ -135,7 +135,7 @@ class RIDE(wx.App):
         return recent.recent_files[0]
 
     def _get_recentfiles_plugin(self):
-        from robotide.recentfiles import RecentFilesPlugin
+        from ..recentfiles import RecentFilesPlugin
         for pl in self.get_plugins():
             if isinstance(pl._plugin, RecentFilesPlugin):
                 return pl._plugin

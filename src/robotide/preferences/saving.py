@@ -15,7 +15,7 @@
 
 import wx
 
-from robotide.preferences import widgets
+from ..preferences import widgets
 
 
 class SavingPreferences(widgets.PreferencesPanel):

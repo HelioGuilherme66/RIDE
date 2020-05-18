@@ -15,17 +15,15 @@
 
 import wx
 
-from robotide.namespace.suggesters import ResourceSuggester, \
-    LibrariesSuggester, HistorySuggester
-from robotide.validators import ScalarVariableNameValidator, \
-    ListVariableNameValidator, TimeoutValidator, ArgumentsValidator, \
-    TestCaseNameValidator, UserKeywordNameValidator, \
-    DictionaryVariableNameValidator
-from robotide import utils
-from robotide.widgets import HelpLabel, Dialog
+from ..namespace.suggesters import ResourceSuggester, LibrariesSuggester, HistorySuggester
+from ..validators import (ScalarVariableNameValidator, ListVariableNameValidator, TimeoutValidator,
+                          ArgumentsValidator, TestCaseNameValidator, UserKeywordNameValidator,
+                          DictionaryVariableNameValidator)
+from .. import utils
+from ..widgets import HelpLabel, Dialog
 
-from .fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
-    ContentAssistEditor, VariableNameEditor, ArgumentEditor, FileNameEditor
+from .fieldeditors import (ValueEditor, ListValueEditor, MultiLineEditor, ContentAssistEditor,
+                           VariableNameEditor, ArgumentEditor, FileNameEditor)
 from .formatters import ListToStringFormatter
 from .dialoghelps import get_help
 

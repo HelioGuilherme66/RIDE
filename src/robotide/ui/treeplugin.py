@@ -22,33 +22,30 @@ from wx.lib.agw.aui import GetManager
 
 TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 
-from robotide.lib.robot.utils.compat import with_metaclass
-from robotide.controller.ui.treecontroller import TreeController, \
-    TestSelectionController
-from robotide.context import IS_WINDOWS
-from robotide.action.actioninfo import ActionInfo
-from robotide.controller.filecontrollers import ResourceFileController
-from robotide.publish.messages import RideTestRunning, RideTestPaused, \
-    RideTestPassed, RideTestFailed, RideTestExecutionStarted, \
-    RideImportSetting, RideExcludesChanged, RideIncludesChanged, \
-    RideOpenSuite, RideNewProject
-from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, \
-    FAILED_IMAGE_INDEX, PAUSED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
-from robotide.ui.treenodehandlers import TestCaseHandler
-from robotide.publish import PUBLISHER, RideTreeSelection, RideFileNameChanged,\
-    RideItem, RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved,\
-    RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,\
-    RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,\
-    RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,\
-    RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet
-from robotide.controller.ctrlcommands import MoveTo
-from robotide.pluginapi import Plugin, ActionInfo
-from robotide.widgets import PopupCreator
-from robotide import utils
+from ..lib.robot.utils.compat import with_metaclass
+from ..controller.ui.treecontroller import TreeController, TestSelectionController
+from ..context import IS_WINDOWS
+from ..action.actioninfo import ActionInfo
+from ..controller.filecontrollers import ResourceFileController
+from ..publish.messages import (RideTestRunning, RideTestPaused, RideTestPassed, RideTestFailed,
+                                RideTestExecutionStarted, RideImportSetting, RideExcludesChanged,
+                                RideIncludesChanged, RideOpenSuite, RideNewProject)
+from .images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, PAUSED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
+from .treenodehandlers import TestCaseHandler
+from ..publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged, RideItem,
+                       RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved,
+                       RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,
+                       RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,
+                       RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,
+                       RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet)
+from ..controller.ctrlcommands import MoveTo
+from ..pluginapi import Plugin, ActionInfo
+from ..widgets import PopupCreator
+from .. import utils
 from .treenodehandlers import ResourceRootHandler, action_handler_class, ResourceFileHandler
 from .images import TreeImageList
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
-from robotide.utils.noconflict import classmaker
+from ..utils.noconflict import classmaker
 
 _TREE_ARGS = {'style': wx.TR_DEFAULT_STYLE}
 _TREE_ARGS['agwStyle'] = customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | \

@@ -15,7 +15,7 @@
 
 import wx
 
-from robotide.widgets import htmlwindow, sizers
+from ..widgets import htmlwindow, sizers
 
 
 class Dialog(wx.Dialog):

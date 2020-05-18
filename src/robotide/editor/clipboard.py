@@ -15,7 +15,7 @@
 
 import os
 import wx
-from robotide.context import IS_WINDOWS
+from ..context import IS_WINDOWS
 
 
 class _ClipboardHandler(object):

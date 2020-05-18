@@ -17,8 +17,8 @@ import importlib
 import importlib.util
 import inspect
 import os
-from robotide.context import LOG
-from robotide.pluginapi import Plugin
+from ..context import LOG
+from ..pluginapi import Plugin
 from .pluginconnector import PluginFactory
 
 

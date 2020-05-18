@@ -16,9 +16,9 @@
 import os.path
 import wx
 
-from robotide.publish import RideOpenSuite, RideFileNameChanged
-from robotide.pluginapi import Plugin, ActionInfo, SeparatorInfo
-from robotide.publish.messages import RideNewProject, RideSaved
+from ..publish import RideOpenSuite, RideFileNameChanged
+from ..pluginapi import Plugin, ActionInfo, SeparatorInfo
+from ..publish.messages import RideNewProject, RideSaved
 
 
 def normalize_path(path):

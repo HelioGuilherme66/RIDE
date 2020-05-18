@@ -15,8 +15,8 @@
 
 import wx
 import textwrap
-from robotide.widgets import HelpLabel, Label, TextField
-from robotide.context import IS_WINDOWS
+from ..widgets import HelpLabel, Label, TextField
+from ..context import IS_WINDOWS
 
 
 class PreferencesPanel(wx.Panel):

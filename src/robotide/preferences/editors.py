@@ -17,14 +17,14 @@ import wx
 from wx.lib.masked import NumCtrl
 from os.path import abspath, dirname, join
 
-from robotide.preferences import widgets
-from robotide.widgets import Label
+from ..preferences import widgets
+from ..widgets import Label
 
 try:  # import installed version first
     import robotframeworklexer
 except ImportError:
     try:  # then import local version
-        from . import robotframeworklexer
+        from ..editor import robotframeworklexer
     except ImportError:  # Pygments is not installed
         robotframeworklexer = None
 
