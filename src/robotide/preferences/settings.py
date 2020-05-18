@@ -24,11 +24,10 @@ elif sys.version_info[0] == 3:
     PYTHON2 = False
     PYTHON3 = True
 
-from robotide.context import SETTINGS_DIRECTORY, LIBRARY_XML_DIRECTORY
-from robotide.preferences.configobj import ConfigObj, ConfigObjError,\
-    Section, UnreprError
-from robotide.preferences import excludes
-from robotide.publish import RideSettingsChanged
+from ..context import SETTINGS_DIRECTORY, LIBRARY_XML_DIRECTORY
+from ..preferences.configobj import ConfigObj, ConfigObjError, Section, UnreprError
+from ..preferences import excludes
+from ..publish import RideSettingsChanged
 
 
 def initialize_settings(path, dest_file_name=None):

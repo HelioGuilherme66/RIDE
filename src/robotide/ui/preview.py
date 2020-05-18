@@ -20,12 +20,11 @@ try:
 except ImportError:  # py3 <=3.6
     from io import StringIO
 
-from robotide.pluginapi import Plugin, ActionInfo, TreeAwarePluginMixin
-from robotide.publish import (RideTreeSelection, RideNotebookTabChanged,
-                              RideTestCaseAdded, RideUserKeywordAdded)
-from robotide.robotapi import TestCase, UserKeyword
-from robotide.widgets import ButtonWithHandler, Font
-from robotide.utils import Printing
+from ..pluginapi import Plugin, ActionInfo, TreeAwarePluginMixin
+from ..publish import (RideTreeSelection, RideNotebookTabChanged, RideTestCaseAdded, RideUserKeywordAdded)
+from ..robotapi import TestCase, UserKeyword
+from ..widgets import ButtonWithHandler, Font
+from ..utils import Printing
 
 
 class PreviewPlugin(Plugin, TreeAwarePluginMixin):

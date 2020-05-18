@@ -15,8 +15,8 @@
 import wx
 from wx.lib.agw import customtreectrl
 from wx.lib.agw.aui import GetManager
-from robotide.pluginapi import Plugin, ActionInfo
-from robotide.controller import Project
+from ..pluginapi import Plugin, ActionInfo
+from ..controller import Project
 
 
 class FileExplorerPlugin(Plugin):

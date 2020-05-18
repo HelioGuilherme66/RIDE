@@ -15,12 +15,12 @@
 
 import re
 
-from robotide import robotapi, utils
-from robotide.utils import variablematcher
-from robotide.controller.basecontroller import _BaseController
-from robotide.controller.cellinfo import (CellPosition, CellType, CellInfo,
+from .. import robotapi, utils
+from ..utils import variablematcher
+from ..controller.basecontroller import _BaseController
+from ..controller.cellinfo import (CellPosition, CellType, CellInfo,
                                           CellContent, ContentType)
-from robotide.namespace.local_namespace import LocalNamespace
+from ..namespace.local_namespace import LocalNamespace
 
 class StepController(_BaseController):
 

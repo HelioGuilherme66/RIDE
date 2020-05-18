@@ -14,7 +14,8 @@
 #  limitations under the License.
 
 import wx
-from robotide.lib.robot.utils.compat import with_metaclass
+from ..lib.robot.utils.compat import with_metaclass
+
 
 class eventhandlertype(type):
     def __new__(cls, name, bases, dict):

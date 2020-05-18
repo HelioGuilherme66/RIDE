@@ -15,14 +15,11 @@
 
 import wx
 
-from robotide.publish.messages import RideDataFileRemoved
-from robotide.pluginapi import (
-    Plugin, ActionInfoCollection, TreeAwarePluginMixin)
-from robotide.publish import (
-    RideTreeSelection, RideNotebookTabChanging, RideNotebookTabChanged,
-    RideSaving)
-from robotide.utils import overrides
-from robotide.widgets import PopupCreator
+from ..publish.messages import RideDataFileRemoved
+from ..pluginapi import (Plugin, ActionInfoCollection, TreeAwarePluginMixin)
+from ..publish import (RideTreeSelection, RideNotebookTabChanging, RideNotebookTabChanged, RideSaving)
+from ..utils import overrides
+from ..widgets import PopupCreator
 from .editorcreator import EditorCreator
 
 

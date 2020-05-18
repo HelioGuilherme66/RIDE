@@ -14,17 +14,13 @@
 #  limitations under the License.
 
 import wx
-from robotide import robotapi, context
-from robotide.controller.settingcontrollers import (
-    DocumentationController, VariableController, TagsController)
-from robotide.usages.UsageRunner import ResourceFileUsages
-from robotide.publish import (
-    RideItemSettingsChanged, RideInitFileRemoved, RideFileNameChanged)
-from robotide.widgets import (
-    ButtonWithHandler, Label, HeaderLabel, HorizontalSizer, HtmlWindow)
-from .settingeditors import (
-    DocumentationEditor, SettingEditor, TagsEditor,
-    ImportSettingListEditor, VariablesListEditor, MetadataListEditor)
+from .. import robotapi, context
+from ..controller.settingcontrollers import DocumentationController, VariableController, TagsController
+from ..usages.UsageRunner import ResourceFileUsages
+from ..publish import RideItemSettingsChanged, RideInitFileRemoved, RideFileNameChanged
+from ..widgets import ButtonWithHandler, Label, HeaderLabel, HorizontalSizer, HtmlWindow
+from .settingeditors import (DocumentationEditor, SettingEditor, TagsEditor,
+                             ImportSettingListEditor, VariablesListEditor, MetadataListEditor)
 
 
 class WelcomePage(HtmlWindow):

@@ -18,19 +18,17 @@ from io import StringIO, BytesIO
 import string
 import wx
 from wx import stc
-from robotide import robotapi
-from robotide.context import IS_WINDOWS, IS_MAC
-from robotide.controller.ctrlcommands import SetDataFile
-from robotide.publish import RideSettingsChanged, PUBLISHER
-from robotide.publish.messages import RideMessage
-from robotide.namespace.suggesters import SuggestionSource, BuiltInLibrariesSuggester
-from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
-from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
-                                RideTreeSelection, RideNotebookTabChanging,
-                                RideDataChanged, RideOpenSuite,
-                                RideDataChangedToDirty)
-from robotide.widgets import TextField, Label, HtmlDialog
-from robotide.preferences.editors import ReadFonts
+from .. import robotapi
+from ..context import IS_WINDOWS, IS_MAC
+from ..controller.ctrlcommands import SetDataFile
+from ..publish import RideSettingsChanged, PUBLISHER
+from ..publish.messages import RideMessage
+from ..namespace.suggesters import SuggestionSource, BuiltInLibrariesSuggester
+from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
+from ..pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin, RideTreeSelection,
+                         RideNotebookTabChanging, RideDataChanged, RideOpenSuite, RideDataChangedToDirty)
+from ..widgets import TextField, Label, HtmlDialog
+from ..preferences.editors import ReadFonts
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 from .contentassist import ContentAssistTextEditor
 

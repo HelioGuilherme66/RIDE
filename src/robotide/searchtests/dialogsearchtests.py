@@ -16,10 +16,9 @@
 import wx
 
 from functools import (total_ordering, cmp_to_key)
-from robotide.utils import overrides
-from robotide.widgets import (Dialog, VerticalSizer, VirtualList, Label,
-                              HelpLabel, ImageProvider, ButtonWithHandler)
-from robotide.widgets.list import ListModel
+from ..utils import overrides
+from ..widgets import (Dialog, VerticalSizer, VirtualList, Label, HelpLabel, ImageProvider, ButtonWithHandler)
+from ..widgets.list import ListModel
 
 
 class TestsDialog(Dialog):

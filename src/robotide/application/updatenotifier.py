@@ -17,13 +17,13 @@
 
 
 import wx, wx.html
-from robotide.utils.versioncomparator import cmp_versions
-from robotide.widgets.button import ButtonWithHandler
+from ..utils.versioncomparator import cmp_versions
+from ..widgets.button import ButtonWithHandler
 
 import time
 import urllib.request as urllib2
 import xmlrpc.client as xmlrpclib
-import robotide.version as version
+from .. import version
 
 _CHECK_FOR_UPDATES_SETTING = "check for updates"
 _LAST_UPDATE_CHECK_SETTING = "last update check"

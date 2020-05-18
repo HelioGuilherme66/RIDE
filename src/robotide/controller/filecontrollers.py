@@ -18,25 +18,25 @@ import sys
 import stat
 from itertools import chain
 import shutil
-import robotide.controller.ctrlcommands
+from . import ctrlcommands
 try:
     import subprocess32 as subprocess
 except ImportError:
     import subprocess
-from robotide.controller.dataloader import ExcludedDirectory, TestData
+from .dataloader import ExcludedDirectory, TestData
 
-from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
+from ..publish import (RideDataFileRemoved, RideInitFileRemoved,
         RideDataChangedToDirty, RideDataDirtyCleared, RideSuiteAdded,
         RideItemSettingsChanged)
-from robotide.publish.messages import RideDataFileSet, RideOpenResource
+from ..publish.messages import RideDataFileSet, RideOpenResource
 # REMOVED 3.2  from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
-from robotide.robotapi import File
-from robotide import utils
+from ..robotapi import File, SuiteVisitor
+from .. import utils
 
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
 from .macrocontrollers import UserKeywordController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
-from robotide.utils import overrides
+from ..utils import overrides
 from .settingcontrollers import (DocumentationController, FixtureController,
         TimeoutController, TemplateController, DefaultTagsController,
         ForceTagsController)
@@ -159,6 +159,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     @property
     def variables(self):
         if self._variables_table_controller is None:
+            print(f"DEBUG: Variable section: {self.data.variables}")
             self._variables_table_controller = \
                     VariableTableController(self, self.data.variable_table)
         return self._variables_table_controller
@@ -367,14 +368,15 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseController):
 
     def __init__(self, data, project=None, parent=None):
-        dir_ = data.directory
+        dir_ = os.path.dirname(data.source)
         dir_ = os.path.abspath(dir_) if isinstance(dir_, str) else dir_
         _FileSystemElement.__init__(self, self._filename(data), dir_)
         _DataController.__init__(self, data, project, parent)
         self._dir_controllers = {}
 
     def _filename(self, data):
-        return data.initfile
+        initfile = os.path.dirname(data.source).join('__init__.robot')
+        return initfile
 
     @property
     def default_dir(self):
@@ -423,9 +425,11 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return self._project.is_excluded(self.source) if self._project else False
 
     def _children(self, data):
-        children = [DataController(child, self._project, self) for child in data.children]
+        children = data.suites  # .SuiteVisitor().visit_suite()
+        # children = [DataController(child, self._project, self) for child in data.children]
+        initfile = os.path.dirname(data.source).join('__init__.robot')
         if self._can_add_directory_children(data):
-            self._add_directory_children(children, data.source, data.initfile)
+            self._add_directory_children(children, data.source, initfile)
         return children
 
     def _can_add_directory_children(self, data):

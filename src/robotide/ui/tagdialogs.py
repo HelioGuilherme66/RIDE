@@ -17,10 +17,10 @@ import re
 import wx
 import wx.lib.mixins.listctrl as listmix
 
-from robotide import utils
-from robotide.controller.ctrlcommands import ChangeTag
-from robotide.publish import RideOpenTagSearch
-from robotide.widgets import ButtonWithHandler, PopupMenuItems
+from .. import utils
+from ..controller.ctrlcommands import ChangeTag
+from ..publish import RideOpenTagSearch
+from ..widgets import ButtonWithHandler, PopupMenuItems
 
 
 class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):

@@ -13,14 +13,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.controller.filecontrollers import ResourceFileController
+from ..controller.filecontrollers import ResourceFileController
 
 import wx
 
-from robotide.controller.ctrlcommands import DeleteResourceAndImports, DeleteFile, DeleteFolder, DeleteFolderAndImports
-from robotide.usages.commands import FindResourceUsages, FindTestFolderUsages
-from robotide.usages.usagesdialog import ResourceImportListModel, RecursiveResourceImportListModel
-from robotide.widgets import Dialog, VirtualList, VerticalSizer, Label
+from ..controller.ctrlcommands import DeleteResourceAndImports, DeleteFile, DeleteFolder, DeleteFolderAndImports
+from ..usages.commands import FindResourceUsages, FindTestFolderUsages
+from ..usages.usagesdialog import ResourceImportListModel, RecursiveResourceImportListModel
+from ..widgets import Dialog, VirtualList, VerticalSizer, Label
 
 
 class _UsageDialog(Dialog):

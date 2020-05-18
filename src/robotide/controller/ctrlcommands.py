@@ -18,17 +18,17 @@ import time
 import os
 import re
 
-from robotide.namespace.embeddedargs import EmbeddedArgsHandler
-from robotide.publish.messages import (RideSelectResource, RideFileNameChanged, RideSaving,
-                                       RideSaved, RideSaveAll, RideExcludesChanged)
-from robotide.namespace.namespace import _VariableStash
-from robotide.utils import overrides, variablematcher
-from robotide.controller.filecontrollers import ResourceFileController
-from robotide.controller.macrocontrollers import (KeywordNameController, ForLoopStepController,
-                                                  TestCaseController)
-from robotide.controller.settingcontrollers import _SettingController, VariableController
-from robotide.controller.tablecontrollers import VariableTableController
-from robotide.controller.validators import BaseNameValidator
+from ..namespace.embeddedargs import EmbeddedArgsHandler
+from ..publish.messages import (RideSelectResource, RideFileNameChanged, RideSaving,
+                                RideSaved, RideSaveAll, RideExcludesChanged)
+from ..namespace.namespace import _VariableStash
+from ..utils import overrides, variablematcher
+from ..controller.filecontrollers import ResourceFileController
+from ..controller.macrocontrollers import (KeywordNameController, ForLoopStepController,
+                                           TestCaseController)
+from ..controller.settingcontrollers import _SettingController, VariableController
+from ..controller.tablecontrollers import VariableTableController
+from ..controller.validators import BaseNameValidator
 
 
 class Occurrence(object):

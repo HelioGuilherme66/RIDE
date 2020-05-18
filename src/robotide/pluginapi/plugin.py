@@ -15,10 +15,10 @@
 
 import wx
 import inspect
-from robotide.action.actioninfo import ActionInfo
+from ..action.actioninfo import ActionInfo
 
-from robotide.publish import PUBLISHER
-from robotide import utils
+from ..publish import PUBLISHER
+from .. import utils
 
 
 class Plugin(object):

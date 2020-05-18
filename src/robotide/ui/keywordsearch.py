@@ -18,14 +18,12 @@ import os.path
 
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from functools import (total_ordering, cmp_to_key)
-from robotide.controller.filecontrollers import (ResourceFileController,
-                                                 TestCaseFileController)
-from robotide.pluginapi import (Plugin, ActionInfo, RideOpenSuite,
-        RideOpenResource, RideImportSetting, RideUserKeyword, RideNewProject)
-from robotide.usages.UsageRunner import Usages
-from robotide import utils
-from robotide.widgets import (PopupMenuItem, ButtonWithHandler, Label, Font,
-        HtmlWindow, ImageProvider)
+from ..controller.filecontrollers import (ResourceFileController, TestCaseFileController)
+from ..pluginapi import (Plugin, ActionInfo, RideOpenSuite, RideOpenResource,
+                         RideImportSetting, RideUserKeyword, RideNewProject)
+from ..usages.UsageRunner import Usages
+from .. import utils
+from ..widgets import (PopupMenuItem, ButtonWithHandler, Label, Font, HtmlWindow, ImageProvider)
 
 ALL_KEYWORDS = '<all keywords>'
 ALL_USER_KEYWORDS = '<all user keywords>'

@@ -15,32 +15,28 @@
 
 import wx
 
-from robotide.controller.ctrlcommands import (
+from ..controller.ctrlcommands import (
     RenameKeywordOccurrences, RemoveMacro, AddKeyword, AddTestCase, RenameTest,
     CopyMacroAs, AddVariable, UpdateVariableName, RenameFile, DeleteItem,
     RenameResourceFile, DeleteFile, SortKeywords, Include, Exclude, OpenContainingFolder,
     RemoveReadOnly)
-from robotide.controller.settingcontrollers import VariableController
-from robotide.controller.macrocontrollers import (
-    TestCaseController, UserKeywordController)
-from robotide.controller.filecontrollers import (
-    TestDataDirectoryController, ResourceFileController,
-    TestCaseFileController, ExcludedDirectoryController,
-    DirtyRobotDataException)
-from robotide.editor.editordialogs import (
-    TestCaseNameDialog, UserKeywordNameDialog, ScalarVariableDialog,
-    ListVariableDialog, CopyUserKeywordDialog, DictionaryVariableDialog)
-from robotide.publish import RideOpenVariableDialog
-from robotide.ui.progress import LoadProgressObserver
-from robotide.usages.UsageRunner import Usages, ResourceFileUsages
-from .filedialogs import (
-    AddSuiteDialog, AddDirectoryDialog, ChangeFormatDialog, NewResourceDialog,
-    RobotFilePathDialog)
-from robotide.utils import overrides
-from robotide.widgets import PopupMenuItems
+from ..controller.settingcontrollers import VariableController
+from ..controller.macrocontrollers import (TestCaseController, UserKeywordController)
+from ..controller.filecontrollers import (TestDataDirectoryController, ResourceFileController,
+                                          TestCaseFileController, ExcludedDirectoryController,
+                                          DirtyRobotDataException)
+from ..editor.editordialogs import (TestCaseNameDialog, UserKeywordNameDialog, ScalarVariableDialog,
+                                    ListVariableDialog, CopyUserKeywordDialog, DictionaryVariableDialog)
+from ..publish import RideOpenVariableDialog
+from .progress import LoadProgressObserver
+from ..usages.UsageRunner import Usages, ResourceFileUsages
+from .filedialogs import (AddSuiteDialog, AddDirectoryDialog, ChangeFormatDialog,
+                          NewResourceDialog,RobotFilePathDialog)
+from ..utils import overrides
+from ..widgets import PopupMenuItems
 from .progress import RenameProgressObserver
 from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
-from robotide.ui.resourcedialogs import FolderDeleteDialog
+from .resourcedialogs import FolderDeleteDialog
 
 
 def action_handler_class(controller):
@@ -259,8 +255,10 @@ class TestDataHandler(_ActionHandler):
         return not self._rendered
 
     def _has_children(self):
-        return (self.item.keyword_table or self.item.testcase_table or
-                self.item.variable_table)
+        print(f"DEBUG: Keywords {self.item.keywords} has_tests {self.item.has_tests}")
+        has_keywords = self.item.keywords is not None
+        return has_keywords or self.item.has_tests  # DEBUG Missing testing variables
+        # return (self.item.keyword_table or self.item.testcase_table or self.item.variable_table)
 
     def set_rendered(self):
         self._rendered = True

@@ -15,9 +15,9 @@
 
 import os
 import wx
-from robotide.controller.settingcontrollers import VariableController
-from robotide.controller.macrocontrollers import TestCaseController, UserKeywordController
-from robotide.controller.filecontrollers import TestDataDirectoryController, TestCaseFileController, ResourceFileController, ExcludedDirectoryController
+from ..controller.settingcontrollers import VariableController
+from ..controller.macrocontrollers import TestCaseController, UserKeywordController
+from ..controller.filecontrollers import TestDataDirectoryController, TestCaseFileController, ResourceFileController, ExcludedDirectoryController
 
 
 _SIZE = (16, 16)

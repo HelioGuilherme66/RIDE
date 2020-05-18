@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 # from robotide import robotapi
-from robotide.lib.robot.running.arguments.embedded import EmbeddedArgumentParser
+from ..lib.robot.running.arguments.embedded import EmbeddedArgumentParser
 
 
 class EmbeddedArgsHandler(object):

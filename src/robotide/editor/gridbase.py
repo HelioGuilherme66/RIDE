@@ -16,8 +16,8 @@
 import wx
 from wx import grid
 
-from robotide.widgets import PopupCreator, PopupMenuItems
-from robotide.context import IS_WINDOWS
+from ..widgets import PopupCreator, PopupMenuItems
+from ..context import IS_WINDOWS
 from .clipboard import ClipboardHandler
 
 

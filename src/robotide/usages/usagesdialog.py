@@ -13,12 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.ui.searchdots import DottedSearch
+from ..ui.searchdots import DottedSearch
 
-from robotide.widgets import (Dialog, VirtualList, VerticalSizer, ImageList,
-                              ImageProvider, ButtonWithHandler)
+from ..widgets import Dialog, VirtualList, VerticalSizer, ImageList, ImageProvider, ButtonWithHandler
 import wx
-from robotide.widgets.list import ListModel
+from ..widgets.list import ListModel
+
 
 class UsagesDialog(Dialog):
 

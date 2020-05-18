@@ -20,7 +20,7 @@ try:
 except ImportError:
     raise
 
-from robotide.utils import is_string, py2to3
+from ..utils import is_string, py2to3
 
 HEADING = Token.Generic.Heading
 SETTING = Token.Keyword.Namespace

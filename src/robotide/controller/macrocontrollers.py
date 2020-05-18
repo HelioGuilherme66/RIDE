@@ -16,22 +16,20 @@
 from itertools import chain
 import os
 
-from robotide.controller.basecontroller import ControllerWithParent
-from robotide.controller.settingcontrollers import DocumentationController,\
-    FixtureController, TagsController, TimeoutController,\
-    TemplateController, ArgumentsController, ReturnValueController
-from robotide.controller.arguments import parse_arguments_to_var_dict
-from robotide.controller.basecontroller import WithUndoRedoStacks
-from robotide.namespace.local_namespace import LocalNamespace
-from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,\
-    RideItemSettingsChanged, RideUserKeywordRemoved  # DEBUG
-from robotide.controller.stepcontrollers import ForLoopStepController,\
-    StepController, IntendedStepController
-from robotide.spec.iteminfo import ResourceUserKeywordInfo, \
-    TestCaseUserKeywordInfo
-from robotide.controller.tags import Tag
-from robotide import robotapi
-from robotide.utils import variablematcher
+from ..controller.basecontroller import ControllerWithParent
+from ..controller.settingcontrollers import (DocumentationController, FixtureController, TagsController,
+                                             TimeoutController, TemplateController, ArgumentsController,
+                                             ReturnValueController)
+from ..controller.arguments import parse_arguments_to_var_dict
+from ..controller.basecontroller import WithUndoRedoStacks
+from ..namespace.local_namespace import LocalNamespace
+from ..publish.messages import (RideItemStepsChanged, RideItemNameChanged,
+                                RideItemSettingsChanged, RideUserKeywordRemoved)
+from ..controller.stepcontrollers import (ForLoopStepController, StepController, IntendedStepController)
+from ..spec.iteminfo import ResourceUserKeywordInfo, TestCaseUserKeywordInfo
+from ..controller.tags import Tag
+from .. import robotapi
+from ..utils import variablematcher
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'

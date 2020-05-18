@@ -25,10 +25,13 @@ from robotide.lib.robot.utils import abspath, is_string, normalize, py2to3, Norm
 from robotide.lib.robot.parsing.lexer.sections import (TestCaseFileSections, ResourceFileSections, InitFileSections)
 from robotide.lib.robot.parsing.lexer.settings import (TestCaseFileSettings, ResourceFileSettings, TestCaseSettings,
                                                        InitFileSettings, KeywordSettings)
-from robotide.lib.robot.parsing.model import (TestCase, File, KeywordSection,
-                                              Statement, ForLoop, VariableSection,
-                                              Keyword, TestCaseSection, CommentSection,
-                                              SettingSection)
+# from robotide.lib.robot.parsing.model import (TestCase, File, KeywordSection,
+#                                              Statement, TestCaseSection, TestCaseTable, ForLoop, VariableSection,
+#                                              Keyword, CommentSection,
+#                                              SettingSection)
+
+from robotide.lib.robot.api import TestSuite
+from robotide.lib.robot.model.testcase import TestCase
 from .comments import Comment
 from .populators import FromFilePopulator, FromDirectoryPopulator, NoTestsFound
 from .settings import (Documentation, Fixture, Timeout, Tags, Metadata,
@@ -178,10 +181,10 @@ class TestCaseFile(_TestData):
 
     def __init__(self, parent=None, source=None):
         self.directory = os.path.dirname(source) if source else None
-        self.setting_table = TestCaseFileSettings()
-        self.variable_table = VariableSection(self)
-        self.testcase_table = TestCaseSection(self)
-        self.keyword_table = KeywordSection(self)
+        self.setting_table = TestCaseFileSettingTable(self)
+        self.variable_table = VariableTable(self)
+        self.testcase_table = TestCaseTable(self)
+        self.keyword_table = KeywordTable(self)
         _TestData.__init__(self, parent, source)
 
     def populate(self):
@@ -213,10 +216,10 @@ class ResourceFile(_TestData):
 
     def __init__(self, source=None):
         self.directory = os.path.dirname(source) if source else None
-        self.setting_table = ResourceFileSettings()
-        self.variable_table = VariableSection(self)
-        self.testcase_table = TestCaseSection(self)
-        self.keyword_table = KeywordSection(self)
+        self.setting_table = ResourceFileSettingTable(self)
+        self.variable_table = VariableTable(self)
+        self.testcase_table = TestCaseTable(self)
+        self.keyword_table = KeywordTable(self)
         _TestData.__init__(self, source=source)
 
     def populate(self):
@@ -254,10 +257,10 @@ class TestDataDirectory(_TestData):
     def __init__(self, parent=None, source=None):
         self.directory = source
         self.initfile = None
-        self.setting_table = InitFileSettings()
-        self.variable_table = VariableSection(self)
-        self.testcase_table = TestCaseSection(self)
-        self.keyword_table = KeywordSection(self)
+        self.setting_table = InitFileSettingTable(self)
+        self.variable_table = VariableTable(self)
+        self.testcase_table = TestCaseTable(self)
+        self.keyword_table = KeywordTable(self)
         _TestData.__init__(self, parent, source)
 
     def populate(self, include_suites=None, extensions=None, recurse=True):

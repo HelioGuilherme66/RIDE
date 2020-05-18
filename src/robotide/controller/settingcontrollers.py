@@ -17,13 +17,12 @@ import re
 import sys
 from itertools import chain
 
-from robotide.publish.messages import RideImportSettingChanged,\
-    RideImportSettingRemoved, RideVariableUpdated, RideItemSettingsChanged, \
-    RideImportSettingAdded
-from robotide import robotapi, utils
+from ..publish.messages import (RideImportSettingChanged, RideImportSettingRemoved,
+                                RideVariableUpdated, RideItemSettingsChanged, RideImportSettingAdded)
+from .. import robotapi, utils
 from .tags import Tag, ForcedTag, DefaultTag
 from .basecontroller import ControllerWithParent
-from robotide.utils import overrides, variablematcher
+from ..utils import overrides, variablematcher
 
 
 class _SettingController(ControllerWithParent):

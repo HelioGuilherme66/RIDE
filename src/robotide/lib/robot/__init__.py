@@ -41,9 +41,9 @@ this package are for for internal usage and may change without prior notice.
 import sys
 import warnings
 
-from robotide.lib.robot.rebot import rebot, rebot_cli
-from robotide.lib.robot.run import run, run_cli
-from robotide.lib.robot.version import get_version
+from .rebot import rebot, rebot_cli
+from .run import run, run_cli
+from .version import get_version
 
 
 # Avoid warnings when using `python -m robot.run` with Python 3.5.2 or newer.

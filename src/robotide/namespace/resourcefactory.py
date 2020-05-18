@@ -16,7 +16,7 @@
 import os
 import sys
 
-from robotide import utils, robotapi
+from .. import utils, robotapi
 
 
 class ResourceFactory(object):

@@ -14,14 +14,14 @@
 #  limitations under the License.
 
 import wx
-from robotide.lib.robot.utils.compat import with_metaclass
+from ..lib.robot.utils.compat import with_metaclass
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
-from robotide.controller.ctrlcommands import MoveUp, MoveDown, DeleteItem
-from robotide.utils import RideEventHandler
-from robotide.widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
-from robotide.context import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
+from ..controller.ctrlcommands import MoveUp, MoveDown, DeleteItem
+from ..utils import RideEventHandler
+from ..widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
+from ..context import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
-from robotide.utils.noconflict import classmaker
+from ..utils.noconflict import classmaker
 
 
 class ListEditorBase(wx.Panel):

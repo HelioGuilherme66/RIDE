@@ -19,7 +19,7 @@ import os
 import wx
 
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
-from robotide.widgets import Dialog, HtmlWindow
+from ..widgets import Dialog, HtmlWindow
 from .widgets import PreferencesPanel
 
 

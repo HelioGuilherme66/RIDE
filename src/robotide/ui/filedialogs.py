@@ -17,14 +17,13 @@ import os
 import wx
 from wx.lib.filebrowsebutton import DirBrowseButton
 
-from robotide.controller.filecontrollers import ResourceFileController
-from robotide.controller.ctrlcommands import CreateNewResource,\
-    AddTestDataDirectory, AddTestCaseFile, CreateNewDirectoryProject,\
-    CreateNewFileProject, SetFileFormat, SetFileFormatRecuresively
-from robotide.utils import overrides
-from robotide.widgets import Label, Dialog
-from robotide.validators import NonEmptyValidator, NewSuitePathValidator,\
-    SuiteFileNameValidator
+from ..controller.filecontrollers import ResourceFileController
+from ..controller.ctrlcommands import (CreateNewResource, AddTestDataDirectory, AddTestCaseFile,
+                                       CreateNewDirectoryProject,CreateNewFileProject,
+                                       SetFileFormat, SetFileFormatRecuresively)
+from ..utils import overrides
+from ..widgets import Label, Dialog
+from ..validators import NonEmptyValidator, NewSuitePathValidator, SuiteFileNameValidator
 # This hack needed to set same label width as with other labels
 DirBrowseButton.createLabel = lambda self: Label(self, size=(110, -1), label=self.labelText)
 

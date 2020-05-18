@@ -15,8 +15,8 @@
 
 import wx
 
-from robotide.usages.UsageRunner import Usages
-from robotide.publish.messages import RideItemNameChanged
+from ..usages.UsageRunner import Usages
+from ..publish.messages import RideItemNameChanged
 
 from .kweditor import KeywordEditor
 from .editors import _RobotTableEditor, FindUsagesHeader
