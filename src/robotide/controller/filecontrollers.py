@@ -159,16 +159,24 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     @property
     def variables(self):
         if self._variables_table_controller is None:
-            print(f"DEBUG: Variable section: {self.data.variables}")
-            self._variables_table_controller = \
-                    VariableTableController(self, self.data.variable_table)
+            try:
+              self._variables_table_controller = VariableTableController(self, self.data.variable_table)
+            except AttributeError:
+                print(f"DEBUG: No Variable section in this model {self.data.name}")
+                # return None
+                dummy_table = dict()
+                self._variables_table_controller = VariableTableController(self, dummy_table)
         return self._variables_table_controller
 
     @property
     def tests(self):
         if self._testcase_table_controller is None:
-            self._testcase_table_controller = \
-                    TestCaseTableController(self, self.data.testcase_table)
+            try:
+                self._testcase_table_controller = TestCaseTableController(self, self.data.testcase_table)
+            except AttributeError:
+                print(f"DEBUG: No Tests section in this model {self.data.name}")
+                dummy_table = {'tests': ''}
+                self._testcase_table_controller = TestCaseTableController(self, dummy_table)
         return self._testcase_table_controller
 
     @property
@@ -187,8 +195,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     @property
     def keywords(self):
         if self._keywords_table_controller is None:
-            self._keywords_table_controller = \
-                    KeywordTableController(self, self.data.keyword_table)
+            try:
+                self._keywords_table_controller = KeywordTableController(self, self.data.keyword_table)
+            except AttributeError:
+                print(f"DEBUG: No Keywords section in this model {self.data.name}")
+                dummy_table = {'keywords': ''}
+                self._keywords_table_controller = KeywordTableController(self, dummy_table)
         return self._keywords_table_controller
 
     @property

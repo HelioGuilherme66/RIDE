@@ -15,10 +15,10 @@
 
 import os.path
 
-from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.model import SuiteNamePatterns
-from robotide.lib.robot.output import LOGGER
-from robotide.lib.robot.utils import abspath, get_error_message, unic
+from ..errors import DataError
+from ..model import SuiteNamePatterns
+from ..output import LOGGER
+from ..utils import abspath, get_error_message, unic
 
 
 class SuiteStructure(object):

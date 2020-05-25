@@ -21,7 +21,7 @@ from ..context import LOG
 from ..controller.ctrlcommands import NullObserver, SaveFile
 from ..publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
 
-from .basecontroller import WithNamespace, _BaseController
+from .basecontroller import WithNamespace, _BaseController, RideTestSuite
 from .dataloader import DataLoader
 from .filecontrollers import DataController, ResourceFileControllerFactory
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
@@ -45,9 +45,10 @@ class Project(_BaseController, WithNamespace):
         self._set_namespace(namespace)
         self._settings = settings
         self._loader = DataLoader(namespace, settings)
-        self._controller = None
+        self._controller = RideTestSuite()
         # DEBUG RF 3.2
         # self.name = None
+        self.source = self._controller.source
         self.external_resources = []
         self._resource_file_controller_factory = ResourceFileControllerFactory(namespace, self)
         self._serializer = Serializer(settings, LOG)
@@ -114,8 +115,7 @@ class Project(_BaseController, WithNamespace):
     def _new_project(self, datafile):
         self.update_default_dir(os.path.dirname(datafile.source))
         self._controller = DataController(datafile, self)
-        self._resource_file_controller_factory = ResourceFileControllerFactory(self._namespace,
-                                                                               self)
+        self._resource_file_controller_factory = ResourceFileControllerFactory(self._namespace, self)
         RideNewProject(path=datafile.source, datafile=datafile).publish()
 
     def new_resource(self, path, parent=None):

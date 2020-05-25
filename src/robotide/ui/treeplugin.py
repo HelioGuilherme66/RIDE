@@ -27,6 +27,7 @@ from ..controller.ui.treecontroller import TreeController, TestSelectionControll
 from ..context import IS_WINDOWS
 from ..action.actioninfo import ActionInfo
 from ..controller.filecontrollers import ResourceFileController
+from ..controller.basecontroller import RideTestSuite
 from ..publish.messages import (RideTestRunning, RideTestPaused, RideTestPassed, RideTestFailed,
                                 RideTestExecutionStarted, RideImportSetting, RideExcludesChanged,
                                 RideIncludesChanged, RideOpenSuite, RideNewProject)
@@ -371,7 +372,8 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         handler = ResourceRootHandler(model, self, self._resource_root,
                                       self._controller.settings)
         self.SetPyData(self._resource_root, handler)
-        if model.data:
+        if model.data and str(model.data) != "New Suite":
+            print(f"DEBUG: IN _populate_model {model.data}")
             self._render_datafile(self._root, model.data, 0)
         for res in model.external_resources:
             if not res.parent:
@@ -446,7 +448,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
                     return None
         handler_class = action_handler_class(controller)
         with_checkbox = (handler_class == TestCaseHandler and self._checkboxes_for_tests)
-        node = self._create_node(parent_node, controller.display_name, self._images[controller],
+        node = self._create_node(parent_node, str(controller.display_name), self._images[controller],
                                  index, with_checkbox=with_checkbox)
         if isinstance(controller, ResourceFileController) and not controller.is_used():
                 self.SetItemTextColour(node, TREETEXTCOLOUR)  # wxPython3 hack
@@ -496,13 +498,15 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
     def _wx_node(self, parent_node, index, label, with_checkbox):
         ct_type = 1 if with_checkbox else 0
         if index is not None:
+            if isinstance(label, RideTestSuite):
+                label = label.name
+            print(f"DEBUG: treeplugin {str(label)}")
+            label = str(label)
             # blame wxPython for this ugliness
             if isinstance(index, int):
-                return self.InsertItemByIndex(
-                    parent_node, index, label, ct_type=ct_type)
+                return self.InsertItemByIndex(parent_node, index, label, ct_type=ct_type)
             else:
-                return self.InsertItem(
-                    parent_node, index, label, ct_type=ct_type)
+                return self.InsertItem(parent_node, index, label, ct_type=ct_type)
         return self.AppendItem(parent_node, label, ct_type=ct_type)
 
     def add_datafile(self, parent, suite):

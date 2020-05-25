@@ -23,7 +23,7 @@ def NewTestCaseFile(path, task=False):
     # .TestSuite(name='', doc='', metadata=None, source=None, rpa=False)
     datafile = robotapi.TestSuite(source=path, rpa=task)
     # datafile.start_table('Test Cases' if task else 'Tasks')
-    # print(f"Path is {datafile.source}")
+    print(f"Path is {datafile.source}")
     _create_missing_directories(os.path.dirname(datafile.source))
     return datafile
 

@@ -92,7 +92,11 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     @property
     def name(self):
-        return self.data.name
+        try:
+            isinstance(object, self.data.name)
+            return self.data.name
+        except AttributeError:
+            return ""
 
     @property
     def steps(self):
@@ -323,7 +327,12 @@ class TestCaseController(_WithStepsController):
 
     @property
     def longname(self):
-        return self.parent.parent.longname + '.' + self.data.name
+        try:
+            isinstance(object, self.data.name)
+            return self.parent.parent.longname + '.' + self.data.name
+        except AttributeError:
+            return self.parent.parent.longname
+
 
     @property
     def test_name(self):

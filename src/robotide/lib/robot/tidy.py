@@ -37,12 +37,10 @@ import sys
 if 'robot' not in sys.modules and __name__ == '__main__':
     import pythonpathsetter
 
-from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.parsing import (get_model, SuiteStructureBuilder,
-                           SuiteStructureVisitor)
-from robotide.lib.robot.tidypkg import (Aligner, Cleaner, NewlineNormalizer,
-                           SeparatorNormalizer)
-from robotide.lib.robot.utils import Application, file_writer
+from .errors import DataError
+from .parsing import (get_model, SuiteStructureBuilder, SuiteStructureVisitor)
+from .tidypkg import (Aligner, Cleaner, NewlineNormalizer, SeparatorNormalizer)
+from .utils import Application, file_writer
 
 USAGE = """robot.tidy -- Robot Framework data clean-up tool
 
