@@ -56,9 +56,9 @@ class _DataLoaderThread(Thread):
 
     def run(self):
         try:
-            self.result = self._run()
+            self.result = Thread.run(self)  #self.start()  # DEBUG self._run()
         except Exception as e:
-            # print("DEBUG: exception at DataLoader %s\n" % str(e))
+            print("DEBUG: exception at DataLoader %s\n" % str(e))
             pass  # TODO: Log this error somehow
 
 
@@ -119,13 +119,15 @@ def TestData(source, parent=None, settings=None):
     :returns: :class:`~.model.File`  if `source` is a directory,
         :class:`~.model.File` otherwise.
     """
+    print(f"DEBUG: TestData enter source {source}")
     if os.path.isdir(source):
-        # print("DEBUG: Dataloader Is dir getting testdada %s\n" % source)
+        print("DEBUG: Dataloader Is dir getting testdada %s\n" % source)
         data = TestDataDirectoryWithExcludes(parent, source, settings)
-        # print("DEBUG: Dataloader testdata %s\n" % data.name)
+        print("DEBUG: Dataloader testdata %s\n" % data)
         data.populate()
-        # print("DEBUG: Dataloader after populate %s  %s\n" % (data._tables, data.name))
+        print("DEBUG: Dataloader after populate %s  %s\n" % (data._tables, data.name))
         return data
+    print(f"DEBUG: TestData returning File parent {parent}")
     return robotapi.File(parent, source).populate()
 
 

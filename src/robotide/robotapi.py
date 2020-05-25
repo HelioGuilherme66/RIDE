@@ -58,7 +58,7 @@ from .lib.robot.running.usererrorhandler import UserErrorHandler
 from .lib.robot.running.arguments.embedded import EmbeddedArgumentParser
 from .lib.robot.utils import normpath, NormalizedDict
 from .lib.robot.variables import Variables as RobotVariables
-from .lib.robot.variables import is_scalar_var, is_list_var, is_var, is_dict_var
+from .lib.robot.variables import is_scalar_variable, is_list_variable, is_variable, is_dict_variable
 # REMOVED 3.2 from robotide.lib.robot.variables import VariableSplitter
 from .lib.robot.variables.filesetter import VariableFileSetter
 # REMOVED 3.2 from robotide.lib.robot.variables.tablesetter import VariableTableReader

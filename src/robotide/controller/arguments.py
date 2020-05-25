@@ -15,7 +15,7 @@
 
 import re
 
-from ..robotapi import is_dict_var, is_list_var, is_scalar_var
+from ..robotapi import is_dict_variable, is_list_variable, is_scalar_variable
 from ..utils import variablematcher
 
 default_val_regexp = re.compile(r'([$]\{.*\})\s*=\s*(.*)')
@@ -38,11 +38,11 @@ def parse_argument(argument):
     match = default_val_regexp.match(argument)
     if match:
         return match.group(1), match.group(2)
-    elif is_scalar_var(argument):
+    elif is_scalar_variable(argument):
         return argument, ''
-    elif is_list_var(argument):
+    elif is_list_variable(argument):
         return argument, []
-    elif is_dict_var(argument):
+    elif is_dict_variable(argument):
         return argument, {}
     else:
         return None, None
