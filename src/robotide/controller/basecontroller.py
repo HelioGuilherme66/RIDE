@@ -14,7 +14,10 @@
 #  limitations under the License.
 
 from ..publish.messages import RideModificationPrevented
-from ..robotapi import TestCase
+from ..robotapi import TestCase, TestSuite
+from .filecontrollers import _DataController
+
+from os import path
 
 
 class _BaseController(TestCase):
@@ -24,7 +27,11 @@ class _BaseController(TestCase):
 
     @property
     def display_name(self):
-        return self.data.name
+        try:
+            isinstance(object, self.data.name)
+            return self.data.name
+        except AttributeError:
+            return ""
 
     def execute(self, command):
         if not command.modifying or self.is_modifiable():
@@ -159,3 +166,71 @@ class WithUndoRedoStacks(object):
 
     def push_to_redo(self, command):
         self._redo.append(command)
+
+
+class RideTestSuite(TestSuite, _DataController):
+    class data(object):
+        def __init__(self, name="", source=""):
+            self._name = name
+            self.source = source
+
+        @property
+        def name(self, name=""):
+            if self._name:
+                return self._name
+            else:
+                self._name = name
+            return self._name
+
+        @property
+        def keywords(self, keywords=None):
+            return keywords or list()
+
+        @property
+        def has_tests(self):
+            return False
+
+    def __init__(self, name="New Suite", source=""):
+        TestSuite.__init__(self, name=name, source=source)
+        #_DataController.__init__(self, data=None)
+        self.data.__init__(self, name=name, source=source)
+        self.dirty = False
+        self.children = []
+
+    @property
+    def display_name(self):
+        return self.data.name
+
+    def execute(self, command):
+        if not command.modifying or self.is_modifiable():
+            return command.execute(self)
+        else:
+            RideModificationPrevented(controller=self).publish()
+
+    def is_modifiable(self):
+        return True
+
+    def is_excluded(self):
+        return False
+
+    @property
+    def directory(self):
+        if self.source:
+            return path.dirname(self.source)
+        else:
+            return ""
+
+    @property
+    def variables(self):
+        return []
+
+    def has_been_removed_from_disk(self):
+        return not path.exists(self.source)
+
+    def remove(self):
+        print(f"DEBUG: RideTestSuite remove called")
+
+    @property
+    def datafile(self):
+        print(f"DEBUG: RideTestSuite datafile called")
+        return self.data

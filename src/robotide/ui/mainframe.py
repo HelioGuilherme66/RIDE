@@ -414,7 +414,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
                 return
             if self.open_suite(path):
                 return
-        from robotide.editor import customsourceeditor
+        from ..editor import customsourceeditor
         customsourceeditor.main(path)
 
     def OnMenuOpenFile(self, event):

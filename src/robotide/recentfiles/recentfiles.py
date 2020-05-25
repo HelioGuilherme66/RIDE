@@ -88,8 +88,8 @@ class RecentFilesPlugin(Plugin):
 
     def _save_currently_loaded_suite(self):
         model = self.model
-        if model and model.suite:
-            self._add_to_recent_files(model.suite.source)
+        if model and model.source:
+            self._add_to_recent_files(model.source)
 
     def _add_to_recent_files(self, path):
         if not path:

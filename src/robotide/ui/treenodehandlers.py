@@ -25,6 +25,7 @@ from ..controller.macrocontrollers import (TestCaseController, UserKeywordContro
 from ..controller.filecontrollers import (TestDataDirectoryController, ResourceFileController,
                                           TestCaseFileController, ExcludedDirectoryController,
                                           DirtyRobotDataException)
+from ..controller.basecontroller import RideTestSuite
 from ..editor.editordialogs import (TestCaseNameDialog, UserKeywordNameDialog, ScalarVariableDialog,
                                     ListVariableDialog, CopyUserKeywordDialog, DictionaryVariableDialog)
 from ..publish import RideOpenVariableDialog
@@ -42,6 +43,7 @@ from .resourcedialogs import FolderDeleteDialog
 def action_handler_class(controller):
     return {
         TestDataDirectoryController: TestDataDirectoryHandler,
+        RideTestSuite: TestDataDirectoryHandler,
         ResourceFileController: ResourceFileHandler,
         TestCaseFileController: TestCaseFileHandler,
         TestCaseController: TestCaseHandler,

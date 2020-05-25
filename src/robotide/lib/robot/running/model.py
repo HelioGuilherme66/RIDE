@@ -35,10 +35,10 @@ __ http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#
 
 import os
 
-from robotide.lib.robot import model
-from robotide.lib.robot.conf import RobotSettings
-from robotide.lib.robot.output import LOGGER, Output, pyloggingconf
-from robotide.lib.robot.utils import seq2str, setter
+from .. import model
+from ..conf import RobotSettings
+from ..output import LOGGER, Output, pyloggingconf
+from ..utils import seq2str, setter
 
 from .randomizer import Randomizer
 from .steprunner import StepRunner

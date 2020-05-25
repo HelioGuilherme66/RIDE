@@ -18,6 +18,7 @@ import wx
 from ..controller.settingcontrollers import VariableController
 from ..controller.macrocontrollers import TestCaseController, UserKeywordController
 from ..controller.filecontrollers import TestDataDirectoryController, TestCaseFileController, ResourceFileController, ExcludedDirectoryController
+from ..controller.basecontroller import RideTestSuite
 
 
 _SIZE = (16, 16)
@@ -37,6 +38,7 @@ class TreeImageList(wx.ImageList):
         self._execution_results = None
         self._images = {
             TestDataDirectoryController: _TreeImage(self, 'folder.png'),
+            RideTestSuite: _TreeImage(self, 'T32.png'),
             'resource directory': _TreeImage(self, 'folder_wrench.png'),
             TestCaseFileController: _TreeImage(self, 'page_white.png'),
             TestCaseController: _TreeImage(self, 'robot.png'),

@@ -229,7 +229,11 @@ class _MacroTable(_TableController):
         return len(self._items)
 
     def __getitem__(self, index):
-        return self._create_controller(self._items[index])
+        try:
+            isinstance(object, self._items[index])
+            return self._create_controller(self._items[index])
+        except TypeError:
+            return None
 
     def move_up(self, item):
         items = self._items
@@ -292,7 +296,12 @@ class TestCaseTableController(_MacroTable):
 
     @property
     def _items(self):
-        return self._table.tests
+        try:
+            isinstance(object, self._table.tests)
+            return self._table.tests
+        except AttributeError:
+            print(f"DEBUG: Tablecontrollers: No Test Cases in this model.")
+            return None
 
     def _notify_creation(self, name, ctrl):
         RideTestCaseAdded(datafile=self.datafile, name=name, item=ctrl).publish()
@@ -310,7 +319,12 @@ class KeywordTableController(_MacroTable):
 
     @property
     def _items(self):
-        return self._table.keywords
+        try:
+            isinstance(object, self._table.tests)
+            return self._table.keywords
+        except AttributeError:
+            print(f"DEBUG: Tablecontrollers: No Keywords in this model.")
+            return None
 
     def _notify_creation(self, name, ctrl):
         # print("DEBUG notify_creation %s" % name)
