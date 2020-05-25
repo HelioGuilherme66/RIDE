@@ -78,7 +78,7 @@ class RideEventHandler(with_metaclass(eventhandlertype, object)):
     def _show_warning(self, msg_lines, ctrl, yes_handler):
         if ctrl.dirty:
             msg_lines.insert(2, 'Answering <Yes> will discard unsaved changes.')
-        msg_lines.extend(['', 'Changed file is:', ctrl.datafile.source])
+        msg_lines.extend(['', 'Changed file is:', str(ctrl.datafile.source)])
         ret = wx.MessageBox('\n'.join(msg_lines), 'File Changed On Disk',
                             style=wx.YES_NO|wx.ICON_WARNING)
         if ret == wx.NO:

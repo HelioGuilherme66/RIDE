@@ -372,8 +372,8 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         handler = ResourceRootHandler(model, self, self._resource_root,
                                       self._controller.settings)
         self.SetPyData(self._resource_root, handler)
-        if model.data:
-            print(f"DEBUG: _populate_model {model.data}")
+        if model.data and str(model.data) != "New Suite":
+            print(f"DEBUG: IN _populate_model {model.data}")
             self._render_datafile(self._root, model.data, 0)
         for res in model.external_resources:
             if not res.parent:
@@ -500,7 +500,8 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         if index is not None:
             if isinstance(label, RideTestSuite):
                 label = label.name
-            print(f"DEBUG: treeplugin {label}")
+            print(f"DEBUG: treeplugin {str(label)}")
+            label = str(label)
             # blame wxPython for this ugliness
             if isinstance(index, int):
                 return self.InsertItemByIndex(parent_node, index, label, ct_type=ct_type)

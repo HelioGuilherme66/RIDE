@@ -43,7 +43,7 @@ from .resourcedialogs import FolderDeleteDialog
 def action_handler_class(controller):
     return {
         TestDataDirectoryController: TestDataDirectoryHandler,
-        RideTestSuite: TestDataDirectoryHandler,
+        RideTestSuite: TestSuiteHandler,
         ResourceFileController: ResourceFileHandler,
         TestCaseFileController: TestCaseFileHandler,
         TestCaseController: TestCaseHandler,
@@ -300,6 +300,65 @@ class TestDataHandler(_ActionHandler):
 
 
 class TestDataDirectoryHandler(TestDataHandler):
+
+    def __init__(self, *args):
+        TestDataHandler.__init__(self, *args)
+        self._actions = [
+            _ActionHandler._label_add_suite,
+            _ActionHandler._label_add_directory,
+            _ActionHandler._label_new_resource,
+            '---',
+            _ActionHandler._label_new_user_keyword,
+            _ActionHandler._label_new_scalar,
+            _ActionHandler._label_new_list_variable,
+            _ActionHandler._label_new_dict_variable,
+            '---',
+            _ActionHandler._label_change_format
+        ]
+        if self.controller.parent:
+            self._actions.extend([_ActionHandler._label_delete_no_kbsc])
+
+        self._actions.extend([
+            '---',
+            _ActionHandler._label_select_all,
+            _ActionHandler._label_deselect_all,
+            _ActionHandler._label_select_failed_tests,
+            _ActionHandler._label_select_passed_tests
+        ])
+        if self.controller.parent:
+            self._actions.extend(['---',
+                                  _ActionHandler._label_exclude])
+        self._actions.extend(['---',
+                              _ActionHandler._label_expand_all,
+                              _ActionHandler._label_collapse_all])
+
+    def OnExpandAll(self, event):
+        self._tree.ExpandAllSubNodes(self._node)
+
+    def OnCollapseAll(self, event):
+        self._tree.CollapseAllSubNodes(self._node)
+
+    def OnNewSuite(self, event):
+        AddSuiteDialog(self.controller, self._settings).execute()
+
+    def OnNewDirectory(self, event):
+        AddDirectoryDialog(self.controller, self._settings).execute()
+
+    def OnNewResource(self, event):
+        NewResourceDialog(self.controller, self._settings).execute()
+
+    def OnDelete(self, event):
+        FolderDeleteDialog(self.controller).execute()
+
+    def OnExclude(self, event):
+        try:
+            self.controller.execute(Exclude())
+        except DirtyRobotDataException:
+            wx.MessageBox('Directory contains unsaved data!\n'
+                          'You must save data before excluding.')
+
+
+class TestSuiteHandler(TestDataHandler):
 
     def __init__(self, *args):
         TestDataHandler.__init__(self, *args)

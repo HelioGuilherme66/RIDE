@@ -15,7 +15,6 @@
 
 from ..publish.messages import RideModificationPrevented
 from ..robotapi import TestCase, TestSuite
-from .filecontrollers import _DataController
 
 from os import path
 
@@ -168,11 +167,11 @@ class WithUndoRedoStacks(object):
         self._redo.append(command)
 
 
-class RideTestSuite(TestSuite, _DataController):
+class RideTestSuite(TestSuite):
     class data(object):
         def __init__(self, name="", source=""):
             self._name = name
-            self.source = source
+            self._source = source
 
         @property
         def name(self, name=""):
@@ -190,9 +189,16 @@ class RideTestSuite(TestSuite, _DataController):
         def has_tests(self):
             return False
 
+        @property
+        def source(self, source=""):
+            if self._name:
+                return self._source
+            else:
+                self._source = source
+            return self._source
+
     def __init__(self, name="New Suite", source=""):
         TestSuite.__init__(self, name=name, source=source)
-        #_DataController.__init__(self, data=None)
         self.data.__init__(self, name=name, source=source)
         self.dirty = False
         self.children = []
