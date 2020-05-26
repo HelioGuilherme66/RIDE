@@ -38,7 +38,7 @@ class TreeImageList(wx.ImageList):
         self._execution_results = None
         self._images = {
             TestDataDirectoryController: _TreeImage(self, 'folder.png'),
-            RideTestSuite: _TreeImage(self, 'T32.png'),
+            RideTestSuite: _TreeImage(self, 'folder.png'),
             'resource directory': _TreeImage(self, 'folder_wrench.png'),
             TestCaseFileController: _TreeImage(self, 'page_white.png'),
             TestCaseController: _TreeImage(self, 'robot.png'),
