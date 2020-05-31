@@ -70,6 +70,7 @@ class _DataLoader(_DataLoaderThread):
         self._settings = settings
 
     def _run(self):
+        print("DEBUG: _Dataloader _run call TestData")
         return TestData(source=self._path, settings=self._settings)
 
 
@@ -101,7 +102,10 @@ class TestDataDirectoryWithExcludes(robotapi.File):
 
     def __init__(self, parent, source, settings):
         self._settings = settings
-        robotapi.File.__init__(self, parent, source)
+        print("DEBUG: TestDataDirectoryWithExcludes source: %s settings: %s\n" % (source, settings))
+        # DEBUG File signature changed in RF 3.2
+        # robotapi.File.__init__(self, parent, source)
+        robotapi.File.__init__(self, source=source)
 
     def add_child(self, path, include_suites, extensions=None,
                   warn_on_skipped=False):
@@ -120,13 +124,16 @@ def TestData(source, parent=None, settings=None):
         :class:`~.model.File` otherwise.
     """
     if os.path.isdir(source):
-        # print("DEBUG: Dataloader Is dir getting testdada %s\n" % source)
+        print("DEBUG: Dataloader Is dir getting testdada %s\n" % source)
         data = TestDataDirectoryWithExcludes(parent, source, settings)
-        # print("DEBUG: Dataloader testdata %s\n" % data.name)
+        print("DEBUG: Dataloader testdata %s\n" % data.name)
         data.populate()
         # print("DEBUG: Dataloader after populate %s  %s\n" % (data._tables, data.name))
         return data
-    return robotapi.File(parent, source).populate()
+    # DEBUG File signature changed in RF 3.2
+    # return robotapi.File(parent, source).populate()
+    print("DEBUG: TestData calling File.populate")
+    return robotapi.FileReader(source=source)  # .populate()
 
 
 class ExcludedDirectory(robotapi.File):

@@ -169,17 +169,18 @@ class WithUndoRedoStacks(object):
 
 class RideTestSuite(TestSuite):
     class data(object):
-        def __init__(self, name="", source=""):
-            self._name = name
+        def __init__(self, name="New Suite", source=""):
+            self._myname = ""
+            # self._name = self.set_name(name)
             self._source = source
 
         @property
-        def name(self, name=""):
-            if self._name:
-                return self._name
-            else:
-                self._name = name
-            return self._name
+        def name(self):
+            return self._myname
+
+        def set_name(self, newname="New Suite"):
+            self._myname = newname
+            return self._myname
 
         @property
         def keywords(self, keywords=None):
@@ -191,7 +192,7 @@ class RideTestSuite(TestSuite):
 
         @property
         def source(self, source=""):
-            if self._name:
+            if self._myname:
                 return self._source
             else:
                 self._source = source
@@ -205,6 +206,10 @@ class RideTestSuite(TestSuite):
 
     @property
     def display_name(self):
+        return self.data.name
+
+    def set_name(self, name="New Suite"):
+        self.data.set_name(self.data, name)
         return self.data.name
 
     def execute(self, command):

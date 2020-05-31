@@ -126,11 +126,23 @@ class Project(_BaseController, WithNamespace):
 
     def load_data(self, path, load_observer=None):
         load_observer = load_observer or NullObserver()
+        print("DEBUG: load_data path: %s\n" % path)
+        self._controller.set_name(os.path.dirname(path).capitalize())
+        print("DEBUG: load_data name after being set: %s\n" % self._controller.name)
         if self._load_initfile(path, load_observer):
+            print("DEBUG: load_data IN init")
+            self._controller.set_name(os.path.dirname(path))
+            print("DEBUG: load_data init")
             return
         if self._load_datafile(path, load_observer):
+            print("DEBUG: load_data IN file or dir")
+            self._controller.set_name(os.path.dirname(path))
+            print("DEBUG: load_data file or dir")
             return
         if self._load_resource(path, load_observer):
+            print("DEBUG: load_data IN Resourcefile")
+            self._controller.set_name(os.path.basename(path))
+            print("DEBUG: load_data Resourcefile")
             return
         try:
             load_observer.error("Given file '%s' is not a valid Robot Framework "
@@ -159,6 +171,7 @@ class Project(_BaseController, WithNamespace):
         return e
 
     def _load_datafile(self, path, load_observer):
+        print("DEBUG: _load_datafile path: %s\n" % path)
         datafile = self._loader.load_datafile(path, load_observer)
         if not datafile:
             return None

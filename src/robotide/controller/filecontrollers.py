@@ -380,19 +380,19 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseController):
 
     def __init__(self, data, project=None, parent=None):
-        dir_ = os.path.dirname(data.source)
+        dir_ = os.path.dirname(data.file)  # RF 3.2 data.source is now data.file
         dir_ = os.path.abspath(dir_) if isinstance(dir_, str) else dir_
         _FileSystemElement.__init__(self, self._filename(data), dir_)
         _DataController.__init__(self, data, project, parent)
         self._dir_controllers = {}
 
     def _filename(self, data):
-        initfile = os.path.dirname(data.source).join('__init__.robot')
-        return initfile
+        initfile = os.path.dirname(data.file).join('__init__.robot')
+        return initfile  # RF 3.2 data.source is now data.file
 
     @property
     def default_dir(self):
-        return self.data.source
+        return self.data.file  # RF 3.2 data.source is now data.file
 
     @property
     def display_name(self):
@@ -439,13 +439,13 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
     def _children(self, data):
         children = data.suites  # .SuiteVisitor().visit_suite()
         # children = [DataController(child, self._project, self) for child in data.children]
-        initfile = os.path.dirname(data.source).join('__init__.robot')
+        initfile = os.path.dirname(data.file).join('__init__.robot')  # RF 3.2 data.source is now data.file
         if self._can_add_directory_children(data):
-            self._add_directory_children(children, data.source, initfile)
+            self._add_directory_children(children, data.file, initfile)
         return children
 
     def _can_add_directory_children(self, data):
-        return data.source and os.path.isdir(data.source) and self._namespace
+        return data.file and os.path.isdir(data.file) and self._namespace
 
     def _add_directory_children(self, children, path, initfile):
         for filename in self._get_unknown_files_in_directory(children, path, initfile):
