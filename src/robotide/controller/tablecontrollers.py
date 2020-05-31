@@ -16,7 +16,7 @@
 from ..publish import (RideTestCaseRemoved, RideVariableAdded, RideVariableRemoved, RideVariableMovedUp,
                        RideVariableMovedDown, RideUserKeywordRemoved, RideUserKeywordAdded, RideTestCaseAdded)
 from ..publish.messages import RideItemMovedUp, RideItemMovedDown
-from ..robotapi import is_list_var, is_scalar_var, is_dict_var
+from ..robotapi import is_list_variable, is_scalar_variable, is_dict_variable
 from .. import utils
 
 from .basecontroller import ControllerWithParent
@@ -147,19 +147,19 @@ class VariableTableController(_TableController, _WithListOperations):
 
 
 class _ScalarVarValidator(object):
-    __call__ = lambda self, name: is_scalar_var(name)
+    __call__ = lambda self, name: is_scalar_variable(name)
     name = 'Scalar'
     prefix = '$'
 
 
 class _ListVarValidator(object):
-    __call__ = lambda self, name: is_list_var(name)
+    __call__ = lambda self, name: is_list_variable(name)
     name = 'List'
     prefix = '@'
 
 
 class _DictVarValidator(object):
-    __call__ = lambda self, name: is_dict_var(name)
+    __call__ = lambda self, name: is_dict_variable(name)
     name = 'Dictionary'
     prefix = '&'
 

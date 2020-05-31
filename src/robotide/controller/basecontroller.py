@@ -41,7 +41,7 @@ class _BaseController(TestCase):
     def is_modifiable(self):
         return True
 
-    def is_excluded(self):
+    def is_excluded(self, source=None):
         return False
 
 

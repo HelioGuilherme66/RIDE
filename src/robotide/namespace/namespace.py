@@ -312,9 +312,9 @@ class _VariableStash(object):
             return self._vars.replace_string(value, ignore_errors=True)
 
     def set_from_variable_table(self, variable_table):
-        # print("DEBUG: set_from_variable_table = %s \n" % list(variable_table))
+        print("DEBUG: set_from_variable_table = %s \n" % list(variable_table))
         reader = robotapi.VariableTableReader()
-        # print("DEBUG: set_from_variable_table reader %s \n" % reader)
+        print("DEBUG: set_from_variable_table reader %s \n" % reader)
         for variable in variable_table:
             try:
                 if variable.name not in self._vars.store:
@@ -476,7 +476,7 @@ class DatafileRetriever(object):
         return ctx
 
     def _collect_vars_from_variable_files(self, datafile, ctx):
-        for imp in self._collect_import_of_type(datafile, robotapi.Variables):
+        for imp in self._collect_import_of_type(datafile, robotapi.VariableSection):  #DEBUG robotapi.Variables
             self._import_vars(ctx, datafile, imp)
 
     @staticmethod
@@ -522,7 +522,7 @@ class DatafileRetriever(object):
     def _collect_each_res_import(self, datafile, ctx, collector):
         items = set()
         ctx.set_variables_from_datafile_variable_table(datafile)
-        for imp in self._collect_import_of_type(datafile, robotapi.Resource):
+        for imp in self._collect_import_of_type(datafile, robotapi.ResourceFileSections):  #DEBUG robotapi.Resource
             res = self._resource_factory.get_resource_from_import(imp, ctx)
             if res and res not in ctx.parsed:
                 ctx.parsed.add(res)

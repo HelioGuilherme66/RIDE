@@ -25,9 +25,8 @@ except ImportError:
     import subprocess
 from .dataloader import ExcludedDirectory, TestData
 
-from ..publish import (RideDataFileRemoved, RideInitFileRemoved,
-        RideDataChangedToDirty, RideDataDirtyCleared, RideSuiteAdded,
-        RideItemSettingsChanged)
+from ..publish import (RideDataFileRemoved, RideInitFileRemoved, RideDataChangedToDirty,
+                       RideDataDirtyCleared, RideSuiteAdded, RideItemSettingsChanged)
 from ..publish.messages import RideDataFileSet, RideOpenResource
 # REMOVED 3.2  from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from ..robotapi import File, SuiteVisitor
@@ -38,11 +37,11 @@ from .macrocontrollers import UserKeywordController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
 from ..utils import overrides
 from .settingcontrollers import (DocumentationController, FixtureController,
-        TimeoutController, TemplateController, DefaultTagsController,
-        ForceTagsController)
+                                 TimeoutController, TemplateController, DefaultTagsController,
+                                 ForceTagsController)
 from .tablecontrollers import (VariableTableController, TestCaseTableController,
-        KeywordTableController, ImportSettingsController,
-        MetadataListController, TestCaseController)
+                               KeywordTableController, ImportSettingsController,
+                               MetadataListController, TestCaseController)
 
 
 def _get_controller(project, data, parent):
@@ -287,7 +286,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         old_file = self.filename
         self.data.source = os.path.join(self.directory, '%s.%s' % (basename, self.get_format()))
         self.filename = self.data.source
-        self.execute(robotide.controller.ctrlcommands.SaveFile())
+        self.execute(ctrlcommands.SaveFile())
         if old_file != self.filename:
             self.remove_from_filesystem(old_file)
 
@@ -410,8 +409,10 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
                     isinstance(child, TestDataDirectoryController) or
                     isinstance(child, TestCaseFileController)]
 
+    """ Redeclared below
     def add_child(self, child):
         self.children.append(child)
+    """
 
     def contains_tests(self):
         for suite in self.suites:
@@ -853,8 +854,8 @@ class ResourceFileController(_FileSystemElement, _DataController):
         return None
 
     def reload(self):
-        self.__init__(ResourceFile(source=self.filename).populate(), self._project,
-                      parent=self.parent)
+        self.__init__(File(source=self.filename).populate(), self._project,
+                      parent=self.parent)  # DEBUG was ResourceFile
 
     def remove(self):
         self._project.remove_resource(self)
