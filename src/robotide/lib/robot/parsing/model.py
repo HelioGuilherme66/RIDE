@@ -590,6 +590,7 @@ class _WithSteps(object):
 class TestCase(_WithSteps, _WithSettings):
 
     def __init__(self, parent, name):
+        self.selected = False
         self.parent = parent
         self.name = name
         self.doc = Documentation('[Documentation]', self)

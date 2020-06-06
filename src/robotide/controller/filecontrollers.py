@@ -43,6 +43,9 @@ from .tablecontrollers import (VariableTableController, TestCaseTableController,
         KeywordTableController, ImportSettingsController,
         MetadataListController, TestCaseController)
 
+from robotide.lib.robot.parsing.model import TestCase
+
+from pubsub import pub
 
 def _get_controller(project, data, parent):
     if isinstance(data, TestCaseFile):
@@ -626,6 +629,10 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         self.parent.children[index] = result
         return result
 
+    def select_all_tests(self):
+        for child in self.children:
+            child.select_all_tests()
+
 
 class DirtyRobotDataException(Exception):
     """
@@ -704,6 +711,16 @@ class TestCaseFileController(_FileSystemElement, _DataController):
 
     def get_template(self):
         return self.data.setting_table.test_template
+
+    def select_all_tests(self):
+        """test : robotide.lib.robot.parsing.model.TestCase = None"""
+        for test_case in self.tests._items:
+            test_case.selected = True
+            test_ctrl = self.tests._item_to_controller.get(test_case) or None
+            if test_ctrl:
+                pub.sendMessage("test_selection_changed", controller=test_ctrl, selected=True)
+        #for test in self.tests._table.tests:
+        #    test.selected = True
 
 
 class ResourceFileControllerFactory(object):
@@ -883,6 +900,9 @@ class ResourceFileController(_FileSystemElement, _DataController):
                 yield imp
 
     def remove_child(self, controller):
+        pass
+
+    def select_all_tests(self):
         pass
 
 

@@ -41,7 +41,7 @@ from robotide.widgets import PopupMenuItems
 from .progress import RenameProgressObserver
 from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
 from robotide.ui.resourcedialogs import FolderDeleteDialog
-
+from pubsub import pub
 
 def action_handler_class(controller):
     return {
@@ -524,6 +524,11 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
 
 
 class TestCaseHandler(_TestOrUserKeywordHandler):
+    def __init__(self, controller, tree, node, settings):
+        _TestOrUserKeywordHandler.__init__(self, controller, tree, node, settings)
+        pub.subscribe(self.test_selection_changed,"test_selection_changed") # TODO: unsubscribe when the object is destroyed!
+
+
     _datalist = property(lambda self: self.item.datalist)
     _copy_name_dialog_class = TestCaseNameDialog
 
@@ -533,6 +538,9 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
     def _create_rename_command(self, new_name):
         return RenameTest(new_name)
 
+    def test_selection_changed(self,controller, selected):
+        if controller == self.controller:
+            self._tree.CheckItem(self.node,checked=selected)
 
 class UserKeywordHandler(_TestOrUserKeywordHandler):
     is_user_keyword = True

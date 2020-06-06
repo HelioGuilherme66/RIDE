@@ -50,6 +50,8 @@ from .images import TreeImageList
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
 from robotide.utils.noconflict import classmaker
 
+from robotide.ui.treenodehandlers import TestDataDirectoryHandler, TestDataDirectoryController, TestCaseFileController, TestCaseFileHandler
+
 _TREE_ARGS = {'style': wx.TR_DEFAULT_STYLE}
 _TREE_ARGS['agwStyle'] = customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | \
                          customtreectrl.TR_EDIT_LABELS
@@ -449,6 +451,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
                     return None
         handler_class = action_handler_class(controller)
         with_checkbox = (handler_class == TestCaseHandler and self._checkboxes_for_tests)
+
         node = self._create_node(parent_node, controller.display_name, self._images[controller],
                                  index, with_checkbox=with_checkbox)
         if isinstance(controller, ResourceFileController) and not controller.is_used():
@@ -459,7 +462,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         # if we have a TestCase node we have to make sure that
         # we retain the checked state
         if (handler_class == TestCaseHandler and self._checkboxes_for_tests) \
-                and self._test_selection_controller.is_test_selected(controller):
+                and controller.data.selected:
             self.CheckItem(node, True)
         if controller.is_excluded():
             self._set_item_excluded(node)
@@ -494,6 +497,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         node = self._wx_node(parent_node, index, label, with_checkbox)
         self.SetItemImage(node, img.normal, wx.TreeItemIcon_Normal)
         self.SetItemImage(node, img.expanded, wx.TreeItemIcon_Expanded)
+
         return node
 
     def _wx_node(self, parent_node, index, label, with_checkbox):
@@ -829,7 +833,15 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
                 self._hide_item(item)
 
     def SelectAllTests(self, item):
-        self._for_all_tests(item, lambda t: self.CheckItem(t))
+       """self._for_all_tests(item, lambda t: self.CheckItem(t))"""
+       data = item.GetData()
+       if isinstance(data, TestDataDirectoryHandler) :
+          tests : TestDataDirectoryController = data.tests.parent
+          tests.select_all_tests()
+       elif isinstance(data,TestCaseFileHandler):
+         tests : TestCaseFileController = data.controller
+         tests.select_all_tests()
+       else: raise Exception("Unexpected type of handler: "+str(data))
 
     def SelectTests(self, tests):
         def foo(t):
@@ -914,6 +926,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         handler = self._controller.get_handler(node=node)
         self._test_selection_controller.select(
             handler.controller, node.IsChecked())
+        handler.controller.data.selected = node.IsChecked()
 
     def OnItemActivated(self, event):
         node = event.GetItem()
