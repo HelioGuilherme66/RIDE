@@ -60,6 +60,7 @@ from robotide.action.shortcut import localize_shortcuts
 from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.contrib.testrunner import TestRunner
 from robotide.contrib.testrunner import runprofiles
+from robotide.controller.macrocontrollers import TestCaseController
 from robotide.publish import RideSettingsChanged, PUBLISHER
 from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
@@ -219,7 +220,12 @@ class TestRunnerPlugin(Plugin):
             self.save_setting(setting, data.new)
 
     def OnTestSelectedForRunningChanged(self, message):
-        self._names_to_run = message.tests
+        test_ctrl: TestCaseController = message.test_case_controller
+        if message.selected:
+            self._names_to_run.add((test_ctrl.datafile_controller.longname, test_ctrl.longname))
+        else:
+            self._names_to_run.remove((test_ctrl.datafile_controller.longname, test_ctrl.longname))
+
 
     def disable(self):
         self._remove_from_notebook()

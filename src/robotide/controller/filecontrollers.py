@@ -26,8 +26,8 @@ except ImportError:
 from robotide.controller.dataloader import ExcludedDirectory, TestData
 
 from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
-        RideDataChangedToDirty, RideDataDirtyCleared, RideSuiteAdded,
-        RideItemSettingsChanged)
+                              RideDataChangedToDirty, RideDataDirtyCleared, RideSuiteAdded,
+                              RideItemSettingsChanged, RideTestSelectedForRunningChanged)
 from robotide.publish.messages import RideDataFileSet, RideOpenResource
 from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide import utils
@@ -714,11 +714,9 @@ class TestCaseFileController(_FileSystemElement, _DataController):
 
     def select_all_tests(self):
         """test : robotide.lib.robot.parsing.model.TestCase = None"""
-        for test_case in self.tests._items:
-            test_case.selected = True
-            test_ctrl = self.tests._item_to_controller.get(test_case) or None
-            if test_ctrl:
-                pub.sendMessage("test_selection_changed", controller=test_ctrl, selected=True)
+        for test_ctrl in iter(self.tests):
+            test_ctrl.data.selected = True
+            RideTestSelectedForRunningChanged(test_long_name=test_ctrl.longname, selected=True, test_case_controller=test_ctrl).publish()
         #for test in self.tests._table.tests:
         #    test.selected = True
 
