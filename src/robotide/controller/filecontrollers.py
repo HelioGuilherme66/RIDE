@@ -19,6 +19,7 @@ import stat
 from itertools import chain
 import shutil
 from . import ctrlcommands
+from pathlib import PurePath
 try:
     import subprocess32 as subprocess
 except ImportError:
@@ -29,7 +30,7 @@ from ..publish import (RideDataFileRemoved, RideInitFileRemoved, RideDataChanged
                        RideDataDirtyCleared, RideSuiteAdded, RideItemSettingsChanged)
 from ..publish.messages import RideDataFileSet, RideOpenResource
 # REMOVED 3.2  from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
-from ..robotapi import File, SuiteVisitor, Token
+from ..robotapi import File, SuiteVisitor, Token, printable_name
 from .. import utils
 
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
@@ -72,8 +73,10 @@ class TestSuiteVisitor(ast.NodeVisitor):
         self._tc_count += 1
 
     def visit_Variable(self, node):
-        print(f"DEBUG:- {node.get_token(Token.VARIABLE)} (on line {node.lineno})")
-        self._variables.update({node.get_token(Token.VARIABLE): node.body})
+        # print(f"DEBUG:Variable: {node.get_token(Token.VARIABLE)} (on line {node.lineno})")
+        tokens = node.get_tokens(Token.ARGUMENT, Token.ARGUMENTS, Token.SEPARATOR, Token.COMMENT, Token.ERROR)
+        print(f"DEBUG:Variable: {node.get_token(Token.VARIABLE)} (on line {node.lineno}) {tokens}")
+        self._variables.update({'name': node.get_token(Token.VARIABLE), 'definition': tokens})
         self._var_count += 1
 
     @property
@@ -188,7 +191,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
             self.filename = self.data.initfile
         else:
             self.filename = self.data.source
-        self._name = self.display_name
+        self._name = ""  # self.display_name
         self.variable_table = dict()
         self.testcase_table = {'tests': {}}
         self.keywords_table = {'keywords': {}}
@@ -206,7 +209,9 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     @property
     def name(self):
-        return self.data.source
+        self._name = printable_name(PurePath(self.data.source).stem.replace('_', ' '))
+        print(f"DEBUG: return name test at _DataController {self._name}")
+        return self._name
 
     @property
     def settings(self):
