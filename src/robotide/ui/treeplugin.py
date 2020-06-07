@@ -16,9 +16,12 @@
 import os
 import wx
 from wx.lib.agw import customtreectrl
+from wx.lib.agw.customtreectrl import GenericTreeItem
 from wx.lib.mixins import treemixin
 from wx import Colour
 from wx.lib.agw.aui import GetManager
+
+from ..lib.robot.parsing.model import TestCase
 
 TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 
@@ -832,8 +835,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
             if self.ItemHasChildren(item):
                 self._hide_item(item)
 
-    def SelectAllTests(self, item):
-       """self._for_all_tests(item, lambda t: self.CheckItem(t))"""
+    def SelectAllTests(self, item : GenericTreeItem):
        data = item.GetData()
        if isinstance(data, TestDataDirectoryHandler) :
           tests : TestDataDirectoryController = data.tests.parent
@@ -862,7 +864,9 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
             for child in item.GetChildren():
                 self._expand_or_collapse_nodes(child, callback)
 
+
     def _for_all_tests(self, item, func):
+        """BEWARE: This method is very expensive as it creates the full tree in memory"""
         item_was_expanded = self.IsExpanded(item)
         if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or \
                 item != self.GetRootItem():
@@ -922,11 +926,11 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         self.Hide()
 
     def OnTreeItemChecked(self, event):
-        node = event.GetItem()
-        handler = self._controller.get_handler(node=node)
-        self._test_selection_controller.select(
-            handler.controller, node.IsChecked())
-        handler.controller.data.selected = node.IsChecked()
+        node: GenericTreeItem = event.GetItem()
+        handler: TestCaseHandler = self._controller.get_handler(node=node) #Only test nodes can be checked/unchecked.
+        #self._test_selection_controller.select(            handler.controller, node.IsChecked())
+        test_case: TestCase = handler.item
+        test_case.selected = node.IsChecked()
 
     def OnItemActivated(self, event):
         node = event.GetItem()
