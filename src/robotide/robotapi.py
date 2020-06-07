@@ -63,8 +63,9 @@ from .lib.robot.variables import is_scalar_variable, is_list_variable, is_variab
 from .lib.robot.variables.filesetter import VariableFileSetter
 # REMOVED 3.2 from robotide.lib.robot.variables.tablesetter import VariableTableReader
 from .lib.compat import TestDataDirectory, ResourceFile, TestCaseFile
-from .lib.robot.utils import FileReader
-from .lib.robot.api import TestSuite, SuiteVisitor
+from .lib.robot.utils import FileReader, printable_name
+from .lib.robot.api import TestSuite, TestSuiteBuilder, SuiteVisitor, get_model, get_init_model, get_resource_model
+
 
 from .lib.robot import get_version
 

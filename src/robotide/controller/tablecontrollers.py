@@ -296,9 +296,10 @@ class TestCaseTableController(_MacroTable):
 
     @property
     def _items(self):
+        print(f"DEBUG: Tablecontrollers:enter items: {self._table['tests']}.")
         try:
-            isinstance(object, self._table.tests)
-            return self._table.tests
+            isinstance(object, self._table['tests'])
+            return self._table['tests']
         except AttributeError:
             print(f"DEBUG: Tablecontrollers: No Test Cases in this model.")
             return None
@@ -319,9 +320,10 @@ class KeywordTableController(_MacroTable):
 
     @property
     def _items(self):
+        print(f"DEBUG: KeywordTableController:enter items: {self._table['keywords']}.")
         try:
-            isinstance(object, self._table.tests)
-            return self._table.keywords
+            isinstance(object, self._table['keywords'])
+            return self._table['keywords']
         except AttributeError:
             print(f"DEBUG: Tablecontrollers: No Keywords in this model.")
             return None

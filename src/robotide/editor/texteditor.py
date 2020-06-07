@@ -292,7 +292,7 @@ class DataFileWrapper(object): # TODO: bad class name
 
     def _txt_data(self, data):
         output = StringIO()
-        data.save(output=output, format='txt',
+        data.save().save(output=output, format='txt',
                   txt_separating_spaces=self._settings.get(
                       'txt number of spaces', 4))
         return output.getvalue()  # DEBUG .decode('utf-8')

@@ -29,7 +29,7 @@ from ..publish import (RideDataFileRemoved, RideInitFileRemoved, RideDataChanged
                        RideDataDirtyCleared, RideSuiteAdded, RideItemSettingsChanged)
 from ..publish.messages import RideDataFileSet, RideOpenResource
 # REMOVED 3.2  from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
-from ..robotapi import File, SuiteVisitor
+from ..robotapi import File, SuiteVisitor, Token
 from .. import utils
 
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
@@ -42,6 +42,75 @@ from .settingcontrollers import (DocumentationController, FixtureController,
 from .tablecontrollers import (VariableTableController, TestCaseTableController,
                                KeywordTableController, ImportSettingsController,
                                MetadataListController, TestCaseController)
+import ast
+
+
+class TestSuiteVisitor(ast.NodeVisitor):
+
+    def __init__(self):
+        self._kw_count = 0
+        self._tc_count = 0
+        self._var_count = 0
+        self._variables = dict()
+        self._testcases = dict()
+        self._keywords = dict()
+
+
+    def visit_File(self, node):
+        # print(f"DEBUG:File '{node.source}' has following tests:")
+        # Must call `generic_visit` to visit also child nodes.
+        self.generic_visit(node)
+
+    def visit_Keyword(self, node):
+        # print(f"DEBUG:- {node.name} (on line {node.lineno})")
+        self._keywords.update({node.header.get_value(Token.KEYWORD_NAME): node.body})
+        self._kw_count += 1
+
+    def visit_TestCase(self, node):
+        # print(f"DEBUG:- {node.name} (on line {node.lineno})")
+        self._testcases.update({node.header.get_value(Token.TESTCASE_NAME): node.body})
+        self._tc_count += 1
+
+    def visit_Variable(self, node):
+        print(f"DEBUG:- {node.get_token(Token.VARIABLE)} (on line {node.lineno})")
+        self._variables.update({node.get_token(Token.VARIABLE): node.body})
+        self._var_count += 1
+
+    @property
+    def keyword_count(self):
+        return self._kw_count
+
+    @property
+    def has_keywords(self):
+        return self._kw_count > 0
+
+    @property
+    def testcase_count(self):
+        return self._tc_count
+
+    @property
+    def has_tests(self):
+        return self._tc_count > 0
+
+    @property
+    def variable_count(self):
+        return self._var_count
+
+    @property
+    def has_variables(self):
+        return self._var_count > 0
+
+    @property
+    def variables(self):
+        return self._variables
+
+    @property
+    def testcases(self):
+        return self._testcases
+
+    @property
+    def keywords(self):
+        return self._keywords
 
 
 def _get_controller(project, data, parent):
@@ -62,6 +131,7 @@ class _FileSystemElement(object):
         self.filename = filename
         self.directory = directory
         self._stat = self._get_stat(filename)
+
 
     def _get_stat(self, path):
         if path and os.path.isfile(path):
@@ -118,6 +188,10 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
             self.filename = self.data.initfile
         else:
             self.filename = self.data.source
+        self._name = self.display_name
+        self.variable_table = dict()
+        self.testcase_table = {'tests': {}}
+        self.keywords_table = {'keywords': {}}
 
     def set_datafile(self, datafile):
         self.data = datafile
@@ -132,7 +206,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     @property
     def name(self):
-        return self.data.name
+        return self.data.source
 
     @property
     def settings(self):
@@ -157,11 +231,15 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     @property
     def variables(self):
+        model = TestSuiteVisitor()
+        model.visit(self.data)
+        self.variable_table = model.variables
+        print(f"DEBUG: Controller Variable section {self.variable_table}")
         if self._variables_table_controller is None:
             try:
-              self._variables_table_controller = VariableTableController(self, self.data.variable_table)
+              self._variables_table_controller = VariableTableController(self, self.variable_table)
             except AttributeError:
-                print(f"DEBUG: No Variable section in this model {self.data.name}")
+                print(f"DEBUG: No Variable section in this model {self.name}")
                 # return None
                 dummy_table = dict()
                 self._variables_table_controller = VariableTableController(self, dummy_table)
@@ -169,11 +247,15 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     @property
     def tests(self):
+        model = TestSuiteVisitor()
+        model.visit(self.data)
+        self.testcase_table['tests'] = model.testcases
+        print(f"DEBUG: Controller TestCases section {self.testcase_table}")
         if self._testcase_table_controller is None:
             try:
-                self._testcase_table_controller = TestCaseTableController(self, self.data.testcase_table)
+                self._testcase_table_controller = TestCaseTableController(self, self.testcase_table)
             except AttributeError:
-                print(f"DEBUG: No Tests section in this model {self.data.name}")
+                print(f"DEBUG: No Tests section in this model {self.name}")
                 dummy_table = {'tests': ''}
                 self._testcase_table_controller = TestCaseTableController(self, dummy_table)
         return self._testcase_table_controller
@@ -193,11 +275,14 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     @property
     def keywords(self):
+        model = TestSuiteVisitor()
+        model.visit(self.data)
+        self.keywords_table['keywords'] = model.keywords
         if self._keywords_table_controller is None:
             try:
-                self._keywords_table_controller = KeywordTableController(self, self.data.keyword_table)
+                self._keywords_table_controller = KeywordTableController(self, self.keyword_table)
             except AttributeError:
-                print(f"DEBUG: No Keywords section in this model {self.data.name}")
+                print(f"DEBUG: No Keywords section in this model {self.name}")
                 dummy_table = {'keywords': ''}
                 self._keywords_table_controller = KeywordTableController(self, dummy_table)
         return self._keywords_table_controller
@@ -379,19 +464,19 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseController):
 
     def __init__(self, data, project=None, parent=None):
-        dir_ = os.path.dirname(data.file)  # RF 3.2 data.source is now data.file
+        dir_ = os.path.dirname(data.source)
         dir_ = os.path.abspath(dir_) if isinstance(dir_, str) else dir_
         _FileSystemElement.__init__(self, self._filename(data), dir_)
         _DataController.__init__(self, data, project, parent)
         self._dir_controllers = {}
 
     def _filename(self, data):
-        initfile = os.path.dirname(data.file).join('__init__.robot')
-        return initfile  # RF 3.2 data.source is now data.file
+        initfile = os.path.dirname(data.source).join('__init__.robot')
+        return initfile
 
     @property
     def default_dir(self):
-        return self.data.file  # RF 3.2 data.source is now data.file
+        return self.data.source
 
     @property
     def display_name(self):
@@ -440,13 +525,13 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
     def _children(self, data):
         children = data.suites  # .SuiteVisitor().visit_suite()
         # children = [DataController(child, self._project, self) for child in data.children]
-        initfile = os.path.dirname(data.file).join('__init__.robot')  # RF 3.2 data.source is now data.file
+        initfile = os.path.dirname(data.source).join('__init__.robot')
         if self._can_add_directory_children(data):
             self._add_directory_children(children, data.file, initfile)
         return children
 
     def _can_add_directory_children(self, data):
-        return data.file and os.path.isdir(data.file) and self._namespace
+        return data.source and os.path.isdir(data.source) and self._namespace
 
     def _add_directory_children(self, children, path, initfile):
         for filename in self._get_unknown_files_in_directory(children, path, initfile):
@@ -522,8 +607,8 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return True
 
     def reload(self):
-        self.__init__(File(source=self.directory, parent=self.data.parent).populate(),
-                      self._project, parent=self.parent)
+        self.__init__(File(source=self.directory).populate(), self._project, parent=self.parent)
+        # , parent=self.data.parent
 
     def remove(self):
         path = self.filename
@@ -655,7 +740,8 @@ class DirtyRobotDataException(Exception):
 class TestCaseFileController(_FileSystemElement, _DataController):
 
     def __init__(self, data, project=None, parent=None):
-        _FileSystemElement.__init__(self, data.source if data else None, data.directory)
+        _FileSystemElement.__init__(self, data.source if data else None, os.path.dirname(data.source))  # DEBUG data.directory)
+        print(f"DEBUG: at TestCaseFileController init after _FileSystemElement {os.path.dirname(data.source)}")
         _DataController.__init__(self, data, project, parent)
 
     def _settings(self):
@@ -670,6 +756,12 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         if self.parent:
             return self.parent.longname + '.' + self.name
         return self.name
+
+    def set_name(self, name):
+        self.data.__setattr__(self.name, name)
+
+    #def name(self):
+    #    return self.name
 
     @property
     def suites(self):
@@ -716,7 +808,7 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def reload(self):
-        self.__init__(File(source=self.filename).populate(),  # DEBUG 3.2 parent=self.data.parent,
+        self.__init__(File(source=self.filename),  # DEBUG 3.2 parent=self.data.parent, .populate()
                       project=self._project,
                       parent=self.parent)
 

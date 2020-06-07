@@ -84,6 +84,7 @@ class Namespace(object):
         self._resource_factory.resource_filename_changed(old_name, new_name)
 
     def reset_resource_and_library_cache(self):
+        print(f"DEBUG: at Namespace calling _init_caches {self._settings}")
         self._init_caches()
 
     def register_update_listener(self, listener):

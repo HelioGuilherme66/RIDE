@@ -14,9 +14,10 @@
 #  limitations under the License.
 
 from ..publish.messages import RideModificationPrevented
-from ..robotapi import TestCase, TestSuite
+from ..robotapi import TestCase, TestSuite, File, printable_name
 
 from os import path
+from pathlib import PurePosixPath
 
 
 class _BaseController(TestCase):
@@ -27,9 +28,13 @@ class _BaseController(TestCase):
     @property
     def display_name(self):
         try:
-            isinstance(object, self.data.name)
-            return self.data.name
+            print(f"DEBUG: name test at BaseController {self.data}")
+            isinstance(self.data, File)  # DEBUG data.name
+            self.__setattr__(self.name, printable_name(PurePosixPath(self.data.source).stem))
+            print(f"DEBUG: return name test at BaseController {self.name}")
+            return self.name
         except AttributeError:
+            print(f"DEBUG: name attribute error at BaseController")
             return ""
 
     def execute(self, command):
@@ -171,7 +176,7 @@ class RideTestSuite(TestSuite):
     class data(object):
         def __init__(self, name="New Suite", source=""):
             self._myname = ""
-            # self._name = self.set_name(name)
+            self._name = self.set_name(name)
             self._source = source
 
         @property
@@ -209,7 +214,7 @@ class RideTestSuite(TestSuite):
         return self.data.name
 
     def set_name(self, name="New Suite"):
-        self.data.set_name(self.data, name)
+        self.data.set_name(self.data, name)  # self.data,
         return self.data.name
 
     def execute(self, command):

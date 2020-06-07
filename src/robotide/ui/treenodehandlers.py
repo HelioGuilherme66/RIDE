@@ -39,6 +39,44 @@ from .progress import RenameProgressObserver
 from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
 from .resourcedialogs import FolderDeleteDialog
 
+import ast
+
+
+class TestSuiteVisitor(ast.NodeVisitor):
+
+    def __init__(self):
+        self._kw_count = 0
+        self._tc_count = 0
+
+    def visit_File(self, node):
+        # print(f"File '{node.source}' has following tests:")
+        # Must call `generic_visit` to visit also child nodes.
+        self.generic_visit(node)
+
+    def visit_Keyword(self, node):
+        # print(f"- {node.name} (on line {node.lineno})")
+        self._kw_count += 1
+
+    def visit_TestCase(self, node):
+        # print(f"- {node.name} (on line {node.lineno})")
+        self._tc_count += 1
+
+    @property
+    def keyword_count(self):
+        return self._kw_count
+
+    @property
+    def has_keywords(self):
+        return self._kw_count > 0
+
+    @property
+    def testcase_count(self):
+        return self._tc_count
+
+    @property
+    def has_tests(self):
+        return self._tc_count > 0
+
 
 def action_handler_class(controller):
     return {
@@ -257,9 +295,14 @@ class TestDataHandler(_ActionHandler):
         return not self._rendered
 
     def _has_children(self):
-        print(f"DEBUG: Keywords {self.item.keywords} has_tests {self.item.has_tests}")
-        has_keywords = self.item.keywords is not None
-        return has_keywords or self.item.has_tests  # DEBUG Missing testing variables
+        print(f"DEBUG: _has_children {self.item}")
+        model = TestSuiteVisitor()
+        model.visit(self.item)
+        has_keywords = model.has_keywords
+        has_tests = model.has_tests
+        # has_keywords = self.item.keywords is not None
+        print(f"DEBUG: Keywords {has_keywords} has_tests {has_tests}")
+        return has_keywords or has_tests  # DEBUG Missing testing variables
         # return (self.item.keyword_table or self.item.testcase_table or self.item.variable_table)
 
     def set_rendered(self):

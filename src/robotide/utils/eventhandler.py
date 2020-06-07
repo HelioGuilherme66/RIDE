@@ -41,6 +41,7 @@ class RideEventHandler(with_metaclass(eventhandlertype, object)):
 
     def _can_be_edited(self, event):
         ctrl = self.get_selected_datafile_controller()
+        print(f"DEBUG: EventHandler controller = {ctrl}")
         if ctrl and ctrl.has_been_removed_from_disk():
             return self._show_removed_from_disk_warning(ctrl, event)
         if ctrl and ctrl.has_been_modified_on_disk():

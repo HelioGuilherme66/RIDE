@@ -27,6 +27,7 @@ class DataLoader(object):
         self._settings = settings
 
     def load_datafile(self, path, load_observer):
+        print(f"DEBUG: at DataLoader namespace={self._namespace} {self._settings}\n path {path}")
         return self._load(_DataLoader(path, self._settings), load_observer)
 
     def load_initfile(self, path, load_observer):
@@ -56,7 +57,9 @@ class _DataLoaderThread(Thread):
 
     def run(self):
         try:
-            self.result = Thread.run(self)  #self.start()  # DEBUG self._run()
+            print(f"DEBUG: calling DataLoaderThread run")
+            self.result = self._run()  # Thread.run(self)  #self.start()  # DEBUG self._run()
+            print(f"DEBUG: called DataLoaderThread run, result is {self.result}")
         except Exception as e:
             print("DEBUG: exception at DataLoader %s\n" % str(e))
             pass  # TODO: Log this error somehow
@@ -68,10 +71,13 @@ class _DataLoader(_DataLoaderThread):
         _DataLoaderThread.__init__(self)
         self._path = path
         self._settings = settings
+        print(f"DEBUG: at _DataLoader init {self._settings}\n path {self._path}")
 
     def _run(self):
         print("DEBUG: _Dataloader _run call TestData")
-        return TestData(source=self._path, settings=self._settings)
+        mydata = TestData(source=self._path, settings=self._settings)
+        print(f"DEBUG: _Dataloader returning TestData {type(mydata)}")
+        return mydata
 
 
 class _InitFileLoader(_DataLoaderThread):
@@ -81,10 +87,10 @@ class _InitFileLoader(_DataLoaderThread):
         self._path = path
 
     def _run(self):
-        result = robotapi.File(source=os.path.dirname(self._path))
-        result.initfile = self._path
-        robotapi.FromFilePopulator(result).populate(self._path)
-        return result
+        # result = robotapi.File(source=os.path.dirname(self._path))
+        # result.initfile = self._path
+        # robotapi.FromFilePopulator(result).populate(self._path)
+        return robotapi.get_init_model(self._path)
 
 
 class _ResourceLoader(_DataLoaderThread):
@@ -95,7 +101,8 @@ class _ResourceLoader(_DataLoaderThread):
         self._loader = resource_loader
 
     def _run(self):
-        return self._loader(self._datafile)
+        # DEBUG return self._loader(self._datafile)
+        return robotapi.get_resource_model(self._datafile)
 
 
 class TestDataDirectoryWithExcludes(robotapi.File):
@@ -133,8 +140,8 @@ def TestData(source, parent=None, settings=None):
         return data
     # DEBUG File signature changed in RF 3.2
     # return robotapi.File(parent, source).populate()
-    print("DEBUG: TestData calling File.populate")
-    return robotapi.FileReader(source=source)  # .populate()
+    print("DEBUG: TestData calling TestSuiteBuilder")
+    return robotapi.get_model(source)  # .populate()
 
 
 class ExcludedDirectory(robotapi.File):
