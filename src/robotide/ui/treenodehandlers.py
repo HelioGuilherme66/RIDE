@@ -540,7 +540,7 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
         return RenameTest(new_name)
 
     def test_selection_changed(self,message: RideTestSelectedForRunningChanged):
-        if message.test_case_controller == self.controller:
+        if message.test_case_controller == self.controller and self.node.GetValue() != message.selected:
             self._tree.CheckItem(self.node,checked=message.selected)
 
 class UserKeywordHandler(_TestOrUserKeywordHandler):

@@ -21,6 +21,7 @@ from wx.lib.mixins import treemixin
 from wx import Colour
 from wx.lib.agw.aui import GetManager
 
+from ..controller.macrocontrollers import TestCaseController
 from ..lib.robot.parsing.model import TestCase
 
 TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
@@ -38,12 +39,12 @@ from robotide.publish.messages import RideTestRunning, RideTestPaused, \
 from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, \
     FAILED_IMAGE_INDEX, PAUSED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
 from robotide.ui.treenodehandlers import TestCaseHandler
-from robotide.publish import PUBLISHER, RideTreeSelection, RideFileNameChanged,\
-    RideItem, RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved,\
-    RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,\
-    RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,\
-    RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,\
-    RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet
+from robotide.publish import PUBLISHER, RideTreeSelection, RideFileNameChanged, \
+    RideItem, RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved, \
+    RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty, \
+    RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded, \
+    RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, \
+    RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet, RideTestSelectedForRunningChanged
 from robotide.controller.ctrlcommands import MoveTo
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import PopupCreator
@@ -926,9 +927,11 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
     def OnTreeItemChecked(self, event):
         node: GenericTreeItem = event.GetItem()
         handler: TestCaseHandler = self._controller.get_handler(node=node) #Only test nodes can be checked/unchecked.
-        #self._test_selection_controller.select(            handler.controller, node.IsChecked())
+        test_ctrl : TestCaseController = handler.controller
         test_case: TestCase = handler.item
         test_case.selected = node.IsChecked()
+        RideTestSelectedForRunningChanged(test_long_name=test_ctrl.longname, selected=test_case.selected,
+                                          test_case_controller=test_ctrl).publish()
 
     def OnItemActivated(self, event):
         node = event.GetItem()
