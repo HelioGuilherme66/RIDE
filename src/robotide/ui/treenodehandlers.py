@@ -152,10 +152,10 @@ class _ActionHandler(wx.Window):
         pass
 
     def OnSelectAllTests(self, event):
-        self._tree.SelectAllTests(self._node)
+        self._tree.SelectAllTestsForExecution(self._node, True)
 
     def OnDeselectAllTests(self, event):
-        self._tree.DeselectAllTests(self._node)
+        self._tree.SelectAllTestsForExecution(self._node, False)
 
     def OnSelectOnlyFailedTests(self, event):
         self._tree.SelectFailedTests(self._node)

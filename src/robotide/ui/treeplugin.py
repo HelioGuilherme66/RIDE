@@ -455,7 +455,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         handler_class = action_handler_class(controller)
         with_checkbox = (handler_class == TestCaseHandler and self._checkboxes_for_tests)
 
-        node = self._create_node(parent_node, controller.display_name, self._images[controller],
+        node: GenericTreeItem = self._create_node(parent_node, controller.display_name, self._images[controller],
                                  index, with_checkbox=with_checkbox)
         if isinstance(controller, ResourceFileController) and not controller.is_used():
                 self.SetItemTextColour(node, TREETEXTCOLOUR)  # wxPython3 hack
@@ -464,7 +464,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
 
         # if we have a TestCase node we have to make sure that
         # we retain the checked state
-        if (handler_class == TestCaseHandler and self._checkboxes_for_tests) \
+        if (with_checkbox) \
                 and controller.data.selected:
             self.CheckItem(node, True)
         if controller.is_excluded():
@@ -835,15 +835,16 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
             if self.ItemHasChildren(item):
                 self._hide_item(item)
 
-    def SelectAllTests(self, item : GenericTreeItem):
-       data = item.GetData()
-       if isinstance(data, TestDataDirectoryHandler) :
-          tests : TestDataDirectoryController = data.tests.parent
-          tests.select_all_tests()
-       elif isinstance(data,TestCaseFileHandler):
-         tests : TestCaseFileController = data.controller
-         tests.select_all_tests()
-       else: raise Exception("Unexpected type of handler: "+str(data))
+    def SelectAllTestsForExecution(self, item : GenericTreeItem, selected: bool):
+        data = item.GetData()
+        if isinstance(data, TestDataDirectoryHandler):
+            tests: TestDataDirectoryController = data.tests.parent
+            tests.select_all_tests(selected=selected)
+        elif isinstance(data, TestCaseFileHandler):
+            tests: TestCaseFileController = data.controller
+            tests.select_all_tests(selected=selected)
+        else:
+            raise Exception("Unexpected type of handler: " + str(data))
 
     def SelectTests(self, tests):
         def foo(t):
@@ -896,9 +897,6 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
 
     def _is_test_node(self, node):
         return node.GetType() == 1
-
-    def DeselectAllTests(self, item):
-        self._for_all_tests(item, lambda t: self.CheckItem(t, checked=False))
 
     def DeselectTests(self, tests):
         def foo(t):

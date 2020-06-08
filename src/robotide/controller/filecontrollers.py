@@ -629,9 +629,9 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         self.parent.children[index] = result
         return result
 
-    def select_all_tests(self):
+    def select_all_tests(self, selected=True):
         for child in self.children:
-            child.select_all_tests()
+            child.select_all_tests(selected)
 
 
 class DirtyRobotDataException(Exception):
@@ -712,13 +712,11 @@ class TestCaseFileController(_FileSystemElement, _DataController):
     def get_template(self):
         return self.data.setting_table.test_template
 
-    def select_all_tests(self):
-        """test : robotide.lib.robot.parsing.model.TestCase = None"""
+    def select_all_tests(self, selected=True):
         for test_ctrl in iter(self.tests):
-            test_ctrl.data.selected = True
-            RideTestSelectedForRunningChanged(test_long_name=test_ctrl.longname, selected=True, test_case_controller=test_ctrl).publish()
-        #for test in self.tests._table.tests:
-        #    test.selected = True
+            test_ctrl.data.selected = selected
+            RideTestSelectedForRunningChanged(test_long_name=test_ctrl.longname, selected=selected,
+                                              test_case_controller=test_ctrl).publish()
 
 
 class ResourceFileControllerFactory(object):
@@ -900,7 +898,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
     def remove_child(self, controller):
         pass
 
-    def select_all_tests(self):
+    def select_all_tests(self, selected: bool):
         pass
 
 
