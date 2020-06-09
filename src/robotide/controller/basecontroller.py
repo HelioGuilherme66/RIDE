@@ -14,10 +14,9 @@
 #  limitations under the License.
 
 from ..publish.messages import RideModificationPrevented
-from ..robotapi import TestCase, TestSuite, File, printable_name
+from ..robotapi import TestCase, TestSuite, File
 
 from os import path
-from pathlib import PurePosixPath
 
 
 class _BaseController(TestCase):
@@ -173,10 +172,9 @@ class WithUndoRedoStacks(object):
 
 
 class RideTestSuite(TestSuite):
-    class data(object):
+    class Data(object):
         def __init__(self, name="New Suite", source=""):
-            self._myname = ""
-            self._name = self.set_name(name)
+            self._myname = self.set_name(name)
             self._source = source
 
         @property
@@ -205,7 +203,7 @@ class RideTestSuite(TestSuite):
 
     def __init__(self, name="New Suite", source=""):
         TestSuite.__init__(self, name=name, source=source)
-        self.data.__init__(self, name=name, source=source)
+        self.data = self.Data(name=name, source=source)
         self.dirty = False
         self.children = []
 
@@ -214,7 +212,7 @@ class RideTestSuite(TestSuite):
         return self.data.name
 
     def set_name(self, name="New Suite"):
-        self.data.set_name(self.data, name)  # self.data,
+        self.data.set_name(name)  # self.data,
         return self.data.name
 
     def execute(self, command):
@@ -238,7 +236,7 @@ class RideTestSuite(TestSuite):
 
     @property
     def variables(self):
-        return []
+        return self.resource.variables
 
     def has_been_removed_from_disk(self):
         return not path.exists(self.source)

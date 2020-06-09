@@ -31,6 +31,7 @@ class DataLoader(object):
         return self._load(_DataLoader(path, self._settings), load_observer)
 
     def load_initfile(self, path, load_observer):
+        print(f"DEBUG: at DataLoader load_initfile path {path}")
         return self._load(_InitFileLoader(path), load_observer)
 
     def resources_for(self, datafile, load_observer):
@@ -134,9 +135,9 @@ def TestData(source, parent=None, settings=None):
     if os.path.isdir(source):
         print("DEBUG: Dataloader Is dir getting testdada %s\n" % source)
         data = TestDataDirectoryWithExcludes(parent, source, settings)
-        print("DEBUG: Dataloader testdata %s\n" % data.name)
-        data.populate()
-        print("DEBUG: Dataloader after populate %s  %s\n" % (data._tables, data.name))
+        print("DEBUG: Dataloader testdata %s\n" % data.source)
+        # data.populate()
+        print("DEBUG: Dataloader after POPULATE %s  %s\n" % (data.sections, data.source))
         return data
     # DEBUG File signature changed in RF 3.2
     # return robotapi.File(parent, source).populate()

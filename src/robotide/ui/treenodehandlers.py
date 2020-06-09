@@ -296,8 +296,13 @@ class TestDataHandler(_ActionHandler):
 
     def _has_children(self):
         print(f"DEBUG: _has_children {self.item}")
+        print(f"DEBUG: _has_children ITEM source {self.item.source}")
+        print(f"DEBUG: _has_children ITEM dir {dir(self.item)}")
         model = TestSuiteVisitor()
-        model.visit(self.item)
+        try:
+            model.visit(self.item)
+        except AttributeError:  # New Empty file
+            return False
         has_keywords = model.has_keywords
         has_tests = model.has_tests
         # has_keywords = self.item.keywords is not None

@@ -372,8 +372,8 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         handler = ResourceRootHandler(model, self, self._resource_root,
                                       self._controller.settings)
         self.SetPyData(self._resource_root, handler)
-        if model.data and str(model.data) != "New Suite":
-            print(f"DEBUG: IN _populate_model {model.data}")
+        if model.data and str(model.data.name) != "New Suite":
+            print(f"DEBUG: IN _populate_model {model.data.name}")
             self._render_datafile(self._root, model.data, 0)
         for res in model.external_resources:
             if not res.parent:
