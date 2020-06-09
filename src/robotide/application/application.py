@@ -62,10 +62,15 @@ class RIDE(wx.App):
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            coreplugins.get_core_plugins())
         self._plugin_loader.enable_plugins()
+        perspective = self.settings.get('AUI Perspective', None)
+        if perspective:
+            self.frame._mgr.LoadPerspective(perspective, True)
         self.treeplugin = TreePlugin(self)
-        self.treeplugin.register_frame(self.frame)
+        if self.treeplugin.settings['_enabled']:
+            self.treeplugin.register_frame(self.frame)
         self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
-        self.fileexplorerplugin.register_frame(self.frame)
+        if self.fileexplorerplugin.settings['_enabled']:
+            self.fileexplorerplugin.register_frame(self.frame)
         self.frame.Show()
         if not self.treeplugin.opened:
             self.treeplugin.close_tree()
@@ -77,9 +82,6 @@ class RIDE(wx.App):
         self.treeplugin.set_editor(self.editor)
         self._find_robot_installation()
         self._publish_system_info()
-        perspective = self.settings.get('AUI Perspective', None)
-        if perspective:
-            self.frame._mgr.LoadPerspective(perspective, True)
         if self._updatecheck:
             UpdateNotifierController(self.settings).notify_update_if_needed(UpdateDialog)
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
