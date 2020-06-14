@@ -112,8 +112,8 @@ class _CreationDialog(Dialog):
         return self._create_display(sizer, "Parent Directory", path)
 
     def _create_path_display(self, sizer, path):
-        return self._create_display(sizer, "Created Path", path,
-                                    NewSuitePathValidator())
+        return self._create_display(sizer, "Created Path", path)
+        # DEBUG removed validator to allow create paths   NewSuitePathValidator(createpaths='Ask'))
 
     def _create_display(self, sizer, title, value, validator=None):
         disp_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -166,8 +166,10 @@ class NewProjectDialog(_CreationDialog):
         _CreationDialog.__init__(self, project.default_dir, "New Project")
 
     def _execute(self):
+        print(f"DEBUG: Newproject is dir? {self._is_dir_type()}")
         cmd = CreateNewDirectoryProject if self._is_dir_type()\
             else CreateNewFileProject
+        print(f"DEBUG: Newproject calling {cmd} with path {self._get_path()}")
         cmd(self._get_path()).execute(self._controller)
 
 
