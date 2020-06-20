@@ -30,7 +30,7 @@ from ..publish import (RideDataFileRemoved, RideInitFileRemoved, RideDataChanged
                        RideDataDirtyCleared, RideSuiteAdded, RideItemSettingsChanged)
 from ..publish.messages import RideDataFileSet, RideOpenResource
 # REMOVED 3.2  from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
-from ..robotapi import File, SuiteVisitor, Token, printable_name
+from ..robotapi import File, TestSuite, Token, printable_name
 from .. import utils
 
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
@@ -117,7 +117,7 @@ class TestSuiteVisitor(ast.NodeVisitor):
 
 
 def _get_controller(project, data, parent):
-    if isinstance(data, File):
+    if isinstance(data, File) or isinstance(data, TestSuite):
         return TestCaseFileController(data, project, parent)
     if isinstance(data, ExcludedDirectory):
         return ExcludedDirectoryController(data, project, parent)
@@ -474,6 +474,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         _FileSystemElement.__init__(self, self._filename(data), dir_)
         _DataController.__init__(self, data, project, parent)
         self._dir_controllers = {}
+        self.project = project
 
     def _filename(self, data):
         initfile = os.path.dirname(data.source).join('__init__.robot')
@@ -485,7 +486,11 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
 
     @property
     def display_name(self):
-        return self.data.name
+        print(f"DEBUG: TestDataDirectoryController display_name showing source: {self.data.source}\n "
+              f"default_dir: {self.default_dir}\n project: {str(self.project)}")
+        # if self.basename in  ('__init__', 'New_Empty_Dir'):
+        return self.name
+        # return self.data.name
 
     @property
     def longname(self):
@@ -528,11 +533,16 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return self._project.is_excluded(self.source) if self._project else False
 
     def _children(self, data):
-        children = data.suites  # .SuiteVisitor().visit_suite()
+        if not isinstance(data, File):
+            children = data.suites  # .SuiteVisitor().visit_suite()
+            directory = data.directory
+        else:
+            children = []
+            directory = data.source
         # children = [DataController(child, self._project, self) for child in data.children]
         initfile = os.path.dirname(data.source).join('__init__.robot')
         if self._can_add_directory_children(data):
-            self._add_directory_children(children, data.file, initfile)
+            self._add_directory_children(children, directory, initfile)
         return children
 
     def _can_add_directory_children(self, data):
@@ -600,7 +610,10 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return self._new_data_controller(NewTestDataDirectory(path))
 
     def _new_data_controller(self, datafile):
-        self.data.children.append(datafile)
+        print(f"DEBUG: filecontrollers _new_data_controller current data is: {dir(self.data)}")
+        print(f"DEBUG: filecontrollers _new_data_controller data suites {self.data.suites} \n datafile: {datafile} ")
+        # self.data.children.append(datafile)
+        self.data.suites.append(datafile)
         datafile.parent = self.data
         self.children.append(DataController(datafile, self._project, self))
         return self.children[-1]

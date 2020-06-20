@@ -353,6 +353,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
 
     def populate(self, model):
         self._clear_tree_data()
+        print(f"DEBUG: TreePlugin populate calling model {model}")
         self._populate_model(model)
         self._refresh_view()
         self.SetFocus()  # Needed for keyboard shortcuts
@@ -372,7 +373,8 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         handler = ResourceRootHandler(model, self, self._resource_root,
                                       self._controller.settings)
         self.SetPyData(self._resource_root, handler)
-        if model.data and str(model.data.name) != "New Suite":
+        print(f"DEBUG: after handler at _populate_model model.data={str(model.data)} resource roo {self._resource_root}")
+        if model.data and str(model.data.name) != "__New_Suite__":
             print(f"DEBUG: IN _populate_model {model.data.name}")
             self._render_datafile(self._root, model.data, 0)
         for res in model.external_resources:
@@ -420,6 +422,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
 
     def _render_datafile(self, parent_node, controller, index=None):
         node = self._create_node_with_handler(parent_node, controller, index)
+        print(f"DEBUG: at _render_datafile node={str(node)} controller {controller}")
         if not node:
             return None
         if controller.dirty:
@@ -447,6 +450,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
                 if count > 3:
                     return None
         handler_class = action_handler_class(controller)
+        print(f"DEBUG: at _create_node_with_handler handler {handler_class}  controller {controller}")
         with_checkbox = (handler_class == TestCaseHandler and self._checkboxes_for_tests)
         node = self._create_node(parent_node, str(controller.display_name), self._images[controller],
                                  index, with_checkbox=with_checkbox)

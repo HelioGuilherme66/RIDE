@@ -71,6 +71,8 @@ class TreeImageList(wx.ImageList):
                 if self._execution_results.has_failed(controller):
                     return self._images['failed']
         elif controller.__class__ == TestDataDirectoryController:
+            if controller.basename == '__init__':
+                return self._images[TestDataDirectoryController]
             if not controller.contains_tests():
                 return self._images['resource directory']
         return self._images[controller.__class__]

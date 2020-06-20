@@ -17,7 +17,7 @@ import os
 import wx
 
 from .. import robotapi, utils
-
+from ..controller.robotdata import _create_missing_directories
 
 class _AbstractValidator(wx.Validator):
     """Implements methods to keep wxPython happy and some helper methods."""

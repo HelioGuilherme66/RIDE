@@ -17,6 +17,7 @@ import os
 import copy
 import warnings
 
+from pathlib import PurePath
 from robotide.lib.robot.errors import DataError
 from robotide.lib.robot.variables import is_var
 from robotide.lib.robot.output import LOGGER
@@ -30,7 +31,8 @@ from robotide.lib.robot.parsing.lexer.settings import (TestCaseFileSettings, Res
 #                                              Keyword, CommentSection,
 #                                              SettingSection)
 
-from robotide.lib.robot.api import TestSuite
+from robotide.lib.robot.utils import printable_name
+from robotide.lib.robot.running.builder.builders import TestSuiteBuilder
 from robotide.lib.robot.model.testcase import TestCase
 from .comments import Comment
 from .populators import FromFilePopulator, FromDirectoryPopulator, NoTestsFound
@@ -245,7 +247,7 @@ class ResourceFile(_TestData):
             yield table
 
 
-class TestDataDirectory(_TestData):
+class TestDataDirectory(TestSuiteBuilder):
     """The parsed test data directory object. Contains hiearchical structure
     of other :py:class:`.TestDataDirectory` and :py:class:`.TestCaseFile`
     objects.
@@ -256,21 +258,32 @@ class TestDataDirectory(_TestData):
 
     def __init__(self, parent=None, source=None):
         self.directory = source
+        self.source = source
+        self.suites = []
+        self._name = None
+        # TestSuite.__init__(self, source=self.directory)
+        TestSuiteBuilder.__init__(self, allow_empty_suite=True)
+        # self.build(self.directory)
         self.initfile = None
-        self.setting_table = InitFileSettingTable(self)
-        self.variable_table = VariableTable(self)
-        self.testcase_table = TestCaseTable(self)
-        self.keyword_table = KeywordTable(self)
-        _TestData.__init__(self, parent, source)
+        self.setting_table = []  # self.visit_SettingSection(self)  # DEBUG 3.1.2 InitFileSettingTable(self)
+        self.variable_table = []  # sself.visit_Variables(self)  # DEBUG 3.1.2 VariableTable(self)
+        self.testcase_table = []  # sself.visit_TestCases(self)  # DEBUG 3.1.2 TestCaseTable(self)
+        self.keyword_table = []  # sself.visit_Keywords(self)  # DEBUG 3.1.2 KeywordTable(self)
+        # _TestData.__init__(self, parent, source)
 
     def populate(self, include_suites=None, extensions=None, recurse=True):
         FromDirectoryPopulator().populate(self.source, self, include_suites,
                                           extensions, recurse)
-        self.children = [ch for ch in self.children if ch.has_tests()]
+        self.suites = self.children = [ch for ch in self.children if ch.has_tests()]
         return self
 
     def _get_basename(self):
         return os.path.basename(self.source)
+
+    @property
+    def name(self):
+        self._name = printable_name(PurePath(self._get_basename()).stem.replace('_', ' '))
+        return self._name
 
     def _table_is_allowed(self, table):
         if table is self.testcase_table:

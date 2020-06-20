@@ -57,6 +57,7 @@ class RIDE(wx.App):
         self.preferences = Preferences(self.settings)
         self.namespace = Namespace(self.settings)
         self._controller = Project(self.namespace, self.settings)
+        print(f"DEBUG: at App Oninit controller.data={str(self._controller.data)}")
         self.frame = RideFrame(self, self._controller)
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),

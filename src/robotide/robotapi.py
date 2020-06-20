@@ -22,7 +22,7 @@ from .lib.robot.model import SuiteNamePatterns
 from .lib.robot.utils import get_error_message, unic
 
 from .lib.robot.errors import DataError, VariableError, Information
-from .lib.robot.model import TagPatterns
+from .lib.robot.model import TagPatterns, TestSuite
 from .lib.robot.output import LOGGER as ROBOT_LOGGER
 from .lib.robot.output.loggerhelper import LEVELS as LOG_LEVELS
 # REMOVED 3.2 from robotide.lib.robot.parsing.datarow import DataRow
@@ -64,7 +64,7 @@ from .lib.robot.variables.filesetter import VariableFileSetter
 # REMOVED 3.2 from robotide.lib.robot.variables.tablesetter import VariableTableReader
 from .lib.compat import TestDataDirectory, ResourceFile, TestCaseFile
 from .lib.robot.utils import FileReader, printable_name
-from .lib.robot.api import TestSuite, TestSuiteBuilder, SuiteVisitor, get_model, get_init_model, get_resource_model
+from .lib.robot.api import TestSuiteBuilder, SuiteVisitor, get_model, get_init_model, get_resource_model
 
 
 from .lib.robot import get_version

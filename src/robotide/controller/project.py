@@ -108,8 +108,10 @@ class Project(_BaseController, WithNamespace):
 
     def new_directory_project(self, path):
         self._new_project(NewTestDataDirectory(path))
+        print(f"DEBUG: controller.project new_directory_project path: {path}")
 
     def new_file_project(self, path):
+        print(f"DEBUG: controller.project New_file_project path: {path}")
         self._new_project(NewTestCaseFile(path))
 
     def _new_project(self, datafile):

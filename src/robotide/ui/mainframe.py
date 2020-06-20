@@ -38,6 +38,9 @@ from .treeplugin import Tree
 from .fileexplorerplugin import FileExplorer
 from .notebook import NoteBook
 from .progress import LoadProgressObserver
+from ..namespace import Namespace
+from ..controller import Project
+from ..preferences import RideSettings
 
 
 _menudata = """
@@ -386,7 +389,11 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
     def OnNewProject(self, event):
         if not self.check_unsaved_modifications():
             return
+        settings = RideSettings()
+        self._controller = Project(Namespace(settings=settings), settings=settings)
+        print(f"DEBUG: at OnNewProject controller.data={str(self._controller)}")
         NewProjectDialog(self._controller).execute()
+        print(f"DEBUG: at ui/Mainframe  OnNewProject calling self._populate_tree(){str(self._controller.suite.name)}")
         self._populate_tree()
 
     def _populate_tree(self):

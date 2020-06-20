@@ -38,6 +38,7 @@ from ..widgets import PopupMenuItems
 from .progress import RenameProgressObserver
 from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
 from .resourcedialogs import FolderDeleteDialog
+from ..robotapi import TestSuite
 
 import ast
 
@@ -295,18 +296,24 @@ class TestDataHandler(_ActionHandler):
         return not self._rendered
 
     def _has_children(self):
-        print(f"DEBUG: _has_children {self.item}")
+        print(f"DEBUG: _has_children {type(self.item)}")
         print(f"DEBUG: _has_children ITEM source {self.item.source}")
         print(f"DEBUG: _has_children ITEM dir {dir(self.item)}")
-        model = TestSuiteVisitor()
-        try:
-            model.visit(self.item)
-        except AttributeError:  # New Empty file
-            return False
-        has_keywords = model.has_keywords
-        has_tests = model.has_tests
+        if isinstance(self.item, TestSuite):
+            model = self.item
+            has_tests = model.has_tests
+            has_keywords = False
+        else:
+            model = TestSuiteVisitor()
+            try:
+                model.visit(self.item)
+            except AttributeError as e:  # New Empty file
+                print(f"DEBUG:  _has_children  error: {e}")
+                return False
+            has_keywords = model.has_keywords
+            has_tests = model.has_tests
         # has_keywords = self.item.keywords is not None
-        print(f"DEBUG: Keywords {has_keywords} has_tests {has_tests}")
+        print(f"DEBUG:  _has_children  Keywords {has_keywords} has_tests {has_tests}")
         return has_keywords or has_tests  # DEBUG Missing testing variables
         # return (self.item.keyword_table or self.item.testcase_table or self.item.variable_table)
 

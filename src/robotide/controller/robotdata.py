@@ -21,16 +21,21 @@ def NewTestCaseFile(path, task=False):
     # datafile = robotapi.TestCaseFile(source=path)
     #datafile.start_table(['Test Cases'])
     # .TestSuite(name='', doc='', metadata=None, source=None, rpa=False)
+    # file = open(path,mode='w')
+    # file.writelines("# RIDE Test Suite\n# \n# \n\n")
+    # file.close()
     datafile = robotapi.TestSuite(source=path, rpa=task)
     # datafile.start_table('Test Cases' if task else 'Tasks')
-    print(f"Path is {datafile.source}")
+    print(f"DEBUG: NewTestCaseFile Path is {datafile.source} class is {repr(datafile)}\n dir {dir(datafile)}")
     _create_missing_directories(os.path.dirname(datafile.source))
     return datafile
 
 
 def NewTestDataDirectory(path):
     dirname = os.path.dirname(path)
+    # DEBUG using 3.2
     datafile = robotapi.TestDataDirectory(source=dirname)
+    # datafile = robotapi.TestSuite(source=dirname)
     datafile.initfile = path
     _create_missing_directories(dirname)
     return datafile
