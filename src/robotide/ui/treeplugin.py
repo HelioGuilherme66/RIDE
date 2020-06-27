@@ -450,7 +450,9 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
                 if count > 3:
                     return None
         handler_class = action_handler_class(controller)
-        print(f"DEBUG: at _create_node_with_handler handler {handler_class}  controller {controller}")
+        print(f"DEBUG: at _create_node_with_handler handler {handler_class}\n controller {controller}\n"
+              f"controller.display_name  {str(controller.display_name)}\n"
+              f"controller classes  {dir(controller)}")
         with_checkbox = (handler_class == TestCaseHandler and self._checkboxes_for_tests)
         node = self._create_node(parent_node, str(controller.display_name), self._images[controller],
                                  index, with_checkbox=with_checkbox)
@@ -490,8 +492,10 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
             self._create_node_with_handler(node, childitem, index)
 
     def _children_of(self, handler):
-        return [v for v in handler.variables if v.has_data()] + \
-               list(handler.tests) + list(handler.keywords)
+        print(f"DEBUG: treeplugin _children_of: handler.variables:  {handler.variables}")
+        # return [v for v in handler.variables if v.has_data()] + \
+        #       list(handler.tests) + list(handler.keywords)
+        return list(handler.variables) + list(handler.tests) + list(handler.keywords)
 
     def _create_node(self, parent_node, label, img, index=None, with_checkbox=False):
         node = self._wx_node(parent_node, index, label, with_checkbox)

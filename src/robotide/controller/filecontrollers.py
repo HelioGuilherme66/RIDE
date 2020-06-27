@@ -283,13 +283,17 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         model = TestSuiteVisitor()
         model.visit(self.data)
         self.keywords_table['keywords'] = model.keywords
+        print(f"DEBUG: _DataModel visit model.keywords {self.keywords_table['keywords']}\n")
         if self._keywords_table_controller is None:
             try:
                 self._keywords_table_controller = KeywordTableController(self, self.keyword_table)
+                print(f"DEBUG: _DataModel success in calling KeywordTableController {self.name}\n"
+                      f"arg self.keyword_table {self.keyword_table}")
             except AttributeError:
                 print(f"DEBUG: No Keywords section in this model {self.name}")
                 dummy_table = {'keywords': ''}
                 self._keywords_table_controller = KeywordTableController(self, dummy_table)
+        print(f"DEBUG: _DataModel keywords defined {self._keywords_table_controller}")
         return self._keywords_table_controller
 
     @property

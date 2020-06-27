@@ -48,6 +48,7 @@ class TestSuiteVisitor(ast.NodeVisitor):
     def __init__(self):
         self._kw_count = 0
         self._tc_count = 0
+        self._var_count = 0
 
     def visit_File(self, node):
         # print(f"File '{node.source}' has following tests:")
@@ -55,8 +56,12 @@ class TestSuiteVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_Keyword(self, node):
-        # print(f"- {node.name} (on line {node.lineno})")
+        # print(f"Keyword check - {node.name} (on line {node.lineno})")
         self._kw_count += 1
+
+    def visit_Variable(self, node):
+        # print(f"Variable check - {node.name} (on line {node.lineno})")
+        self._var_count += 1
 
     def visit_TestCase(self, node):
         # print(f"- {node.name} (on line {node.lineno})")
@@ -78,6 +83,9 @@ class TestSuiteVisitor(ast.NodeVisitor):
     def has_tests(self):
         return self._tc_count > 0
 
+    @property
+    def has_variables(self):
+        return self._var_count > 0
 
 def action_handler_class(controller):
     return {
@@ -303,7 +311,9 @@ class TestDataHandler(_ActionHandler):
             model = self.item
             has_tests = model.has_tests
             has_keywords = False
+            has_variables = False
         else:
+            print(f"DEBUG:  _has_children  Model by Visitor")
             model = TestSuiteVisitor()
             try:
                 model.visit(self.item)
@@ -312,9 +322,10 @@ class TestDataHandler(_ActionHandler):
                 return False
             has_keywords = model.has_keywords
             has_tests = model.has_tests
+            has_variables = model.has_variables
         # has_keywords = self.item.keywords is not None
-        print(f"DEBUG:  _has_children  Keywords {has_keywords} has_tests {has_tests}")
-        return has_keywords or has_tests  # DEBUG Missing testing variables
+        print(f"DEBUG:  _has_children  Keywords {has_keywords} has_tests {has_tests} has_variables {has_variables}")
+        return has_keywords or has_tests or has_variables
         # return (self.item.keyword_table or self.item.testcase_table or self.item.variable_table)
 
     def set_rendered(self):
@@ -647,6 +658,11 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
     def _create_rename_command(self, new_name):
         return RenameTest(new_name)
 
+    @property
+    def display_name(self):
+        print(f"DEBUG:  trenodehandler TestCase  describe controller {str(self.controller)}")
+        return str(self.controller.name)
+
 
 class UserKeywordHandler(_TestOrUserKeywordHandler):
     is_user_keyword = True
@@ -666,6 +682,11 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
 
     def OnFindUsages(self, event):
         Usages(self.controller, self._tree.highlight).show()
+
+    @property
+    def display_name(self):
+        print(f"DEBUG:  trenodehandler UserKeyword  describe controller {str(self.controller)}")
+        return str(self.controller.keyword_name)
 
 
 class VariableHandler(_CanBeRenamed, _ActionHandler):
@@ -691,6 +712,10 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
     @property
     def index(self):
         return self.controller.index
+
+    @property
+    def display_name(self):
+        return str(self.controller.name)
 
 
 class ResourceRootHandler(_ActionHandler):

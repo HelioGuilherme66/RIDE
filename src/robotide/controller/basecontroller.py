@@ -30,7 +30,7 @@ class _BaseController(TestCase):
             print(f"DEBUG: name test at BaseController {self.data}")
             isinstance(self.data, File)  # DEBUG data.name
             # self.__setattr__(self.name, printable_name(PurePosixPath(self.data.source).stem))
-            # print(f"DEBUG: return name test at BaseController {self.name}")
+            print(f"DEBUG: return name test at BaseController {self.name}")
             return self.name
         except AttributeError:
             print(f"DEBUG: name attribute error at BaseController")

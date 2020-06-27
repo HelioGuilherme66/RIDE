@@ -333,6 +333,10 @@ class TestCaseController(_WithStepsController):
         except AttributeError:
             return self.parent.parent.longname
 
+    @property
+    def display_name(self):
+        print(f"DEBUG: macro TestCaseController display_name self._test {self._test}  ")
+        return self._test
 
     @property
     def test_name(self):
@@ -423,6 +427,10 @@ class UserKeywordController(_WithStepsController):
         if isinstance(self.datafile, robotapi.ResourceFile):  # DEBUG 3.2 ResourceFile
             return ResourceUserKeywordInfo(self.data)
         return TestCaseUserKeywordInfo(self.data)
+
+    @property
+    def display_name(self):
+        return self.name
 
     @property
     def keyword_name(self):
