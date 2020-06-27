@@ -200,7 +200,7 @@ class _ActionHandler(wx.Window):
         self._tree.SelectAllTests(self._node)
 
     def OnDeselectAllTests(self, event):
-        self._tree.DeselectAllTests(self._node)
+        self._tree.SelectAllTests(self._node, False)
 
     def OnSelectOnlyFailedTests(self, event):
         self._tree.SelectFailedTests(self._node)
@@ -649,6 +649,11 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
 
 
 class TestCaseHandler(_TestOrUserKeywordHandler):
+    def __init__(self, controller, tree, node, settings):
+        _TestOrUserKeywordHandler.__init__(self, controller, tree, node, settings)
+        PUBLISHER.subscribe(self.test_selection_changed, RideTestSelectedForRunningChanged,
+                            key=self)  # TODO: unsubscribe when the object is destroyed!
+
     _datalist = property(lambda self: self.item.datalist)
     _copy_name_dialog_class = TestCaseNameDialog
 
@@ -657,6 +662,14 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
 
     def _create_rename_command(self, new_name):
         return RenameTest(new_name)
+
+def test_selection_changed(self, message: RideTestSelectedForRunningChanged):
+        if self.controller in message.tests:
+            if not self.node.GetValue():
+                self._tree.CheckItem(self.node, checked=True)
+        else:
+            if self.node.GetValue():
+                self._tree.CheckItem(self.node, checked=False)
 
     @property
     def display_name(self):

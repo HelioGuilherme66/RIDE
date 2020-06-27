@@ -314,6 +314,7 @@ class TestCaseController(_WithStepsController):
 
     def _init(self, test):
         self._test = test
+        self._run_passed = None
 
     def __eq__(self, other):
         if self is other:
@@ -400,6 +401,18 @@ class TestCaseController(_WithStepsController):
             return template
         return self.datafile_controller.get_template()
 
+    @property
+    def run_passed(self):
+        return self._run_passed
+
+    @run_passed.setter
+    def run_passed(self,value):
+        if value == True:
+            self._run_passed = True # Test execution passed
+        elif value == False:
+            self._run_passed = False # Test execution failed
+        else:
+            self._run_passed = None # Test did not run
 
 class UserKeywordController(_WithStepsController):
     _populator = robotapi.KeywordSection  # DEBUG 3.2 UserKeywordPopulator
