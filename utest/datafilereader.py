@@ -87,7 +87,8 @@ def construct_project(datapath, temp_dir_for_excludes=None):
     project = Project(Namespace(settings), settings, library_manager)
     print(f"DEBUG: construct_project Project: {project.display_name} path {datapath}")
     project.load_data(datapath)  #, NullObserver())
-    print("DEBUG: construct_project after load_data Project: %s\n" % project.display_name)
+    print(f"DEBUG: construct_project after load_data Project: {project.display_name}")
+    print(f"DEBUG: construct_project after load_data classes: {dir(project)}")
     # DEBUG
     # print("DEBUG: Path arg is: %s\n" % datapath)
     return project

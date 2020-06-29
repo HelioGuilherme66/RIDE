@@ -67,7 +67,9 @@ class TestCellInfo(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.project_ctrl = datafilereader.construct_project(datafilereader.ARGUMENTS_PATH)
+        # print(f"DEBUG: Unit test: Setup TestCellInfo: project_ctrl={cls.project_ctrl}\n datafiles={cls.project_ctrl.datafiles}")
         cls.testsuite = datafilereader.get_ctrl_by_name('Suite', cls.project_ctrl.datafiles)
+        print(f"DEBUG: Unit test: Setup TestCellInfo: testsuite={cls.testsuite}\n classes={dir(cls.testsuite)}")
         cls.test = cls.testsuite.tests[0]
         keyword = lambda name: [kw for kw in cls.testsuite.keywords if kw.name == name][0]
         cls.keyword1 = keyword('KW1')

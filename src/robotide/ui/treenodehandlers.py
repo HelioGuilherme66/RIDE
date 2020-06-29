@@ -28,7 +28,7 @@ from ..controller.filecontrollers import (TestDataDirectoryController, ResourceF
 from ..controller.basecontroller import RideTestSuite
 from ..editor.editordialogs import (TestCaseNameDialog, UserKeywordNameDialog, ScalarVariableDialog,
                                     ListVariableDialog, CopyUserKeywordDialog, DictionaryVariableDialog)
-from ..publish import RideOpenVariableDialog
+from ..publish import RideOpenVariableDialog, PUBLISHER, RideTestSelectedForRunningChanged
 from .progress import LoadProgressObserver
 from ..usages.UsageRunner import Usages, ResourceFileUsages
 from .filedialogs import (AddSuiteDialog, AddDirectoryDialog, ChangeFormatDialog,
@@ -663,7 +663,7 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
     def _create_rename_command(self, new_name):
         return RenameTest(new_name)
 
-def test_selection_changed(self, message: RideTestSelectedForRunningChanged):
+    def test_selection_changed(self, message: RideTestSelectedForRunningChanged):
         if self.controller in message.tests:
             if not self.node.GetValue():
                 self._tree.CheckItem(self.node, checked=True)
