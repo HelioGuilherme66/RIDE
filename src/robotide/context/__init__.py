@@ -29,6 +29,7 @@ ROBOT_LOGGER.register_logger(LOG)
 
 IS_WINDOWS = os.sep == '\\'
 IS_MAC = sys.platform == 'darwin'
+IS_LINUX = sys.platform == 'linux'
 WX_VERSION = wx.VERSION_STRING
 
 if IS_WINDOWS:
@@ -56,7 +57,7 @@ For more information, see project pages at
 <a href="https://github.com/robotframework/RIDE">https://github.com/robotframework/RIDE</a>.</p>
 <p>Some of the icons are from <a href="http://www.famfamfam.com/lab/icons/silk/">Silk Icons</a>.</p>
 <p><br/><br/><a href="https://github.com/HelioGuilherme66">Hélio Guilherme</a> the maintainer of the project thanks the original authors and all users and collaborators.<br/>
-A very special thanks to <b><a href="https://github.com/Nyral">Nyral</a></b> the most commited in helping RIDE development and maintenance.</p>
+A very special thanks to <b><a href="https://github.com/Nyral">Nyral</a></b> and <b><a href="https://github.com/jnhyperion">Johnny.H</a></b> the most commited in helping RIDE development and maintenance.</p>
 ''' % (VERSION, pyversion)
 
 

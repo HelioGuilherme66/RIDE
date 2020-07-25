@@ -27,11 +27,11 @@ from ..controller.ctrlcommands import ChangeCellValue, ClearArea, \
     InsertArea
 from ..controller.cellinfo import TipMessage, ContentType, CellType
 from ..publish import (RideItemStepsChanged, RideSaved,
-                              RideSettingsChanged, PUBLISHER)
+                              RideSettingsChanged, PUBLISHER, RideBeforeSaving)
 from ..usages.UsageRunner import Usages, VariableUsages
 from ..ui.progress import RenameProgressObserver
-from .. import robotapi, utils
-from ..utils import RideEventHandler, variablematcher
+from .. import robotapi
+from ..utils import variablematcher
 from ..widgets import Dialog, PopupMenu, PopupMenuItems
 
 from .gridbase import GridEditor
@@ -40,10 +40,10 @@ from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, \
     ListVariableDialog
 from .contentassist import ExpandingContentAssistTextCtrl
 from .gridcolorizer import Colorizer
-from ..lib.robot.utils.compat import with_metaclass
+from robotide.lib.robot.utils.compat import with_metaclass
 
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
-from ..utils.noconflict import classmaker
+from robotide.utils.noconflict import classmaker
 
 _DEFAULT_FONT_SIZE = 11
 
@@ -62,7 +62,7 @@ def requires_focus(function):
     return decorated_function
 
 
-class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
+class KeywordEditor(GridEditor):
     _no_cell = (-1, -1)
     _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)
@@ -103,6 +103,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         self._counter = 0  # Workaround for double delete actions
         self._dcells = None  # Workaround for double delete actions
         self._icells = None  # Workaround for double insert actions
+        PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
         PUBLISHER.subscribe(self._resize_grid, RideSaved)
@@ -218,7 +219,6 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     def OnKillFocus(self, event):
         self._tooltips.hide()
         self._hide_link_if_necessary()
-        self.save()
         event.Skip()
 
     def _execute(self, command):
@@ -361,6 +361,14 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     def OnMotion(self, event):
         pass
 
+    def _before_saving(self, data):
+        if self.IsCellEditControlShown():
+            # Fix: cannot save modifications in edit mode
+            # Exit edit mode before saving
+            self.HideCellEditControl()
+            self.SaveEditControlValue()
+            self.SetFocus()
+
     def _data_changed(self, data):
         if self._controller == data.item:
             self._write_steps(data.item)
@@ -437,18 +445,16 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         self.OnDelete(event)
 
     def OnDelete(self, event=None):
-        _iscelleditcontrolshown = self.IsCellEditControlShown()
-        if _iscelleditcontrolshown:  # TODO Review if still needed
-            # On Windows, Delete key does not work in TextCtrl automatically
-            self.delete()
-        elif self.has_focus():
-            self._execute(ClearArea(self.selection.topleft,
-                                    self.selection.bottomright))
+        self._execute(ClearArea(self.selection.topleft,
+                                self.selection.bottomright))
         self._resize_grid()
 
     # DEBUG    @requires_focus
     def OnPaste(self, event=None):
-        self._execute_clipboard_command(PasteArea)
+        if self.IsCellEditControlShown():
+            self.paste()
+        else:
+            self._execute_clipboard_command(PasteArea)
         self._resize_grid()
 
     def _execute_clipboard_command(self, command_class):
@@ -487,6 +493,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     def close(self):
         self._colorizer.close()
         self.save()
+        PUBLISHER.unsubscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.unsubscribe(self._data_changed, RideItemStepsChanged)
         if self._namespace_updated:
             # Prevent re-entry to unregister method
@@ -942,11 +949,11 @@ class ContentAssistCellEditor(GridCellEditor):
     def ApplyEdit(self, row, col, grid):
         val = self._tc.GetValue()
         grid.GetTable().SetValue(row, col, val)  # update the table
-
         self._original_value = ''
         self._tc.SetValue('')
-        if self._value and val != '':  # DEBUG Fix #1967 crash when click other cell
-            self._grid.cell_value_edited(row, col, self._value)
+        # if self._value and val != '':  # DEBUG Fix #1967 crash when click other cell
+        # this will cause deleting all text in edit mode not working
+        self._grid.cell_value_edited(row, col, self._value)
 
     def _get_value(self):
         suggestion = self._tc.content_assist_value()

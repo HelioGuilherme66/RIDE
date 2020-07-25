@@ -20,11 +20,12 @@ import subprocess
 
 from ..lib.robot import utils
 from ..lib.robot.utils.encoding import SYSTEM_ENCODING
-from ..lib.robot.utils import (printable_name, normalize, eq, ET, html_format, HtmlWriter, NormalizedDict,
-                               timestr_to_secs, secs_to_timestr, normpath, unic, asserts, unescape, html_escape,
-                               attribute_escape, robottime, get_timestamp, Matcher, is_list_like, is_dict_like,
-                               system_decode, ArgumentParser, get_error_details, is_unicode, is_string, py2to3)
-from .eventhandler import RideEventHandler
+from ..lib.robot.utils import printable_name, normalize, eq, ET, \
+    html_format, HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
+    unic, asserts, unescape, html_escape, attribute_escape, robottime,\
+    get_timestamp, Matcher, is_list_like, is_dict_like, system_decode,\
+    ArgumentParser, get_error_details, is_unicode, is_string, py2to3
+from .eventhandler import RideFSWatcherHandler
 from .printing import Printing
 
 

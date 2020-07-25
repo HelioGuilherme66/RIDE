@@ -25,32 +25,33 @@ from ..controller.macrocontrollers import TestCaseController
 
 TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 
-from ..lib.robot.utils.compat import with_metaclass
-from ..controller.ui.treecontroller import TreeController, TestSelectionController
+from ..controller.ui.treecontroller import TreeController, \
+    TestSelectionController
 from ..context import IS_WINDOWS
 from ..action.actioninfo import ActionInfo
 from ..controller.filecontrollers import ResourceFileController, TestDataDirectoryController, \
     TestCaseFileController
 from ..controller.basecontroller import RideTestSuite
-from ..publish.messages import (RideTestRunning, RideTestPaused, RideTestPassed, RideTestFailed,
-                                RideTestExecutionStarted, RideImportSetting, RideExcludesChanged,
-                                RideIncludesChanged, RideOpenSuite, RideNewProject)
-from .images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, PAUSED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
+from ..publish.messages import RideTestRunning, RideTestPaused, \
+    RideTestPassed, RideTestFailed, RideTestExecutionStarted, \
+    RideImportSetting, RideExcludesChanged, RideIncludesChanged, \
+    RideOpenSuite, RideNewProject
+from .images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, \
+    FAILED_IMAGE_INDEX, PAUSED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
 from .treenodehandlers import TestCaseHandler, TestDataDirectoryHandler, TestCaseFileHandler
-from ..publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged, RideItem,
-                       RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved,
-                       RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,
-                       RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,
-                       RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,
-                       RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet)
+from ..publish import PUBLISHER, RideTreeSelection, RideFileNameChanged,\
+    RideItem, RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved,\
+    RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,\
+    RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,\
+    RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,\
+    RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet
 from ..controller.ctrlcommands import MoveTo
 from ..pluginapi import Plugin, ActionInfo
 from ..widgets import PopupCreator
 from .. import utils
 from .treenodehandlers import ResourceRootHandler, action_handler_class, ResourceFileHandler
 from .images import TreeImageList
-# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
-from ..utils.noconflict import classmaker
+
 
 _TREE_ARGS = {'style': wx.TR_DEFAULT_STYLE}
 _TREE_ARGS['agwStyle'] = customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | \
@@ -158,9 +159,7 @@ class TreePlugin(Plugin):
         self._tree._refresh_view()
 
 
-class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
-                          customtreectrl.CustomTreeCtrl,
-                          utils.RideEventHandler)):
+class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
     _RESOURCES_NODE_LABEL = 'External Resources'
 
     def __init__(self, parent, action_registerer, settings=None):

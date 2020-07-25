@@ -14,8 +14,7 @@
 #  limitations under the License.
 
 from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.utils import (get_error_message, is_java_method, is_bytes,
-                         is_list_like, is_unicode, type_name, py2to3)
+from robotide.lib.robot.utils import (get_error_message, is_java_method, is_bytes, is_list_like, is_unicode, is_tuple, py2to3)
 
 from .arguments import JavaArgumentParser, PythonArgumentParser
 
@@ -64,6 +63,8 @@ class _DynamicMethod(object):
             return value.decode('UTF-8')
         if allow_tuple and is_list_like(value) and len(value) > 0:
             return tuple(value)
+        if is_tuple(value):
+            return f"{value[0]}={value[1]}"
         if allow_none and value is None:
             return value
         or_tuple = ' or a non-empty tuple' if allow_tuple else ''
@@ -81,7 +82,7 @@ class _DynamicMethod(object):
         try:
             return [self._to_string(item, allow_tuples)
                     for item in self._to_list(value)]
-        except DataError:
+        except (TypeError, DataError):
             raise DataError('Return value must be a list of strings%s.'
                             % (' or non-empty tuples' if allow_tuples else ''))
 

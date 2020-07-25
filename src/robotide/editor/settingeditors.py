@@ -16,30 +16,28 @@
 import wx
 
 from .. import context
-from ..controller.ctrlcommands import (UpdateVariable, UpdateDocumentation, SetValues, AddLibrary,
-                                       AddResource, AddVariablesFileImport, ClearSetting)
+from ..controller.ctrlcommands import UpdateVariable, UpdateDocumentation,\
+    SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
 from .listeditor import ListEditorBase
-from ..publish.messages import (RideImportSetting, RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving)
+from ..publish.messages import RideImportSetting,\
+    RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving
 from ..utils import overrides
-from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, PopupMenuItems, HtmlDialog
+from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu,\
+    PopupMenuItems, HtmlDialog
 from ..publish import PUBLISHER
 from .. import utils
 from ..utils.highlightmatcher import highlight_matcher
-from ..lib.robot.utils.compat import with_metaclass
 from .formatters import ListToStringFormatter
 from .gridcolorizer import ColorizationSettings
-from .editordialogs import (EditorDialog, DocumentationDialog, MetadataDialog,
-                            ScalarVariableDialog, ListVariableDialog, DictionaryVariableDialog,
-                            LibraryDialog,ResourceDialog, VariablesDialog)
+from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog,\
+    ScalarVariableDialog, ListVariableDialog, DictionaryVariableDialog, LibraryDialog,\
+    ResourceDialog, VariablesDialog
 from .listeditor import ListEditor
 from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
 
-# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
-from ..utils.noconflict import classmaker
 
-
-class SettingEditor(with_metaclass(classmaker(), wx.Panel, utils.RideEventHandler)):
+class SettingEditor(wx.Panel):
 
     def __init__(self, parent, controller, plugin, tree):
         wx.Panel.__init__(self, parent)
