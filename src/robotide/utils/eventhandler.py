@@ -49,7 +49,7 @@ class _RideFSWatcherHandler:
 
     def is_workspace_dirty(self):
         if self._watched_path:
-          RideFSWatcherHandler  return self._is_workspace_dirty
+            return self._is_workspace_dirty
         else:
             return True
 
