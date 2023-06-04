@@ -30,6 +30,7 @@ from ..action import ActionInfo
 from ..publish.messages import RideParserLogMessage
 from ..widgets import RIDEDialog
 
+
 def _message_to_string(msg):
     return '%s [%s]: %s\n\n' % (msg.timestamp, msg.level, msg.message.replace('\n\t', ''))
 
@@ -54,15 +55,14 @@ class ParserLogPlugin(Plugin):
         if self._outfile is not None:
             self._outfile.close()
 
-    def _remove_old_log_files(self):
+    @staticmethod
+    def _remove_old_log_files():
         for fname in glob.glob(
                 os.path.join(tempfile.gettempdir(), '*-ride_parser.log')):
             try:
                 os.remove(fname)
-            except OSError or IOError or PermissionError as e:
+            except (OSError, IOError) as e:
                 sys.stderr.write(f"Removing old *-ride_parser.log files failed with: {repr(e)}\n")
-            finally:
-                pass
 
     @property
     def _logfile(self):
@@ -90,7 +90,7 @@ class ParserLogPlugin(Plugin):
         if self._panel:
             self._panel.update_log()
         if self.log_to_console:
-            print("".format(_message_to_string(message)))  # >> sys.stdout, _message_to_string(message)
+            print("{}".format(_message_to_string(message)))  # >> sys.stdout, _message_to_string(message)
         if self.log_to_file:
             self._logfile.write(_message_to_string(message))
             self._outfile.flush()
@@ -101,6 +101,7 @@ class ParserLogPlugin(Plugin):
         self.OnViewLog(message, show_tab=False)
 
     def OnViewLog(self, event, show_tab=True):
+        _ = event
         if not self._panel:
             self._panel = _LogWindow(self.notebook, self._log)
             self.notebook.SetPageTextColour(self.notebook.GetPageCount()-1, wx.Colour(255, 165, 0))
@@ -139,13 +140,15 @@ class _LogWindow(wx.Panel):
     def update_log(self):
         self._output.SetValue(self._decode_log(self._log))
 
-    def _decode_log(self, log):
+    @staticmethod
+    def _decode_log(log):
         result = ''
         for msg in log:
             result += _message_to_string(msg)
         return result
 
     def OnSize(self, evt):
+        _ = evt
         self._output.SetSize(self.Size)
 
     def OnKeyDown(self, event):
@@ -157,6 +160,7 @@ class _LogWindow(wx.Panel):
             event.Skip()
 
     def Copy(self):
+        """ Overriden in purpose """
         pass
 
     def SelectAll(self):

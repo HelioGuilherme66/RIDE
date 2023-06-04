@@ -56,15 +56,14 @@ class LogPlugin(Plugin):
         if self._outfile is not None:
             self._outfile.close()
 
-    def _remove_old_log_files(self):
+    @staticmethod
+    def _remove_old_log_files():
         for fname in glob.glob(
                 os.path.join(tempfile.gettempdir(), '*-ride.log')):
             try:
                 os.remove(fname)
-            except OSError or IOError or PermissionError as e:
+            except (OSError, IOError) as e:
                 sys.stderr.write(f"Removing old *-ride.log files failed with: {repr(e)}\n")
-            finally:
-                pass
 
     @property
     def _logfile(self):
@@ -102,6 +101,7 @@ class LogPlugin(Plugin):
                                padding=10, font_size=font_size).Show()
 
     def OnViewLog(self, event):
+        _ = event
         if not self._panel:
             self._panel = _LogWindow(self.notebook, self._log)
             self._panel.update_log()
@@ -139,13 +139,15 @@ class _LogWindow(wx.Panel):
     def update_log(self):
         self._output.SetValue(self._decode_log(self._log))
 
-    def _decode_log(self, log):
+    @staticmethod
+    def _decode_log(log):
         result = ''
         for msg in log:
             result += _message_to_string(msg)
         return result
 
     def OnSize(self, evt):
+        _ = evt
         self._output.SetSize(self.Size)
 
     def OnKeyDown(self, event):
@@ -157,6 +159,7 @@ class _LogWindow(wx.Panel):
             event.Skip()
 
     def Copy(self):
+        """ Overriden in purpose """
         pass
 
     def SelectAll(self):
