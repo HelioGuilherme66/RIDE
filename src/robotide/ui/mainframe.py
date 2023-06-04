@@ -622,8 +622,7 @@ class RideFrame(wx.Frame):
 
     @staticmethod
     def OnUserGuide(event):
-        wx.LaunchDefaultBrowser("http://robotframework.org/robotframework/"
-                                "#user-guide")
+        wx.LaunchDefaultBrowser("https://robotframework.org/robotframework/#user-guide")
 
     @staticmethod
     def OnWiki(event):
