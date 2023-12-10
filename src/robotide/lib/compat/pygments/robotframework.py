@@ -67,24 +67,19 @@ GHERKIN = Token.Generic.Emph
 ERROR = Token.Error
 
 
-def normalize(string, remove='', nolower=False):
-    if not nolower:
-        string = string.lower()
-    if nolower:
-        print(f"DEBUG: robotframework.py normalize_dict string={string} nolower={nolower}")
+def normalize(string, remove=''):
+    string = string.lower()
     for char in remove + ' ':
         if char in string:
             string = string.replace(char, '')
     return string
 
 
-def normalize_dict(table: dict, nolower=False) -> dict:
+def normalize_dict(table: dict) -> dict:
     ndict = {}
     for key, value in table.items():
-        if nolower:
-            print(f"DEBUG: robotframework.py normalize_dict key={key} nolower={nolower}")
         if key:
-            k = normalize(key, nolower=nolower)
+            k = normalize(key)
             v = normalize(value)
             ndict[k] = v
     return ndict
@@ -172,9 +167,8 @@ class RowTokenizer:
         settings = SettingTable(testcases.set_default_template, new_lang=new_lang)
         variables = VariableTable()
         keywords = KeywordTable()
-        self.nolower = self.new_lang.code in ('bg', 'hi', 'ru', 'th', 'uk', 'zhcn', 'zhtw')
-        print(f"DEBUG: robotframework.py RowTokenizer self.new_lang.code={self.new_lang.code} self.nolower={self.nolower}")
-        normalized_headers = normalize_dict(self.new_lang.headers, nolower=self.nolower)
+        print(f"DEBUG: robotframework.py RowTokenizer self.new_lang.code={self.new_lang.code}")
+        normalized_headers = normalize_dict(self.new_lang.headers)
         self._tables = {get_key_by_value(normalized_headers, 'settings'): settings,
                         get_key_by_value(normalized_headers, 'metadata'): settings,
                         get_key_by_value(normalized_headers, 'variables'): variables,
@@ -199,7 +193,7 @@ class RowTokenizer:
         self._table.end_row()
 
     def _start_table(self, header):
-        name = normalize(header, remove='*', nolower=self.nolower)
+        name = normalize(header, remove='*')
         return self._tables.get(name, UnknownTable())
 
     def _tokenize(self, value, index, commented, separator, heading):
@@ -281,8 +275,7 @@ class Setting(Tokenizer):
         self.new_lang = new_lang
         if not self.new_lang:
             self.new_lang = Language.from_name('en')
-        self.nolower = self.new_lang.code in ('bg', 'hi', 'ru', 'th', 'uk', 'zhcn', 'zhtw')
-        self.normalized_settings = normalize_dict(self.new_lang.settings, nolower=self.nolower)
+        self.normalized_settings = normalize_dict(self.new_lang.settings)
         self._keyword_settings = (get_key_by_value(self.normalized_settings,'suitesetup'),
                                   get_key_by_value(self.normalized_settings, 'suiteteardown'),
                                   get_key_by_value(self.normalized_settings,'testsetup'),
@@ -311,7 +304,7 @@ class Setting(Tokenizer):
         if index == 1 and self._template_setter:
             self._template_setter(value)
         if index == 0:
-            normalized = normalize(value, nolower=self.nolower)
+            normalized = normalize(value)
             if normalized in self._keyword_settings:
                 self._custom_tokenizer = KeywordCall(support_assign=False)
             elif normalized in self._import_settings:
@@ -338,8 +331,7 @@ class TestCaseSetting(Setting):
         if not self.new_lang:
             self.new_lang = Language.from_name('en')
         Setting.__init__(self, template_setter=template_setter, new_lang=new_lang)
-        self.nolower = self.new_lang.code in ('bg', 'hi', 'ru', 'th', 'uk', 'zhcn', 'zhtw')
-        self.normalized_settings = normalize_dict(self.new_lang.settings, nolower=self.nolower)
+        self.normalized_settings = normalize_dict(self.new_lang.settings)
         self._keyword_settings = (get_key_by_value(self.normalized_settings, 'setup'),
                                   get_key_by_value(self.normalized_settings, 'teardown'),
                                   get_key_by_value(self.normalized_settings, 'testsetup'),
@@ -369,8 +361,7 @@ class KeywordSetting(TestCaseSetting):
         if not self.new_lang:
             self.new_lang = Language.from_name('en')
         TestCaseSetting.__init__(self, template_setter=template_setter, new_lang=new_lang)
-        self.nolower = self.new_lang.code in ('bg', 'hi', 'ru', 'th', 'uk', 'zhcn', 'zhtw')
-        self.normalized_settings = normalize_dict(self.new_lang.settings, nolower=self.nolower)
+        self.normalized_settings = normalize_dict(self.new_lang.settings)
         self._keyword_settings = (get_key_by_value(self.normalized_settings, 'teardown'),)
         self._other_settings = (get_key_by_value(self.normalized_settings, 'documentation'),
                                 get_key_by_value(self.normalized_settings, 'arguments'),
@@ -484,12 +475,11 @@ class SettingTable(_Table):
         self.new_lang = new_lang
         if not self.new_lang:
             self.new_lang = Language.from_name('en')
-        self.nolower = self.new_lang.code in ('bg', 'hi', 'ru', 'th', 'uk', 'zhcn', 'zhtw')
-        self.normalized_settings = normalize_dict(self.new_lang.settings, nolower=self.nolower)
+        self.normalized_settings = normalize_dict(self.new_lang.settings)
         print(f"DEBUG: robotframework.py SettingTable self.normalized_settings={self.normalized_settings}")
 
     def _tokenize(self, value, index):
-        if index == 0 and normalize(value, nolower=self.nolower) in (
+        if index == 0 and normalize(value) in (
                 get_key_by_value(self.normalized_settings, 'testtemplate'),
                 get_key_by_value(self.normalized_settings, 'tasktemplate')):
             self._tokenizer = Setting(template_setter=self._template_setter, new_lang=self.new_lang)
@@ -509,8 +499,7 @@ class TestCaseTable(_Table):
         self.new_lang = new_lang
         if not self.new_lang:
             self.new_lang = Language.from_name('en')
-        self.nolower = self.new_lang.code in ('bg', 'hi', 'ru', 'th', 'uk', 'zhcn', 'zhtw')
-        self.normalized_settings = normalize_dict(self.new_lang.settings, nolower=self.nolower)
+        self.normalized_settings = normalize_dict(self.new_lang.settings)
         print(f"DEBUG: robotframework.py TestCaseTable self.normalized_settings={self.normalized_settings}")
 
     @property
@@ -545,10 +534,11 @@ class TestCaseTable(_Table):
         return value.startswith('[') and value.endswith(']')
 
     def _is_template(self, value):
-        return normalize(value, nolower=self.nolower) == f"[{get_key_by_value(self.normalized_settings, 'template')}]"
+        return normalize(value) == f"[{get_key_by_value(self.normalized_settings, 'template')}]"
 
-    def _is_for_loop(self, value):
-        return normalize(value, remove=':', nolower=self.nolower) == 'for'
+    @staticmethod
+    def _is_for_loop(value):
+        return normalize(value, remove=':') == 'for'
 
     def set_test_template(self, template):
         self._test_template = self._is_template_set(template)
@@ -556,8 +546,9 @@ class TestCaseTable(_Table):
     def set_default_template(self, template):
         self._default_template = self._is_template_set(template)
 
-    def _is_template_set(self, template):
-        return normalize(template, nolower=self.nolower) not in ('', '\\', 'none', '${empty}')
+    @staticmethod
+    def _is_template_set(template):
+        return normalize(template) not in ('', '\\', 'none', '${empty}')
 
 
 class KeywordTable(TestCaseTable):
