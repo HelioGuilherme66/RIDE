@@ -12,7 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+import gc
 import string
 from io import StringIO, BytesIO
 from time import time
@@ -37,8 +37,8 @@ from ..publish.messages import RideMessage
 from ..widgets import TextField, Label, HtmlDialog
 from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
-try:  # import installed version first
-    from pygments.lexers import robotframework as robotframeworklexer
+try:  # import our modified version
+    from robotide.lib.compat.pygments import robotframework as robotframeworklexer
 except ImportError:
     robotframeworklexer = None
 
@@ -446,7 +446,7 @@ class SourceEditor(wx.Panel):
             if not editor_created:
                 self.SetSizer(VerticalSizer())
                 self._create_editor_toolbar()
-                self._create_editor_text_control()
+                self._create_editor_text_control(language=self.language)
                 self.source_editor_parent.add_tab(self, title, allow_closing=False)
 
     def _create_editor_toolbar(self):
@@ -710,7 +710,9 @@ class SourceEditor(wx.Panel):
 
     def selected(self, data):
         if not self.source_editor:
-            self._create_editor_text_control(self._stored_text)
+            self._create_editor_text_control(text=self._stored_text, language=self.language)
+        else:
+            self.source_editor.set_language(self.language)
         if self._data == data:
             return
         self.open(data)
@@ -974,8 +976,8 @@ class SourceEditor(wx.Panel):
             self.store_position()
             self._stored_text = self.source_editor.GetText()
 
-    def _create_editor_text_control(self, text=None):
-        self.source_editor = RobotDataEditor(self)
+    def _create_editor_text_control(self, text=None, language=None):
+        self.source_editor = RobotDataEditor(self, language)
         self.Sizer.add_expanding(self.source_editor)
         self.Sizer.Layout()
         if text is not None:
@@ -1823,10 +1825,10 @@ class SourceEditor(wx.Panel):
 class RobotDataEditor(stc.StyledTextCtrl):
     margin = 1
 
-    def __init__(self, parent, readonly=False):
+    def __init__(self, parent, readonly=False, language=None):
         stc.StyledTextCtrl.__init__(self, parent)
         self.parent = parent
-        print(f"DEBUG: texteditor.py RobotDataEditor __init__ language={self.parent.language}")
+        self.language = language
         self._plugin = parent.plugin
         self._settings = parent.source_editor_parent.app.settings
         self._information_popup = None
@@ -1891,6 +1893,10 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.stylizer.stylize()
         self.EmptyUndoBuffer()
         self.SetMarginWidth(self.margin, self.calc_margin_width())
+
+    def set_language(self, dlanguage):
+        self.language = dlanguage
+        self.stylizer = RobotStylizer(self, self._settings, self.readonly, self.language)
 
     @property
     def utf8_text(self):
@@ -2075,15 +2081,17 @@ class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
 
 class RobotStylizer(object):
-    def __init__(self, editor, settings, readonly=False):
+    def __init__(self, editor, settings, readonly=False, language=None):
         self.tokens = {}
         self.editor = editor
         self.lexer = None
         self.settings = settings
         self._readonly = readonly
         self._ensure_default_font_is_valid()
+        self.language = language
+        options = { 'language': self.language }
         if robotframeworklexer:
-            self.lexer = robotframeworklexer.RobotFrameworkLexer()
+            self.lexer = robotframeworklexer.RobotFrameworkLexer(**options)
         else:
             self.editor.GetParent().create_syntax_colorization_help()
         self.set_styles(self._readonly)
