@@ -2213,6 +2213,7 @@ class RobotStylizer(object):
         self.editor.ConvertEOLs(2)
         shift = 0
         for position, token, value in self.lexer.get_tokens_unprocessed(self.editor.GetText()):
+            print(f"DEBUG: texteditor.py RobotStylizer stylize token={token} value={value}")
             if wx.VERSION < (4, 1, 0):
                 self.editor.StartStyling(position + shift, 31)
             else:
