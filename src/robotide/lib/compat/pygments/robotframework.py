@@ -117,13 +117,15 @@ class RobotFrameworkLexer(Lexer):
         options['encoding'] = 'UTF-8'
         Lexer.__init__(self, **options)
         self.language = options['language']
+        set_lang = shared_memory.ShareableList(name="language")
         if not self.language:
-            self.new_lang = Language.from_name('en')
+            # DEBUG self.new_lang = Language.from_name('en')
+            self.new_lang = Language.from_name(set_lang[0])
         else:
             self.new_lang = Language.from_name(self.language[0])  # DEBUG: We consider a single language
         # print(f"DEBUG: robotframework.py after RobotFrameworkLexer _init_ mimetypes={self.mimetypes}\n"
-        #       f"options['language']={options['language']}\n"
-        #       f"self.new_lang={self.new_lang.code}")
+        #      f"options['language']={options['language']}\n"
+        #      f"self.new_lang={self.new_lang.code}")
 
     def get_tokens_unprocessed(self, text):
         row_tokenizer = RowTokenizer(self.new_lang)
@@ -162,11 +164,15 @@ class VariableTokenizer:
 
 
 class RowTokenizer:
+    new_lang = None
 
     def __init__(self, new_lang):
-        self.new_lang = new_lang
         if not self.new_lang:
-            self.new_lang = Language.from_name('en')
+            if not new_lang:
+                set_lang = shared_memory.ShareableList(name="language")
+                self.new_lang = Language.from_name(set_lang[0])
+            else:
+                self.new_lang = new_lang
         self._table = UnknownTable()
         self._splitter = RowSplitter()
         testcases = TestCaseTable(new_lang=self.new_lang)
@@ -291,7 +297,7 @@ class Setting(Tokenizer):
                        'testtimeout', 'tasktimeout')
     """
     _custom_tokenizer = None
-    # new_lang = None
+    new_lang = None
 
     def __init__(self, template_setter=None, new_lang=None):
         self._template_setter = template_setter
@@ -345,12 +351,10 @@ class Setting(Tokenizer):
     def _tokenize(self, value, index):
         if index == 1 and self._template_setter:
             self._template_setter(value)
-        if index == 1:
-            print(f"DEBUG: robotframework.py Setting _tokenize ENTER value={value}\n")
         if index == 0:
             normalized = normalize(value)
             if normalized in self._keyword_settings:
-                print(f"DEBUG: robotframework.py Setting call KeywordCall in _tokenize value={value}")
+                # print(f"DEBUG: robotframework.py Setting call KeywordCall in _tokenize value={value}")
                 self._custom_tokenizer = KeywordCall(support_assign=False)
             elif normalized in self._import_settings:
                 self._custom_tokenizer = ImportSetting()
@@ -398,16 +402,14 @@ class TestCaseSetting(Setting):
                                   get_key_by_value(self.normalized_settings, 'precondition'),  # obsolete
                                   get_key_by_value(self.normalized_settings, 'testsetup'),
                                   get_key_by_value(self.normalized_settings, 'teardown'),
-                                  get_key_by_value(self.normalized_settings, 'documentation'),
+                                  # get_key_by_value(self.normalized_settings, 'documentation'),
                                   get_key_by_value(self.normalized_settings, 'postcondition'),  # obsolete
                                   get_key_by_value(self.normalized_settings, 'template'))
-        # self._import_settings = ()
+        # DEBUG self._import_settings = ()
         self._other_settings = (get_key_by_value(self.normalized_settings, 'documentation'),
-                                get_key_by_value(self.normalized_settings, 'setup'),
-                                get_key_by_value(self.normalized_settings, 'tags'),
-                                get_key_by_value(self.normalized_settings, 'teardown'),
-                                get_key_by_value(self.normalized_settings, 'template'),
-                                get_key_by_value(self.normalized_settings, 'timeout'))
+                                get_key_by_value(self.normalized_settings, 'timeout'),
+                                get_key_by_value(self.normalized_settings, 'keywordtags'),  # New
+                                get_key_by_value(self.normalized_settings, 'tags'))
         Setting.__init__(self, template_setter=template_setter, new_lang=new_lang)
         # print(f"DEBUG: robotframework.py TestCaseSetting \n"
         #       f"self._keyword_settings={self._keyword_settings}\n"
@@ -418,13 +420,12 @@ class TestCaseSetting(Setting):
         # print(f"DEBUG: robotframework.py TestCaseSetting _tokenize self.new_lang={self.new_lang} value={value}\n")
         normalized = normalize(value)
         if normalized in self._keyword_settings:
-            print(f"DEBUG: robotframework.py TestCaseSetting call KeywordCall in _tokenize value={value}")
             self._custom_tokenizer = KeywordCall(support_assign=False)
         if index == 0:
             stype = Setting(new_lang=self.new_lang)._tokenize(value[1:-1], index)
             return [('[', SYNTAX), (value[1:-1], stype), (']', SYNTAX)]
         elif self._custom_tokenizer:
-            return self._custom_tokenizer.tokenize(value, index)
+            return self._custom_tokenizer.tokenize(value)
         return Setting(new_lang=self.new_lang)._tokenize(value, index)
 
 
@@ -442,11 +443,14 @@ class KeywordSetting(TestCaseSetting):
             else:
                 self.new_lang = new_lang
         self.normalized_settings = normalize_dict(self.new_lang.settings)
-        self._keyword_settings = (get_key_by_value(self.normalized_settings, 'teardown'),
-                                  get_key_by_value(self.normalized_settings, 'arguments'))
+        self._keyword_settings = (get_key_by_value(self.normalized_settings, 'setup'),
+                                  get_key_by_value(self.normalized_settings, 'precondition'),  # obsolete
+                                  get_key_by_value(self.normalized_settings, 'testsetup'),
+                                  get_key_by_value(self.normalized_settings, 'teardown'),
+                                  get_key_by_value(self.normalized_settings, 'return'),  # Non-existing
+                                  get_key_by_value(self.normalized_settings, 'postcondition'),  # obsolete
+                                  get_key_by_value(self.normalized_settings, 'template'))
         self._other_settings = (get_key_by_value(self.normalized_settings, 'documentation'),
-                                get_key_by_value(self.normalized_settings, 'arguments'),
-                                get_key_by_value(self.normalized_settings, 'return'),  # Non-existing
                                 get_key_by_value(self.normalized_settings, 'timeout'),
                                 get_key_by_value(self.normalized_settings, 'keywordtags'),  # New
                                 get_key_by_value(self.normalized_settings, 'tags'))
@@ -480,15 +484,15 @@ class KeywordCall(Tokenizer):
         self._assigns = 0
 
     def _tokenize(self, value, index):
-        print(f"DEBUG: robotframework.py KeywordCall _tokenize ENTER value={value} index={index}\n")
+        # print(f"DEBUG: robotframework.py KeywordCall _tokenize ENTER value={value} index={index}\n")
         if not self._keyword_found and self._is_assign(value):
             self._assigns += 1
             return SYNTAX  # VariableTokenizer tokenizes this later.
         if self._keyword_found:
             return Tokenizer._tokenize(self, value, index - self._assigns)
         self._keyword_found = True
-        print(f"DEBUG: robotframework.py KeywordCall _tokenize CALL GHERKIN value={value}\n"
-              f"new_lang={self.new_lang}")
+        # print(f"DEBUG: robotframework.py KeywordCall _tokenize CALL GHERKIN value={value}\n"
+        #       f"new_lang={self.new_lang}")
         return GherkinTokenizer(new_lang=self.new_lang).tokenize(value, KEYWORD)
 
 
@@ -672,18 +676,17 @@ class TestCaseTable(_Table):
         return index > 0 and _Table._continues(self, value, index)
 
     def _tokenize(self, value, index):
-        print(f"DEBUG: robotframework.py TestCaseTable _tokenize ENTER  "
-              f"new_lang={self.new_lang.name} value={value} index={index}\n")
+        if index == 2 and self._test_template and self._is_template_set(value):
+            return KeywordCall(new_lang=self.new_lang).tokenize(value)
         if index == 0 and value:
             self._test_template = None
-            print(f"DEBUG: robotframework.py TestCaseTable _tokenize return  GherkinTokenizer\n"
-                  f"value={value}\n")
             return GherkinTokenizer(new_lang=self.new_lang).tokenize(value, TC_KW_NAME)
         if index == 1 and self._is_setting(value):
             if self._is_template(value):
-                self._test_template = False
+                self._test_template = True
                 self._tokenizer = self._setting_class(template_setter=self.set_test_template, new_lang=self.new_lang)
             else:
+                self._test_template = None
                 self._tokenizer = self._setting_class(new_lang=self.new_lang)
         if index == 1 and self._is_for_loop(value):
             self._tokenizer = ForLoop()
@@ -700,9 +703,15 @@ class TestCaseTable(_Table):
         return value.startswith('[') and value.endswith(']')
 
     def _is_template(self, value):
-        # print(f"DEBUG: robotframework.py TestCaseTable _is_template value={value}\n"
-        #       f"self.normalized_settings={self.normalized_settings}")
-        return normalize(value) == f"[{get_key_by_value(self.normalized_settings, 'template')}]"
+        return normalize(value) in (f"[{get_key_by_value(self.normalized_settings, 'template')}]",
+                                    f"[{get_key_by_value(self.normalized_settings, 'testsetup')}]",
+                                    f"[{get_key_by_value(self.normalized_settings, 'tasksetup')}]",
+                                    f"[{get_key_by_value(self.normalized_settings, 'testteardown')}]",
+                                    f"[{get_key_by_value(self.normalized_settings, 'taskteardown')}]",
+                                    f"[{get_key_by_value(self.normalized_settings, 'testtemplate')}]",
+                                    f"[{get_key_by_value(self.normalized_settings, 'tasktemplate')}]",
+                                    f"[{get_key_by_value(self.normalized_settings, 'setup')}]",
+                                    f"[{get_key_by_value(self.normalized_settings, 'teardown')}]")
 
     @staticmethod
     def _is_for_loop(value):
