@@ -20,6 +20,7 @@ from time import time
 import wx
 from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
+from multiprocessing import shared_memory
 from .popupwindow import HtmlPopupWindow
 from . import _EDIT
 from .. import robotapi
@@ -119,12 +120,12 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._save_flag = 0
             """ DEBUG: To be used in Localization
             """
-            if hasattr(datafile_controller, 'preamble'):  # DEBUG: Is failing at resource files
-                print(f"DEBUG: texteditor _open preamble={datafile_controller.preamble}")
+            # if hasattr(datafile_controller, 'preamble'):  # DEBUG: Is failing at resource files
+            #     print(f"DEBUG: texteditor _open preamble={datafile_controller.preamble}")
             if hasattr(datafile_controller, 'language'):
                 self._doc_language = datafile_controller.language
                 self._editor.language = datafile_controller.language
-                print(f"DEBUG: texteditor _open language={datafile_controller.language}")
+                # print(f"DEBUG: texteditor _open language={datafile_controller.language}")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
 
@@ -690,7 +691,7 @@ class SourceEditor(wx.Panel):
         self.reset()
         self._data = data
         self.language = self._data._doc_language
-        print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
+        # print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
         try:
             if isinstance(self._data.wrapper_data, ResourceFileController):
                 self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
@@ -704,7 +705,9 @@ class SourceEditor(wx.Panel):
             self.datafile = self.plugin.datafile
         if not self.source_editor:
             self._stored_text = self._data.content
+            self._create_editor_text_control(text=self._stored_text, language=self.language)
         else:
+            self.source_editor.set_language(self.language)
             self.source_editor.set_text(self._data.content)
             self.set_editor_caret_position()
 
@@ -2088,8 +2091,14 @@ class RobotStylizer(object):
         self.settings = settings
         self._readonly = readonly
         self._ensure_default_font_is_valid()
-        self.language = language
+        try:
+            set_lang = shared_memory.ShareableList(name="language")
+        except AttributeError:  # Unittests fails here
+            set_lang = []
+        set_lang[0] = language[0] if language is not None else 'en'
+        self.language = [set_lang[0]]
         options = { 'language': self.language }
+        # print(f"DEBUG: texteditor.py RobotStylizer _init_ language={self.language}\n")
         if robotframeworklexer:
             self.lexer = robotframeworklexer.RobotFrameworkLexer(**options)
         else:
@@ -2213,7 +2222,7 @@ class RobotStylizer(object):
         self.editor.ConvertEOLs(2)
         shift = 0
         for position, token, value in self.lexer.get_tokens_unprocessed(self.editor.GetText()):
-            print(f"DEBUG: texteditor.py RobotStylizer stylize token={token} value={value}")
+            # print(f"DEBUG: texteditor.py RobotStylizer stylize token={token} value={value}")
             if wx.VERSION < (4, 1, 0):
                 self.editor.StartStyling(position + shift, 31)
             else:

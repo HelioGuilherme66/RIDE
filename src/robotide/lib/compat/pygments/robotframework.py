@@ -48,7 +48,8 @@ import re
 
 from pygments.lexer import Lexer
 from pygments.token import Token
-from robotide.lib.compat.parsing.language import Language, get_settings_for, get_headers_for, get_english_label
+from multiprocessing import shared_memory
+from robotide.lib.compat.parsing.language import Language
 
 __all__ = ['RobotFrameworkLexer']
 
@@ -120,9 +121,9 @@ class RobotFrameworkLexer(Lexer):
             self.new_lang = Language.from_name('en')
         else:
             self.new_lang = Language.from_name(self.language[0])  # DEBUG: We consider a single language
-        print(f"DEBUG: robotframework.py after RobotFrameworkLexer _init_ mimetypes={self.mimetypes}\n"
-              f"options['language']={options['language']}\n"
-              f"self.new_lang={self.new_lang.code}")
+        # print(f"DEBUG: robotframework.py after RobotFrameworkLexer _init_ mimetypes={self.mimetypes}\n"
+        #       f"options['language']={options['language']}\n"
+        #       f"self.new_lang={self.new_lang.code}")
 
     def get_tokens_unprocessed(self, text):
         row_tokenizer = RowTokenizer(self.new_lang)
@@ -192,8 +193,8 @@ class RowTokenizer:
                 commented = True
             elif index == 0 and value.startswith('*'):
                 self._table = self._start_table(value)
-                print(f"DEBUG: robotframework.py RowTokenizer tokenize HEADING value={value}\n"
-                      f"self._table={self._table} lang={self.new_lang}\n")
+                # print(f"DEBUG: robotframework.py RowTokenizer tokenize HEADING value={value}\n"
+                #       f"self._table={self._table} lang={self.new_lang}\n")
                 heading = True
             yield from self._tokenize(value, index, commented,
                                       separator, heading)
@@ -204,8 +205,8 @@ class RowTokenizer:
         return self._tables.get(name, UnknownTable())
 
     def _tokenize(self, value, index, commented, separator, heading):
-        print(f"DEBUG: robotframework.py RowTokenizer _tokenize lang={self.new_lang}\n"
-              f"{value=}, {index=}, {commented=}, {separator=}, {heading=}")
+        # print(f"DEBUG: robotframework.py RowTokenizer _tokenize lang={self.new_lang}\n"
+        #       f"{value=}, {index=}, {commented=}, {separator=}, {heading=}")
         if commented:
             yield value, COMMENT
         elif separator:
@@ -247,7 +248,8 @@ class Tokenizer:
     def __init__(self, new_lang=None):
         if not self.new_lang:
             if not new_lang:
-                self.new_lang = Language.from_name('en')
+                set_lang = shared_memory.ShareableList(name="language")
+                self.new_lang = Language.from_name(set_lang[0])
             else:
                 self.new_lang = new_lang
         self._index = 0
@@ -295,7 +297,8 @@ class Setting(Tokenizer):
         self._template_setter = template_setter
         if not self.new_lang:
             if not new_lang:
-                self.new_lang = Language.from_name('en')
+                set_lang = shared_memory.ShareableList(name="language")
+                self.new_lang = Language.from_name(set_lang[0])
             else:
                 self.new_lang = new_lang
         # print(f"DEBUG: robotframework.py Setting self.new_lang={self.new_lang}\n")
@@ -304,7 +307,7 @@ class Setting(Tokenizer):
                                   get_key_by_value(self.normalized_settings, 'suiteprecondition'),
                                   get_key_by_value(self.normalized_settings, 'suiteteardown'),
                                   get_key_by_value(self.normalized_settings, 'suitepostcondition'),
-                                  get_key_by_value(self.normalized_settings, 'documentation'),
+                                  # get_key_by_value(self.normalized_settings, 'documentation'),
                                   get_key_by_value(self.normalized_settings, 'arguments'),  # Keyword setting
                                   get_key_by_value(self.normalized_settings,'teardown'),  # Keyword setting
                                   get_key_by_value(self.normalized_settings,'testsetup'),
@@ -318,10 +321,7 @@ class Setting(Tokenizer):
                                   get_key_by_value(self.normalized_settings, 'setup'),
                                   get_key_by_value(self.normalized_settings, 'precondition'),  # obsolete
                                   get_key_by_value(self.normalized_settings, 'postcondition'),  # obsolete
-                                  get_key_by_value(self.normalized_settings, 'template'),
-                                  get_key_by_value(self.normalized_settings, 'testtimeout'),
-                                  get_key_by_value(self.normalized_settings, 'tasktimeout'),
-                                  get_key_by_value(self.normalized_settings, 'timeout'))
+                                  get_key_by_value(self.normalized_settings, 'template'))
         self._import_settings = (get_key_by_value(self.normalized_settings,'library'),
                                  get_key_by_value(self.normalized_settings,'resource'),
                                  get_key_by_value(self.normalized_settings,'variables'))
@@ -345,9 +345,12 @@ class Setting(Tokenizer):
     def _tokenize(self, value, index):
         if index == 1 and self._template_setter:
             self._template_setter(value)
+        if index == 1:
+            print(f"DEBUG: robotframework.py Setting _tokenize ENTER value={value}\n")
         if index == 0:
             normalized = normalize(value)
             if normalized in self._keyword_settings:
+                print(f"DEBUG: robotframework.py Setting call KeywordCall in _tokenize value={value}")
                 self._custom_tokenizer = KeywordCall(support_assign=False)
             elif normalized in self._import_settings:
                 self._custom_tokenizer = ImportSetting()
@@ -364,7 +367,8 @@ class ImportSetting(Tokenizer):
     def __init__(self, new_lang=None):
         if not self.new_lang:
             if not new_lang:
-                self.new_lang = Language.from_name('en')
+                set_lang = shared_memory.ShareableList(name="language")
+                self.new_lang = Language.from_name(set_lang[0])
             else:
                 self.new_lang = new_lang
         self.normalized_settings = normalize_dict(self.new_lang.settings)
@@ -385,7 +389,8 @@ class TestCaseSetting(Setting):
     def __init__(self, template_setter=None, new_lang=None):
         if not self.new_lang:
             if not new_lang:
-                self.new_lang = Language.from_name('en')
+                set_lang = shared_memory.ShareableList(name="language")
+                self.new_lang = Language.from_name(set_lang[0])
             else:
                 self.new_lang = new_lang
         self.normalized_settings = normalize_dict(self.new_lang.settings)
@@ -393,6 +398,7 @@ class TestCaseSetting(Setting):
                                   get_key_by_value(self.normalized_settings, 'precondition'),  # obsolete
                                   get_key_by_value(self.normalized_settings, 'testsetup'),
                                   get_key_by_value(self.normalized_settings, 'teardown'),
+                                  get_key_by_value(self.normalized_settings, 'documentation'),
                                   get_key_by_value(self.normalized_settings, 'postcondition'),  # obsolete
                                   get_key_by_value(self.normalized_settings, 'template'))
         # self._import_settings = ()
@@ -403,16 +409,22 @@ class TestCaseSetting(Setting):
                                 get_key_by_value(self.normalized_settings, 'template'),
                                 get_key_by_value(self.normalized_settings, 'timeout'))
         Setting.__init__(self, template_setter=template_setter, new_lang=new_lang)
-        print(f"DEBUG: robotframework.py TestCaseSetting \n"
-              f"self._keyword_settings={self._keyword_settings}\n"
-              f"self._import_settings={self._import_settings}\n"
-              f"self._other_settings={self._other_settings}\n")
+        # print(f"DEBUG: robotframework.py TestCaseSetting \n"
+        #       f"self._keyword_settings={self._keyword_settings}\n"
+        #       f"self._import_settings={self._import_settings}\n"
+        #       f"self._other_settings={self._other_settings}\n")
 
     def _tokenize(self, value, index):
-        print(f"DEBUG: robotframework.py TestCaseSetting _tokenize self.new_lang={self.new_lang} value={value}\n")
+        # print(f"DEBUG: robotframework.py TestCaseSetting _tokenize self.new_lang={self.new_lang} value={value}\n")
+        normalized = normalize(value)
+        if normalized in self._keyword_settings:
+            print(f"DEBUG: robotframework.py TestCaseSetting call KeywordCall in _tokenize value={value}")
+            self._custom_tokenizer = KeywordCall(support_assign=False)
         if index == 0:
             stype = Setting(new_lang=self.new_lang)._tokenize(value[1:-1], index)
             return [('[', SYNTAX), (value[1:-1], stype), (']', SYNTAX)]
+        elif self._custom_tokenizer:
+            return self._custom_tokenizer.tokenize(value, index)
         return Setting(new_lang=self.new_lang)._tokenize(value, index)
 
 
@@ -425,7 +437,8 @@ class KeywordSetting(TestCaseSetting):
     def __init__(self, template_setter=None, new_lang=None):
         if not self.new_lang:
             if not new_lang:
-                self.new_lang = Language.from_name('en')
+                set_lang = shared_memory.ShareableList(name="language")
+                self.new_lang = Language.from_name(set_lang[0])
             else:
                 self.new_lang = new_lang
         self.normalized_settings = normalize_dict(self.new_lang.settings)
@@ -457,14 +470,17 @@ class KeywordCall(Tokenizer):
     def __init__(self, support_assign=True, new_lang=None):
         if not self.new_lang:
             if not new_lang:
-                self.new_lang = Language.from_name('en')
+                set_lang = shared_memory.ShareableList(name="language")
+                self.new_lang = Language.from_name(set_lang[0])
             else:
                 self.new_lang = new_lang
+        # print(f"DEBUG: robotframework.py KeywordCall __init__ lang={self.new_lang}")
         Tokenizer.__init__(self, new_lang=self.new_lang)
         self._keyword_found = not support_assign
         self._assigns = 0
 
     def _tokenize(self, value, index):
+        print(f"DEBUG: robotframework.py KeywordCall _tokenize ENTER value={value} index={index}\n")
         if not self._keyword_found and self._is_assign(value):
             self._assigns += 1
             return SYNTAX  # VariableTokenizer tokenizes this later.
@@ -483,22 +499,26 @@ class GherkinTokenizer(object):
     def __init__(self, new_lang=None):
         if not self.new_lang:
             if not new_lang:
-                self.new_lang = Language.from_name('en')
+                set_lang = shared_memory.ShareableList(name="language")
+                self.new_lang = Language.from_name(set_lang[0])
             else:
                 self.new_lang = new_lang
         self.normalized_bdd_prefixes = normalize_pipe_list(list(self.new_lang.bdd_prefixes))
-        print(f"DEBUG: robotframework.py GherkinTokenizer _tokenize DEFINITION GHERKIN"
-              f" BDDPREFIXES={self.new_lang.bdd_prefixes}\n"
-              f"PATTERN='^({self.normalized_bdd_prefixes}) '"
-              f"new_lang={self.new_lang}")
-        self._gherkin_prefix = re.compile(f"^({self.normalized_bdd_prefixes}) ", re.IGNORECASE)
+        # print(f"DEBUG: robotframework.py GherkinTokenizer _tokenize DEFINITION GHERKIN"
+        #       f" BDDPREFIXES={self.new_lang.bdd_prefixes}\n"
+        #       f"PATTERN='^({self.normalized_bdd_prefixes}) '"
+        #       f"new_lang={self.new_lang}")
+        self._gherkin_prefix = re.compile(f'^({self.normalized_bdd_prefixes}) ', re.IGNORECASE)
 
     def tokenize(self, value, token):
-        print(f"DEBUG: robotframework.py GherkinTokenizer tokenize value={value} token={token}")
+        # print(f"DEBUG: robotframework.py GherkinTokenizer tokenize ENTER self._gherkin_prefix={self._gherkin_prefix}:"
+        #       f"\nvalue={value} token={token}")
         match = self._gherkin_prefix.match(value)
         if not match:
+            # print(f"DEBUG: robotframework.py GherkinTokenizer tokenize NO MATCH value={value} token={token}")
             return [(value, token)]
         end = match.end()
+        # print(f"DEBUG: robotframework.py GherkinTokenizer tokenize RETURN MATCH GHERKIN value={value[:end]} rest={value[end:]}")
         return [(value[:end], GHERKIN), (value[end:], token)]
 
 
@@ -533,7 +553,8 @@ class _Table:
     def __init__(self, prev_tokenizer=None, new_lang=None):
         if not self.new_lang:
             if not new_lang:
-                self.new_lang = Language.from_name('en')
+                set_lang = shared_memory.ShareableList(name="language")
+                self.new_lang = Language.from_name(set_lang[0])
             else:
                 self.new_lang = new_lang
         self._tokenizer = self._tokenizer_class()
@@ -589,7 +610,8 @@ class SettingTable(_Table):
         self._template_setter = template_setter
         if not self.new_lang:
             if not new_lang:
-                self.new_lang = Language.from_name('en')
+                set_lang = shared_memory.ShareableList(name="language")
+                self.new_lang = Language.from_name(set_lang[0])
             else:
                 self.new_lang = new_lang
         self.normalized_settings = normalize_dict(self.new_lang.settings)
@@ -597,13 +619,13 @@ class SettingTable(_Table):
         # print(f"DEBUG: robotframework.py SettingTable self.normalized_settings={self.normalized_settings}")
 
     def _tokenize(self, value, index):
-        print(f"DEBUG: robotframework.py SettingTable ENTER _tokenize "
-              f"self.normalized_settings={self.normalized_settings}\n"
-              f"value={value} new_lang={self.new_lang}")
+        # print(f"DEBUG: robotframework.py SettingTable ENTER _tokenize "
+        #       f"self.normalized_settings={self.normalized_settings}\n"
+        #       f"value={value} new_lang={self.new_lang}")
         if index == 0 and normalize(value) in (
                 get_key_by_value(self.normalized_settings, 'metadata'),  # DEBUG
                 get_key_by_value(self.normalized_settings, 'template'),
-                # get_key_by_value(self.normalized_settings, 'documentation'),
+                get_key_by_value(self.normalized_settings, 'documentation'),
                 get_key_by_value(self.normalized_settings, 'suitesetup'),
                 get_key_by_value(self.normalized_settings, 'suiteteardown'),
                 get_key_by_value(self.normalized_settings,'testsetup'),
@@ -631,7 +653,8 @@ class TestCaseTable(_Table):
     def __init__(self, prev_tokenizer=None, new_lang=None):
         if not self.new_lang:
             if not new_lang:
-                self.new_lang = Language.from_name('en')
+                set_lang = shared_memory.ShareableList(name="language")
+                self.new_lang = Language.from_name(set_lang[0])
             else:
                 self.new_lang = new_lang
         # print(f"DEBUG: robotframework.py TestCaseTable __init__ self.new_lang={self.new_lang}")
@@ -641,8 +664,7 @@ class TestCaseTable(_Table):
 
     @property
     def _tokenizer_class(self):
-        if self._test_template or (self._default_template and
-                                   self._test_template is not False):
+        if self._test_template or (self._default_template and self._test_template is not False):
             return TemplatedKeywordCall
         return KeywordCall
 
@@ -650,10 +672,13 @@ class TestCaseTable(_Table):
         return index > 0 and _Table._continues(self, value, index)
 
     def _tokenize(self, value, index):
-        if index == 0:
-            if value:
-                self._test_template = None
-            return GherkinTokenizer().tokenize(value, TC_KW_NAME)
+        print(f"DEBUG: robotframework.py TestCaseTable _tokenize ENTER  "
+              f"new_lang={self.new_lang.name} value={value} index={index}\n")
+        if index == 0 and value:
+            self._test_template = None
+            print(f"DEBUG: robotframework.py TestCaseTable _tokenize return  GherkinTokenizer\n"
+                  f"value={value}\n")
+            return GherkinTokenizer(new_lang=self.new_lang).tokenize(value, TC_KW_NAME)
         if index == 1 and self._is_setting(value):
             if self._is_template(value):
                 self._test_template = False
@@ -664,6 +689,10 @@ class TestCaseTable(_Table):
             self._tokenizer = ForLoop()
         if index == 1 and self._is_empty(value):
             return [(value, SYNTAX)]
+        if index == 1 and not self._is_setting(value):
+            test_gherkin = GherkinTokenizer(new_lang=self.new_lang).tokenize(value, KEYWORD)
+            if test_gherkin[0][1] in (GHERKIN, KEYWORD):
+                return test_gherkin
         return _Table._tokenize(self, value, index)
 
     @staticmethod
@@ -671,8 +700,8 @@ class TestCaseTable(_Table):
         return value.startswith('[') and value.endswith(']')
 
     def _is_template(self, value):
-        print(f"DEBUG: robotframework.py TestCaseTable _is_template value={value}\n"
-              f"self.normalized_settings={self.normalized_settings}")
+        # print(f"DEBUG: robotframework.py TestCaseTable _is_template value={value}\n"
+        #       f"self.normalized_settings={self.normalized_settings}")
         return normalize(value) == f"[{get_key_by_value(self.normalized_settings, 'template')}]"
 
     @staticmethod
