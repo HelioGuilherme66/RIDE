@@ -31,6 +31,7 @@ from .. import version
 from ..utils.versioncomparator import cmp_versions, parse_version
 from ..widgets import ButtonWithHandler, HtmlWindow, RIDEDialog
 from ..postinstall.__main__ import MessageDialog
+from ..log import LogOutput
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -150,20 +151,34 @@ def _add_content_to_clipboard(content):
 def do_upgrade(command):
     _add_content_to_clipboard(command)
     # print("DEBUG: Here will be the installation step.")
+    # Create Notebook tab and log output
+    log = [command, '\n']
+    new_frame = wx.Frame(None)
+    new_frame.SetSize((800, 600))
+    new_frame.SetTitle('Upgrading')
+    new_frame.CenterOnScreen()
+    log_panel = LogOutput(new_frame)
+    new_frame.Show()
+    log_panel.update_log(log)
     my_pid = psutil.Process()
     my_pip = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    result = None
+    cresult = None
     count = 0
-    while not result and count < 60:
+    while not cresult and count < 60:
         count += 1
         outs, errs = my_pip.communicate()
         # DEBUG: Add output to a notebook tab
-        print(f"{outs}\n")
+        line = f"{outs}\n"
+        print(f"{line}")
+        log.append(line)
         if errs:
-            print(f"\nERRORS: {errs}\n")
+            line = f"\nERRORS: {errs}\n"
+            print(f"{line}")
+            log.append(line)
             errs = None
-        result = my_pip.returncode
-        if result == 0:
+        log_panel.update_log(log)
+        cresult = my_pip.returncode
+        if cresult == 0:
             break
         """ DEBUG: need to get outs line by line
         except subprocess.SubprocessError:
@@ -175,7 +190,7 @@ def do_upgrade(command):
             print(f"{errs}\n")
         """
         time.sleep(1)
-    if result != 0:
+    if cresult != 0:
         _askyesno(_("Failed to Upgrade"), f"{SPC}{_('An error occurred when installing new version')}",
                   wx.GetActiveWindow())
         return False
@@ -187,6 +202,7 @@ def do_upgrade(command):
     """
     _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{my_pid.pid}){SPC}",
               wx.GetActiveWindow())
+    new_frame.Destroy()
 
 
 class LocalHtmlWindow(HtmlWindow):
@@ -263,3 +279,10 @@ class UpdateDialog(RIDEDialog):
         __ = event
         _add_content_to_clipboard(self._command)
         do_upgrade(self._command)
+
+
+if __name__ == '__main__':
+    VERSION = '2.1dev40'    # version.VERSION
+    app = wx.App(0)
+    result = upgrade_from_dev_dialog(VERSION)
+    app.MainLoop()
