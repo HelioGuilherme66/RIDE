@@ -167,6 +167,7 @@ class KeywordEditor(GridEditor, Plugin):
         self._counter = 0  # Workaround for double delete actions
         self._dcells = None  # Workaround for double delete actions
         self._icells = None  # Workaround for double insert actions
+        self._spacing = self._plugin.global_settings['txt number of spaces']
         self._namespace_updated = None
         self.InheritAttributes()
         self.col_label_element = None
@@ -237,6 +238,9 @@ class KeywordEditor(GridEditor, Plugin):
         self._set_cells()
         self.SetDefaultEditor(ContentAssistCellEditor(self._plugin, self._controller))
         self._set_fonts()
+        wx.CallAfter(self.SetGridCursor, (0, 0))  # To make cells colorized as soon we select keywords or tests
+        wx.CallAfter(self.highlight, '')
+        # wx.CallAfter(self.GoToCell,  (0, 0))  # To make cells colorized as soon we select keywords or tests
 
     def _set_fonts(self, update_cells=False):
         _ = update_cells
@@ -300,6 +304,11 @@ class KeywordEditor(GridEditor, Plugin):
     def on_select_cell(self, event):
         self._cell_selected = True
         GridEditor.on_select_cell(self, event)
+        rows = self._is_whole_row_selection()
+        if rows:
+            self.ClearSelection()
+            self.GoToCell(rows[0], 0)
+            wx.CallAfter(self.SelectBlock, rows[0], 0, rows[-1], self.NumberCols-1)
         self._colorize_grid()
         event.Skip()
 
@@ -642,8 +651,9 @@ class KeywordEditor(GridEditor, Plugin):
 
     # DEBUG @requires_focus
     def on_cut(self, event=None):
-        self._clipboard_handler.cut()
-        self.on_delete(event)
+        # self._clipboard_handler.cut()
+        self.cut()
+        # self.on_delete(event)
 
     def on_delete(self, event=None):
         __ = event
@@ -665,10 +675,26 @@ class KeywordEditor(GridEditor, Plugin):
         if not self.IsCellEditControlShown():
             data = self._clipboard_handler.clipboard_content()
             if data:
-                data = [[data]] if isinstance(data, str) else data
+                if isinstance(data, str):
+                    data = [[self._string_to_cell(data)]]
+                elif isinstance(data, list) and isinstance(data[0], list):
+                    main_data = []
+                    for ldata in data:
+                        new_data = []
+                        for rdata in ldata:
+                            sdata = self._string_to_cell(rdata)
+                            new_data.append(sdata)
+                        main_data.append(new_data)
+                    data = main_data
                 self._execute(command_class(self.selection.topleft, data))
 
-    # DEBUG @requires_focus
+    def _string_to_cell(self, content: str) -> str:
+        spaces = ' ' * self._spacing
+        cells = content.replace(' | ', spaces).replace(spaces, '\t').strip()  # TODO: Make this cells
+        return cells
+
+    # DEBUG
+    @requires_focus
     def on_insert(self, event=None):
         __ = event
         self._execute_clipboard_command(insert_area)

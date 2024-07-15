@@ -115,10 +115,13 @@ class GridEditor(grid.Grid):
 
     def copy(self):
         # print("DEBUG: GridBase copy() called\n")
+        self._clipboard_handler.clear()
+        self._clipboard_handler.clipboard_content()
         self._clipboard_handler.copy()
 
     def cut(self):
         self._update_history()
+        self._clipboard_handler.clear()
         self._clipboard_handler.cut()
         self._clear_selected_cells()
 
@@ -149,12 +152,14 @@ class GridEditor(grid.Grid):
     def _is_whole_row_selection(self):
         return self.SelectedRows
 
+    def _is_whole_column_selection(self):
+        return self.SelectedCols
+
     def get_cell_edit_control(self):
         return self.GetCellEditor(*self.selection.cell).GetControl()
 
     def get_selected_content(self):
-        return self._get_block_content(self.selection.rows(),
-                                       self.selection.cols())
+        return self._get_block_content(self.selection.rows(), self.selection.cols())
 
     def get_single_selection_content(self):
         cells = self.get_selected_content()
@@ -192,7 +197,7 @@ class GridEditor(grid.Grid):
         self.EndBatch()
 
     def on_select_cell(self, event):
-        if self._is_whole_row_selection():
+        if self._is_whole_row_selection() or self._is_whole_column_selection():
             self.SelectBlock(self.selection.topleft.row, self.selection.topleft.col,
                              self.selection.bottomright.row, self.selection.bottomright.col,
                              addToSelected=True)
