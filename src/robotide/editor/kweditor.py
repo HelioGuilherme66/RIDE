@@ -652,8 +652,9 @@ class KeywordEditor(GridEditor, Plugin):
     # DEBUG @requires_focus
     def on_cut(self, event=None):
         # self._clipboard_handler.cut()
+        # print(f"DEBUG: kweditor.py on_cut called event {str(event)}")
         self.cut()
-        # self.on_delete(event)
+        self.on_delete(event)
 
     def on_delete(self, event=None):
         __ = event
@@ -787,7 +788,9 @@ class KeywordEditor(GridEditor, Plugin):
         elif keycode == ord('C'):
             self.on_copy(event)
         elif keycode == ord('X'):
-            self.on_cut(event)
+            # print("DEBUG: kweditor.py _call_ctrl_function Pressed CTRL-X")
+            # self.on_cut(event)
+            return False
         elif keycode == ord('V'):
             self.on_paste(event)
         elif keycode == ord('Z'):

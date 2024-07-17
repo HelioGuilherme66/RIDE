@@ -126,8 +126,10 @@ class GridEditor(grid.Grid):
         self._clear_selected_cells()
 
     def _clear_selected_cells(self):
+        self.BeginBatch()
         for row, col in self.selection.cells():
-            self.write_cell(row, col, '', update_history=False)
+            self.write_cell(row, col, '')  # , update_history=False)
+        self.EndBatch()
 
     def paste(self):
         self._update_history()
