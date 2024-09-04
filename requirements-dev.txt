@@ -15,3 +15,4 @@ pytest-order
 # asciidoc3
 # Include also normal project requirements.
 -r requirements.txt
+setuptools>=70.0.0 # not directly required, pinned by Snyk to avoid a vulnerability
