@@ -64,9 +64,9 @@ class PreferenceEditor(wx.Dialog):
         self.font.SetPointSize(self._general_settings[FONT_SIZE])
         self.SetFont(self.font)
         self.SetBackgroundColour(Colour(self._general_settings['background']))
-        self.SetOwnBackgroundColour(Colour(self._general_settings['secondary background']))
+        # self.SetOwnBackgroundColour(Colour(self._general_settings['secondary background']))
         self.SetForegroundColour(Colour(self._general_settings['foreground']))
-        self.SetOwnForegroundColour(Colour(self._general_settings['secondary foreground']))
+        # self.SetOwnForegroundColour(Colour(self._general_settings['secondary foreground']))
         self._closing = False
 
         panels = preferences.preference_panels
@@ -84,9 +84,9 @@ class PreferenceEditor(wx.Dialog):
             sizer.Add(self._sw, 1, wx.EXPAND)
             self._tree.SetFont(self.font)
             self._tree.SetBackgroundColour(Colour(self._general_settings['background']))
-            self._tree.SetOwnBackgroundColour(Colour(self._general_settings['secondary background']))
+            # self._tree.SetOwnBackgroundColour(Colour(self._general_settings['secondary background']))
             self._tree.SetForegroundColour(Colour(self._general_settings['foreground']))
-            self._tree.SetOwnForegroundColour(Colour(self._general_settings['secondary foreground']))
+            # self._tree.SetOwnForegroundColour(Colour(self._general_settings['secondary foreground']))
             self._tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_selection)
             self._populate_tree(panels)
             self._tree.SelectItem(self._tree.GetFirstChild(self._tree.GetRootItem())[0])

@@ -57,9 +57,9 @@ def read_fonts(fixed=False):
 
 def set_colors(element, bk_color, fg_color):
     element.SetBackgroundColour(bk_color)
-    element.SetOwnBackgroundColour(bk_color)
+    # element.SetOwnBackgroundColour(bk_color)
     element.SetForegroundColour(fg_color)
-    element.SetOwnForegroundColour(fg_color)
+    # element.SetOwnForegroundColour(fg_color)
 
 
 class EditorPreferences(PreferencesPanel):

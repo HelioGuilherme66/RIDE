@@ -768,8 +768,10 @@ class TestRunnerPlugin(Plugin):
         toolbar = wx.ToolBar(parent, wx.ID_ANY,
                              style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT | wx.TB_NODIVIDER | wx.TB_DOCKABLE)
         # print(f"DEBUG: toolbar before {toolbar.UseBackgroundColour()}")
-        toolbar.SetOwnBackgroundColour(self._mysettings.color_background)
-        toolbar.SetOwnForegroundColour(self._mysettings.color_foreground)
+        toolbar.SetBackgroundColour(self._mysettings.color_background)
+        toolbar.SetForegroundColour(self._mysettings.color_foreground)
+        # toolbar.SetOwnBackgroundColour(self._mysettings.color_background)
+        # toolbar.SetOwnForegroundColour(self._mysettings.color_foreground)
         profile_label = Label(toolbar, label=_("Execution Profile:  "))
         choices = self._test_runner.get_profile_names()
         self.choice = wx.Choice(toolbar, wx.ID_ANY, choices=choices)
@@ -861,6 +863,8 @@ class TestRunnerPlugin(Plugin):
             sizer.ShowItems(False)
             sizer.Clear()
             sizer.Add(self._profile_toolbar, 0, wx.EXPAND)
+            self._config_panel.SetBackgroundColour(self._mysettings.color_background)
+            self._config_panel.SetForegroundColour(self._mysettings.color_foreground)
             sizer.ShowItems(True)
             self._config_panel.Parent.Layout()
 
@@ -875,7 +879,8 @@ class TestRunnerPlugin(Plugin):
         self._local_toolbar = self._build_local_toolbar(self.panel)
         self._runner_toolbar = self._build_runner_toolbar(self.panel)
         self._config_panel = self._build_config_panel(self.panel)
-
+        self._config_panel.SetBackgroundColour(self._mysettings.color_background)
+        self._config_panel.SetForegroundColour(self._mysettings.color_foreground)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self._local_toolbar, 0, wx.EXPAND | wx.LEFT | wx.TOP | wx.RIGHT, 5)
         sizer.Add(wx.StaticLine(self.panel), 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 7)
@@ -897,16 +902,16 @@ class TestRunnerPlugin(Plugin):
         """Builds the configuration panel for this plugin"""
         panel = wx.Panel(parent, wx.ID_ANY,
                          style=wx.BORDER_NONE | wx.TAB_TRAVERSAL)
-        panel.SetBackgroundColour(self._mysettings.color_background)
-        panel.SetForegroundColour(self._mysettings.color_foreground)
+        # panel.SetBackgroundColour(self._mysettings.color_background)
+        # panel.SetForegroundColour(self._mysettings.color_foreground)
         vertical_sizer = wx.BoxSizer(wx.VERTICAL)
         panel.SetSizer(vertical_sizer)
         return panel
 
     def _build_output_panel(self, parent):
         panel = wx.Panel(parent)
-        panel.SetBackgroundColour(self._mysettings.color_background)
-        panel.SetForegroundColour(self._mysettings.color_foreground)
+        # panel.SetBackgroundColour(self._mysettings.color_background)
+        # panel.SetForegroundColour(self._mysettings.color_foreground)
         self._progress_bar = ProgressBar(panel, self.fail_color, self.pass_color, self.skip_color)
         self._console_log_panel, self._console_log_ctrl = \
             self._create_collapsible_pane(panel, _('Console log'),
@@ -916,7 +921,8 @@ class TestRunnerPlugin(Plugin):
             self._create_collapsible_pane(panel, _('Message log'),
                                           self.show_message_log,
                                           self.on_message_log_pane_changed)
-
+        self._console_log_ctrl.SetBackgroundColour(self._mysettings.color_background)
+        self._message_log_ctrl.SetForegroundColour(self._mysettings.color_foreground)
         panel_sizer = wx.BoxSizer(wx.VERTICAL)
         panel_sizer.Add(self._progress_bar, 0, wx.EXPAND | wx.BOTTOM, 10)
         panel_sizer.Add(self._console_log_panel, int(self.show_console_log), wx.EXPAND)
@@ -955,6 +961,7 @@ class TestRunnerPlugin(Plugin):
             style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
         collapsible_pane.SetBackgroundColour(self._mysettings.color_background)
         collapsible_pane.SetForegroundColour(self._mysettings.color_foreground)
+        collapsible_pane.Refresh()
         if expand:
             collapsible_pane.Expand()
         collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED,
@@ -965,11 +972,12 @@ class TestRunnerPlugin(Plugin):
         pane.SetBackgroundColour(self._mysettings.color_background)
         pane.SetForegroundColour(self._mysettings.color_foreground)
         text_ctrl = self._create_text_ctrl(pane)
-        text_ctrl.SetBackgroundColour(self._mysettings.color_background)
-        text_ctrl.SetForegroundColour(self._mysettings.color_foreground)
+        # text_ctrl.SetBackgroundColour(self._mysettings.color_background)
+        # text_ctrl.SetForegroundColour(self._mysettings.color_foreground)
         vertical_sizer = wx.BoxSizer(wx.VERTICAL)
         vertical_sizer.Add(text_ctrl, 1, wx.EXPAND)
         pane.SetSizer(vertical_sizer)
+        pane.Refresh()
         return collapsible_pane, text_ctrl
 
     def _create_text_ctrl(self, parent):

@@ -54,7 +54,7 @@ class ImportPreferences(PreferencesPanel):
         if IS_WINDOWS:
             label.SetForegroundColour(self.foreground_color)
             label.SetBackgroundColour(self.background_color)
-            label.SetOwnBackgroundColour(self.background_color)
-            label.SetOwnForegroundColour(self.foreground_color)
+            # label.SetOwnBackgroundColour(self.background_color)
+            # label.SetOwnForegroundColour(self.foreground_color)
         self.Sizer.Add(label)
         self.Sizer.Add(editor, flag=wx.EXPAND)
