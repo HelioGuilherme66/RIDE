@@ -110,7 +110,6 @@ def obtain_language(existing, content):
         set_lang[0] = 'en'
     return [set_lang[0]]
 
-
 def _get_lang(set_lang:list, adoc_lang: list) -> list:
     for idx, lang in enumerate(adoc_lang):
         try:
@@ -120,7 +119,6 @@ def _get_lang(set_lang:list, adoc_lang: list) -> list:
             raise e
         set_lang[idx] = get_rf_lang_code(mlang.code) # .code.replace('-','_')
     return set_lang
-
 
 def get_rf_lang_code(lang: (str, list), iso: bool=False) -> str:
     if isinstance(lang, list):
@@ -141,7 +139,6 @@ def get_rf_lang_code(lang: (str, list), iso: bool=False) -> str:
         return _four_letters_code(clean_lang)
     return code.title()
 
-
 def _four_letters_code(clean_lang: list) -> str:
     variant = {"bs": "BA", "cs": "CZ", "da": "DK", "en": "US", "hi": "IN", "ja": "JP",
                "ko": "KR", "sv": "SE", "uk": "UA", "vi": "VN"}
@@ -154,7 +151,6 @@ def _four_letters_code(clean_lang: list) -> str:
             return f"{code}_{code.upper()}"
     else:
         return f"{code}_{clean_lang[1].upper()}"
-
 
 def _get_lang_classes(old_lang: str, new_lang: str) -> (Language, Language):
     try:
@@ -169,7 +165,6 @@ def _get_lang_classes(old_lang: str, new_lang: str) -> (Language, Language):
         new_lang_class = Language.from_name('English')
     return old_lang_class, new_lang_class
 
-
 def _check_lang_error(node_info: tuple, m_text) -> (bool, str):
     signal_correct_language = False
     if node_info != ('', ) and node_info[0] == 'ERROR':
@@ -182,7 +177,6 @@ def _check_lang_error(node_info: tuple, m_text) -> (bool, str):
             m_text = m_text.replace(LANG_SETTING + tail, LANG_SETTING + 'English' + '  # ' + tail)
             signal_correct_language = True
     return signal_correct_language, m_text
-
 
 def _final_lang_transformation(signal_correct_language: bool, old_lang_name: str, new_lang_name: str, m_text: str) -> str:
     if signal_correct_language:
@@ -336,7 +330,6 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
     m_text = transform_standard_keywords(new_lang_name, m_text)
     return _final_lang_transformation(signal_correct_language, old_lang_name, new_lang_name, m_text)
 
-
 def transform_standard_keywords(new_lang: str, content: str) -> str:
     """
     This function must be called after proper setting of parameters old_lang, new_lang. From transform_doc_language.
@@ -352,9 +345,6 @@ def transform_standard_keywords(new_lang: str, content: str) -> str:
         return content
 
     path_to_exclusion = f"{PATH_EXCLUSIONS}/../localization/{lang_code}/restore_keywords.json"
-    print(f"DEBUG: texteditor.py transform_standard_keywords path={path_to_exclusion}\n"
-          f"{lang_code=}\n"
-          f"{mlang.code=}")
     import json
 
     try:
@@ -1362,7 +1352,6 @@ class SourceEditor(wx.Panel):
                 self.source_editor.DeleteRange(pos, self.tab_size)
 
     def indent_block(self):
-        # print(f"DEBUG: TextEditor SourceEdior ident_block focus={self.is_focused()}")
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         end_line = self.source_editor.LineFromPosition(end)
@@ -1374,7 +1363,6 @@ class SourceEditor(wx.Panel):
             self.source_editor.SetSelection(pos, pos)
             self.source_editor.SetInsertionPoint(pos)
             self.write_ident()
-            # print(f"DEBUG: TextEditor SourceEdior ident_block loop line={line}")
             line += 1
         tnew_start = self.source_editor.GetLineEndPosition(ini_line) - len(self.source_editor.GetLine(ini_line)) + 1
         tnew_end = self.source_editor.GetLineEndPosition(end_line)
@@ -1566,7 +1554,6 @@ class SourceEditor(wx.Panel):
         # self.source_editor.set_text(self._data.content)
 
     def on_editor_key(self, event):
-        # print(f"DEBUG: TextEditor on_editor_key event={event} focus={self.is_focused()}")
         if not self.is_focused():
             event.Skip()
             return
@@ -1599,7 +1586,6 @@ class SourceEditor(wx.Panel):
         :param event:
         :return:
         """
-        # print(f"DEBUG: TextEditor on_key_down event={event} focus={self.is_focused()}")
         if not self.is_focused():
             event.Skip()
             return
