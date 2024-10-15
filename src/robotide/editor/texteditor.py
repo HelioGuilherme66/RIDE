@@ -115,7 +115,6 @@ def _get_lang(set_lang:list, adoc_lang: list) -> list:
         try:
             mlang = Language.from_name(lang.replace('_', '-').strip())
         except ValueError as e:
-            print(f"DEBUG: TextEditor, could not find Language:{lang}")
             raise e
         set_lang[idx] = get_rf_lang_code(mlang.code) # .code.replace('-','_')
     return set_lang
@@ -1594,6 +1593,9 @@ class SourceEditor(wx.Panel):
         # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}")
         if event.GetKeyCode() == wx.WXK_DELETE:
             self.mark_file_dirty(self.source_editor.GetModify())
+            # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}"
+            #       f"\n KEY=DELETE DIRTY:{self.dirty}")
+            event.Skip()
             return
         if raw_key != wx.WXK_CONTROL:  # We need to clear doc as soon as possible
             self.source_editor.hide_kw_doc()
