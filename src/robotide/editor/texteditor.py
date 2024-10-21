@@ -1590,72 +1590,29 @@ class SourceEditor(wx.Panel):
             return
         keycode = event.GetUnicodeKey()
         raw_key = event.GetKeyCode()
+        keycontrol = event.ControlDown()
+        keyshift = event.ShiftDown()
+        eskip = event.Skip
         # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}")
-        if event.GetKeyCode() == wx.WXK_DELETE:
+        if raw_key == wx.WXK_DELETE or keycode == wx.WXK_DELETE:
             self.mark_file_dirty(self.source_editor.GetModify())
-            # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}"
-            #       f"\n KEY=DELETE DIRTY:{self.dirty}")
+            print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}"
+                  f"\n KEY=DELETE DIRTY:{self.dirty}")
             event.Skip()
             return
         if raw_key != wx.WXK_CONTROL:  # We need to clear doc as soon as possible
             self.source_editor.hide_kw_doc()
-        if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
-            if self._showing_list:  # Allows to use Tab for keyword selection
-                self._showing_list = False
-                wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
-                event.Skip()
-                self.mark_file_dirty(self.source_editor.GetModify())
-                return
-            selected = self.source_editor.GetSelection()
-            if selected[0] == selected[1]:
-                self.write_ident()
-            else:
-                self.indent_block()
-            self.mark_file_dirty(self.source_editor.GetModify())
+        if self._key_tab_action(eskip, keycode, keycontrol, keyshift):
             return
-        elif event.GetKeyCode() == wx.WXK_TAB and event.ShiftDown():
-            selected = self.source_editor.GetSelection()
-            if selected[0] == selected[1]:
-                pos = self.source_editor.GetCurrentPos()
-                self.source_editor.SetCurrentPos(max(0, pos - self.tab_size))
-                self.store_position()
-                if not event.ControlDown():  # No text selection
-                    pos = self.source_editor.GetCurrentPos()
-                    self.source_editor.SetSelection(pos, pos)
-            else:
-                self.deindent_block()
-                self.mark_file_dirty(self.source_editor.GetModify())
-                return
-        elif event.GetKeyCode() in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
-            if not self._showing_list:
-                self.auto_indent()
-            else:
-                self._showing_list = False
-                wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
-                event.Skip()
-            self.mark_file_dirty(self.source_editor.GetModify())
+        if self._key_return_action(event):
             return
-        elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown():
-            self.execute_variable_creator(list_variable=(keycode == ord('2')),
-                                          dict_variable=(keycode == ord('5')))
-            self.store_position()
-            self.mark_file_dirty(self.source_editor.GetModify())
-        elif ((not IS_WINDOWS and not IS_MAC and keycode in (ord('v'), ord('V'))
-             or keycode in (ord('d'), ord('D'))) and event.ControlDown() and not event.ShiftDown()):
-            # We need to ignore this in Linux, because it does double-action
-            # We need to ignore Ctl-D because Scintilla does Duplicate line
-            self.mark_file_dirty(self.source_editor.GetModify())
+        if self._key_create_vars_actions(event, keycode):
             return
-        elif keycode in (ord('g'), ord('G')) and event.ControlDown():
-            if event.ShiftDown():
-                wx.CallAfter(self.on_find_backwards, event)
-            else:
-                wx.CallAfter(self.on_find, event)
+        if self._key_paste_delete_actions(event, keycode):
             return
-        elif event.ControlDown() and raw_key == wx.WXK_CONTROL:
-            # This must be the last branch to activate actions before doc
-            # DEBUG: coords = self._get_screen_coordinates()
-            self.source_editor.show_kw_doc()
+        if self._key_find_actions(event, keycode):
+            return
+        self._key_show_doc(event, raw_key)
         event.Skip()
 
         # These commands are duplicated by global actions
@@ -1678,6 +1635,74 @@ class SourceEditor(wx.Panel):
             else:
                 self.execute_uncomment(event)
         """
+
+    def _key_tab_action(self, eskip, keycode, keycontrol, keyshift):
+        if keycode == wx.WXK_TAB and not keycontrol and not keyshift:
+            if self._showing_list:  # Allows to use Tab for keyword selection
+                self._showing_list = False
+                wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
+                # event.Skip()
+                eskip()
+                self.mark_file_dirty(self.source_editor.GetModify())
+                return True
+            selected = self.source_editor.GetSelection()
+            if selected[0] == selected[1]:
+                self.write_ident()
+            else:
+                self.indent_block()
+            self.mark_file_dirty(self.source_editor.GetModify())
+            print(f"DEBUG: TextEditor _key_tab_action end TAB selection={selected}")
+        elif keycode == wx.WXK_TAB and keyshift:
+            selected = self.source_editor.GetSelection()
+            if selected[0] == selected[1]:
+                pos = self.source_editor.GetCurrentPos()
+                self.source_editor.SetCurrentPos(max(0, pos - self.tab_size))
+                self.store_position()
+                if not keycontrol:  # No text selection
+                    pos = self.source_editor.GetCurrentPos()
+                    self.source_editor.SetSelection(pos, pos)
+            else:
+                self.deindent_block()
+                self.mark_file_dirty(self.source_editor.GetModify())
+            print(f"DEBUG: TextEditor _key_tab_action end SHIFT-TAB selection={selected}")
+
+    def _key_return_action(self, event):
+        if event.GetKeyCode() in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
+            if not self._showing_list:
+                self.auto_indent()
+            else:
+                self._showing_list = False
+                wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
+                event.Skip()
+            self.mark_file_dirty(self.source_editor.GetModify())
+
+    def _key_create_vars_actions(self, event, keycode):
+        if keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown():
+            self.execute_variable_creator(list_variable=(keycode == ord('2')),
+                                          dict_variable=(keycode == ord('5')))
+            self.store_position()
+            self.mark_file_dirty(self.source_editor.GetModify())
+
+    def _key_paste_delete_actions(self, event, keycode):
+        if ((not IS_WINDOWS and not IS_MAC and keycode in (ord('v'), ord('V'))
+             or keycode in (ord('d'), ord('D')))
+                and event.ControlDown() and not event.ShiftDown()):
+            # We need to ignore this in Linux, because it does double-action
+            # We need to ignore Ctl-D because Scintilla does Duplicate line
+            self.mark_file_dirty(self.source_editor.GetModify())
+
+    def _key_find_actions(self, event, keycode):
+        if keycode in (ord('g'), ord('G')) and event.ControlDown():
+            if event.ShiftDown():
+                wx.CallAfter(self.on_find_backwards, event)
+            else:
+                wx.CallAfter(self.on_find, event)
+
+    def _key_show_doc(self, event, raw_key):
+        if event.ControlDown() and raw_key == wx.WXK_CONTROL:
+            # This must be the last branch to activate actions before doc
+            # DEBUG: coords = self._get_screen_coordinates()
+            self.source_editor.show_kw_doc()
 
     @staticmethod
     def _get_screen_coordinates():
