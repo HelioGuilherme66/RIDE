@@ -652,8 +652,11 @@ class _Keywords(object):
         # print(f"DEBUG: namespace.py _Keywords get embedded kws {self.embedded_keywords}"
         #       f"\nseaching keyword={kw_name}")
         for regexp in self.embedded_keywords:
-            if regexp.match(kw_name) or (bdd_name and regexp.match(bdd_name)):
-                return self.embedded_keywords[regexp]
+            try:
+                if regexp.match(kw_name) or (bdd_name and regexp.match(bdd_name)):
+                    return self.embedded_keywords[regexp]
+            except AttributeError:
+                pass
         return None
 
     def _get_bdd_name(self, kw_name):
