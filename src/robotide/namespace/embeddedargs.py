@@ -24,6 +24,7 @@ class EmbeddedArgsHandler(object):
             print('DEBUG: Found normal arguments in embedded arguments keyword.')
         # print(f'DEBUG: embeddedargs.py EmbeddedArgsHandler keyword={keyword.name} longname={keyword.longname}')
         self.name_regexp, self.embedded_args = EmbeddedArgumentParser().parse(keyword.name)
-        self.longname_regexp, _ = EmbeddedArgumentParser().parse(keyword.longname)
+        if hasattr(keyword, 'longname'):
+            self.longname_regexp, _ = EmbeddedArgumentParser().parse(keyword.longname)
         if not self.embedded_args:
             raise TypeError('Must have embedded arguments')

@@ -635,7 +635,8 @@ class _Keywords(object):
         try:
             handler = EmbeddedArgsHandler(kw)
             self.embedded_keywords[handler.name_regexp] = kw
-            self.embedded_keywords[handler.longname_regexp] = kw
+            if hasattr(handler, 'longname_regexp'):
+                self.embedded_keywords[handler.longname_regexp] = kw
             # print(f"DEBUG: namespace.py _add_embedded add kw={kw.name} longname={kw.longname}\n"
             #       f"handler.name_regexp={handler.name_regexp}")
         except TypeError:
