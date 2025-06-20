@@ -59,7 +59,7 @@ on:
 
 jobs:
   fedora:
-    name: Fedora
+    name: Fedora py313
     runs-on: ubuntu-22.04
     if: ${{ !contains(github.ref, '/debian/') }}
     container:
@@ -80,6 +80,7 @@ jobs:
         # sudo dnf downgrade -y mesa* --refresh
         git submodule update --init --recursive
         pip install -r requirements-dev.txt
+        pip install robotframework
     - name: Run tests
       run: |
         Xvfb &
@@ -91,12 +92,13 @@ jobs:
       run: |
         git submodule update --init --recursive
         pip install .
-        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
+        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
         sleep 10
         killall xvfb-run
+      
   debian:
     name: Debian
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
     if: ${{ !contains(github.ref, '/fedora/') }}
@@ -111,21 +113,31 @@ jobs:
     - name: Setup environment
       run: |
         sudo apt update -y
-        sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4
+        sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4 wxpython-tools
         git submodule update --init --recursive
-        pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
         pip install -r requirements-dev.txt
-        pip install --force -U setuptools==69.5.1
+        pip install robotframework
     - name: Run tests
       run: |
         Xvfb &
         export DISPLAY=:0
         git submodule update --init --recursive
         invoke test-ci
+    - uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        include-hidden-files: true
+        path: |
+          .coverage.1
+          .coverage.2
+          .coverage-reports/coverage.xml
+          .coverage-reports/htmlcov
     - name: Install and run
       run: |
         git submodule update --init --recursive
+        pip install -r requirements-dev.txt
+        pip install robotframework
         pip install .
-        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
+        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
         sleep 10
         killall xvfb-run

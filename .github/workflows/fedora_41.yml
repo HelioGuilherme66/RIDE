@@ -1,0 +1,110 @@
+name: Linux
+on:
+  push:
+    branches-ignore:
+      - '**/sources/**'
+      - '**/windows/**'
+      - '**/macos/**'
+    paths-ignore:
+      - '.github/workflows/sources.yml'
+      - '.github/workflows/sonar.yml'
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/windows.yml'
+      - 'tools/**'
+      - 'rtest/**'
+      - 'doc/**'
+      - '.appveyor.yml'
+      - '.coveragerc'
+      - '.gitattributes'
+      - '.pylintrc'
+      - '.travis.yml'
+      - '.whitesource'
+      - 'AUTHORS.txt'
+      - 'BUILD.rest'
+      - 'CHANGELOG.adoc'
+      - 'CONTRIBUTING.adoc'
+      - 'COPYRIGHT.txt'
+      - 'LICENSE.txt'
+      - 'MANIFEST.in'
+      - 'README.adoc'
+      - 'README.rest'
+      - 'rfgen.py'
+      - 'tox.ini'
+  pull_request:
+    paths-ignore:
+      - '.github/workflows/sources.yml'
+      - '.github/workflows/sonar.yml'
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/windows.yml'
+      - 'tools/**'
+      - 'rtest/**'
+      - 'doc/**'
+      - '.appveyor.yml'
+      - '.coveragerc'
+      - '.gitattributes'
+      - '.pylintrc'
+      - '.travis.yml'
+      - '.whitesource'
+      - 'AUTHORS.txt'
+      - 'BUILD.rest'
+      - 'CHANGELOG.adoc'
+      - 'CONTRIBUTING.adoc'
+      - 'COPYRIGHT.txt'
+      - 'LICENSE.txt'
+      - 'MANIFEST.in'
+      - 'README.adoc'
+      - 'README.rest'
+      - 'rfgen.py'
+      - 'tox.ini'
+
+jobs:
+  fedora_py314:
+    name: Fedora py314
+    runs-on: ubuntu-22.04
+    if: ${{ !contains(github.ref, '/debian/') }}
+    container:
+      image: helioguilherme/fedora:fedora-41
+      options: --privileged -u root
+    steps:
+    - name: Configure container environment
+      run: |
+        sudo dnf update -y
+        sudo dnf install -y git
+        git config --global --add safe.directory ${GITHUB_WORKSPACE}
+    - uses: actions/checkout@v3.3.0
+      with:
+        submodules: false
+    - name: Setup environment
+      run: |
+        git submodule update --init --recursive
+        source /home/wxpy/venvs/Py314/bin/activate
+        pip install https://robotframework.transformidea.com/RIDE/packages/Linux/Fedora_41/wxpython-4.2.4a15946+920a2bde-cp314-cp314-linux_x86_64.whl
+        pip install -r requirements-dev.txt
+        pip install robotframework
+        sudo dnf install -y xorg-x11-server-Xvfb psmisc
+    - name: Run tests
+      run: |
+        Xvfb &
+        export DISPLAY=:0
+        export GITHUB_ACTIONS=True
+        git submodule update --init --recursive
+        source /home/wxpy/venvs/Py314/bin/activate
+        invoke test-ci
+    - uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        include-hidden-files: true
+        path: |
+          .coverage.1
+          .coverage.2
+          .coverage-reports/coverage.xml
+          .coverage-reports/htmlcov
+    - name: Install and run
+      run: |
+        git submodule update --init --recursive
+        source /home/wxpy/venvs/Py314/bin/activate
+        pip install .
+        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
+        sleep 10
+        killall xvfb-run
+ 

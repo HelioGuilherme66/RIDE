@@ -46,6 +46,7 @@ class Namespace(object):
         PUBLISHER.subscribe(self._setting_changed, RideSettingsChanged)
 
     def _init_caches(self):
+        # print(f"DEBUG: namespace.py Namespace _init_caches {self.settings}")
         self._lib_cache = LibraryCache(
             self.settings, self.update, self._library_manager)
         self._resource_factory = ResourceFactory(self.settings)
@@ -646,9 +647,12 @@ class _Keywords(object):
                     set_lang = shared_memory.ShareableList(new_lang, name="language")
                 except FileExistsError:  # Other instance created file
                     set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                try:
+                    self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
+                except ValueError:
+                    self.new_lang = Language.from_name(new_lang[0])
             else:
-                self.new_lang = new_lang
+                self.new_lang = Language.from_name(new_lang[0])
         self.normalized_bdd_prefixes = utils.normalize_pipe_list(list(self.new_lang.bdd_prefixes), spaces=False)
         self.gherkin_prefix = re.compile(fr'^({self.normalized_bdd_prefixes}) (.*)', re.IGNORECASE)
         self.keywords = robotapi.NormalizedDict(ignore=['_'], caseless=caseless)

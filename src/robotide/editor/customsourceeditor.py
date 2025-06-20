@@ -24,6 +24,7 @@ import wx
 import wx.stc as stc
 from robotide.editor.pythoneditor import PythonSTC
 from wx import Colour
+from ..widgets import ImageProvider
 
 # ---------------------------------------------------------------------------
 # This is how you pre-establish a file filter so that the dialog
@@ -211,16 +212,6 @@ class SourceCodeEditor(PythonSTC):
         self.Bind(wx.stc.EVT_STC_CHANGE, event_handler)
 
 
-# ---------------------------------------------------------------------------
-# Constants for module versions
-
-modOriginal = 0
-modModified = 1
-modDefault = modOriginal
-
-# ---------------------------------------------------------------------------
-
-
 def is_utf8_strict(data):
     try:
         decoded = data.decode('UTF-8')
@@ -238,7 +229,8 @@ class CodeEditorPanel(wx.Panel):
     def __init__(self, parent, main_frame, filepath=None):
         self.log = sys.stdout  # From FileDialog
         self.path = filepath
-        wx.Panel.__init__(self, parent, size=(1, 1))
+        self.parent = parent
+        wx.Panel.__init__(self, parent, size=wx.Size(1, 1))
         self.mainFrame = main_frame
         self.editor = SourceCodeEditor(self, options={'tab markers':True, 'fold symbols':2})
         self.editor.RegisterModifiedEvent(self.on_code_modified)
@@ -383,6 +375,7 @@ class CodeEditorPanel(wx.Panel):
             self.path = filepath
             # self.log.write('%s\n' % source)
             self.LoadSource(source)  # Just the last file
+            self.parent.SetTitle(filepath)
         # Compare this with the debug above; did we change working dirs?
         # self.log.WriteText("CWD: %s\n" % os.getcwd())
         # self.log.write("CWD: %s\n" % os.getcwd())
@@ -394,7 +387,7 @@ class CodeEditorPanel(wx.Panel):
     def on_button2(self, evt):
         # Create the dialog. In this case the current directory is forced as the starting
         # directory for the dialog, and no default file name is forced. This can easilly
-        # be changed in your program. This is an 'save' dialog.
+        # be changed in your program. This is a 'save' dialog.
         #
         # Unlike the 'open dialog' example found elsewhere, this example does NOT
         # force the current working directory to change if the user chooses a different
@@ -447,86 +440,6 @@ class CodeEditorPanel(wx.Panel):
 
 # ---------------------------------------------------------------------------
 
-def opj(filepath):
-    """Convert paths to the platform-specific separator"""
-    st = os.path.join(*tuple(filepath.split('/')))
-    # HACK: on Linux, a leading / gets lost...
-    if filepath.startswith('/'):
-        st = '/' + st
-    return st
-
-
-def get_data_dir():
-    """
-    Return the standard location on this platform for application data
-    """
-    sp = wx.StandardPaths.Get()
-    return sp.GetUserDataDir()
-
-
-def get_modified_directory():
-    """
-    Returns the directory where modified versions of the Code files
-    are stored
-    """
-    return os.path.join(get_data_dir(), "modified")
-
-
-def get_modified_filename(name):
-    """
-    Returns the filename of the modified version of the specified Code
-    """
-    if not name.endswith(".py"):
-        name = name + ".py"
-    return os.path.join(get_modified_directory(), name)
-
-
-def get_original_filename(name):
-    """
-    Returns the filename of the original version of the specified Code
-    """
-    if not name.endswith(".py"):
-        name = name + ".py"
-
-    if os.path.isfile(name):
-        return name
-
-    original_dir = os.getcwd()
-    list_dir = os.listdir(original_dir)
-    # Loop over the content of the Code directory
-    for item in list_dir:
-        if not os.path.isdir(item):
-            # Not a directory, continue
-            continue
-        dir_file = os.listdir(item)
-        # See if a file called "name" is there
-        if name in dir_file:
-            return os.path.join(item, name)
-
-    # We must return a string...
-    return ""
-
-
-def does_modified_exist(name):
-    """Returns whether the specified Code has a modified copy"""
-    if os.path.exists(get_modified_filename(name)):
-        return True
-    else:
-        return False
-
-
-def get_config():
-    if not os.path.exists(get_data_dir()):
-        os.makedirs(get_data_dir())
-
-    config = wx.FileConfig(
-        localFilename=os.path.join(get_data_dir(), "options"))
-    return config
-
-
-_platformNames = ["wxMSW", "wxGTK", "wxMac"]
-
-
 def main(filepath, frame=None):
     __name__ = f'Code Editor: {filepath}'
     app = wx.App()
@@ -534,6 +447,11 @@ def main(filepath, frame=None):
     if frame is None:
         frame = wx.Frame(None)
     CodeEditorPanel(frame, None, filepath)
+    image_provider = ImageProvider()
+    frame.SetTitle(filepath)
+    frame.SetSize(wx.Size(800, 600))
+    frame.SetIcon(wx.Icon(image_provider.RIDE_ICON))
+    frame.CenterOnScreen()
     frame.Show(True)
     app.MainLoop()
 # ----------------------------------------------------------------------------
