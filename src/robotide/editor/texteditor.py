@@ -562,11 +562,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         # self.jump = True
         next_datafile_controller = message.item and message.item.datafile_controller
         if self._editor.datafile_controller == message.item.datafile_controller == next_datafile_controller:
-            # print(f"DEBUG: OnTreeSelection Same FILE item type={type(message.item)}\n"
-            #       f"value of {self._save_flag=}")
             position = self._editor.locate_tree_item(message.item)
             self._editor.store_position()
-            wx.CallAfter(self._editor.source_editor.SetSelection, position[0], position[1])
+            if position:
+                wx.CallAfter(self._editor.source_editor.SetSelection, position[0], position[1])
             self.jump = True
             return
         if self._editor.dirty and not self._apply_txt_changes_to_model(auto=False):
@@ -1518,6 +1517,7 @@ class SourceEditor(wx.Panel):
             self.source_editor.SetSelection(pos, pos)
         self.source_editor.NewLine()
         while tsize > 0:
+            # print(f"DEBUG: _add_auto_indent write_ident {tsize=}")
             self.write_ident()
             tsize -= 1
 
@@ -1858,6 +1858,7 @@ class SourceEditor(wx.Panel):
                 return
             selected = self.source_editor.GetSelection()
             if selected[0] == selected[1]:
+                # print("DEBUG: on_key_down TAB write_ident")
                 self.write_ident()
             else:
                 self.indent_block()
