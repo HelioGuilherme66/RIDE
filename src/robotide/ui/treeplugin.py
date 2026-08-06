@@ -35,8 +35,9 @@ from ..publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged, RideIt
                        RideDataFileRemoved, RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved,
                        RideVariableAdded, RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,
                        RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet, RideItemNameChanged,
-                       RideSettingsChanged)
+                       RideSaving, RideSettingsChanged)
 from ..controller.ctrlcommands import MoveTo
+from ..controller.filecontrollers import TestDataDirectoryController
 from ..pluginapi import Plugin
 from ..action import ActionInfo
 from ..widgets import PopupCreator
@@ -74,6 +75,7 @@ class TreePlugin(Plugin):
         self.settings = self._app.settings.config_obj['Plugins']['Tree']
         self._parent = None
         self._tree = self.tree
+        self._last_selection_path = []
         """
         self._tree.SetBackgroundColour(Colour(200, 222, 40))
         self._tree.SetOwnBackgroundColour(Colour(200, 222, 40))
@@ -111,6 +113,7 @@ class TreePlugin(Plugin):
                                         doc=_('Show Test Suites tree panel'),
                                         position=2))
         self.subscribe(self.on_tree_selection, RideTreeSelection)
+        self.subscribe(self.on_saving, RideSaving)
         self.subscribe(self.reload_tree, RideSettingsChanged)
         # self.save_setting('opened', True)
         # DEBUG: Add toggle checkbox to menu View/Hide Tree
@@ -169,11 +172,11 @@ class TreePlugin(Plugin):
     def is_focused(self):
         return self._tree.HasFocus()
 
-    def populate(self, model):
+    def populate(self, model, select_first=True):
         if model:  # DEBUG: Always populate ... and model != self._model:
             self._model = model
         # print(f"DEBUG: Populating model... {self._model}\n\n")
-        self._tree.populate(self._model)
+        self._tree.populate(self._model, select_first=select_first)
 
     def set_editor(self, editor):
         self._tree.set_editor(editor)
@@ -260,8 +263,27 @@ class TreePlugin(Plugin):
         self.save_setting('docked', state)  # Docked == True
 
     def on_tree_selection(self, message):
+        # Applying editor changes to a directory can drop nodes from the tree before it
+        # is repopulated, so the selection is remembered here, while it is still valid,
+        # rather than read back in on_saving when it may already be gone.
+        path = self._tree.get_label_path(message.node)
+        if path:
+            self._last_selection_path = path
         if self.is_focused():
             self._tree.tree_node_selected(message.item)
+
+    def on_saving(self, message):
+        if not isinstance(message.datafile, TestDataDirectoryController):
+            return
+        # Saving a directory's __init__.robot invalidates every controller, so the whole
+        # tree has to be rebuilt. The selection is restored by node labels because the
+        # controller objects it pointed at do not survive the rebuild.
+        selection_path = self._last_selection_path or self._tree.get_label_path()
+        # Only let populate() select the first node when there is nothing to restore,
+        # otherwise its selection would land after ours and undo it.
+        wx.CallAfter(self.populate, self._model, not selection_path)
+        if selection_path:
+            wx.CallAfter(self._tree.select_node_by_label_path, selection_path)
 
     def _update_tree(self, event=None):
         __ = event
@@ -520,10 +542,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             return SKIPPED_IMAGE_INDEX
         return ROBOT_IMAGE_INDEX
 
-    def populate(self, model):
+    def populate(self, model, select_first=True):
         self._clear_tree_data()
         self._populate_model(model)
-        self.refresh_view()
+        self.refresh_view(select_first=select_first)
         self.SetFocus()  # Needed for keyboard shortcuts
 
     def _clear_tree_data(self):
@@ -579,7 +601,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
     def _suite_added(self, message):
         self.add_datafile(message.parent, message.suite)
 
-    def refresh_view(self):
+    def refresh_view(self, select_first=True):
         self.Show()
         self.Refresh()
         # print(f"DEBUG: Called Tree._refresh_view {self.GetParent().GetClassName()}")
@@ -587,7 +609,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             self.Expand(self._resource_root)
         if self.datafile_nodes:
             self._expand_and_render_children(self.datafile_nodes[0])
-            wx.CallAfter(self.SelectItem, self.datafile_nodes[0])
+            if select_first:
+                wx.CallAfter(self.SelectItem, self.datafile_nodes[0])
         self.Update()
         # print(f"DEBUG: Called Tree._refresh_view parent={self.GetParent().GetClassName()} self={self}")
 
@@ -815,6 +838,53 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         if node and node != self.GetSelection():
             self.SelectItem(node)
         return node
+
+    def get_label_path(self, node=None):
+        """Returns the labels of ``node``'s ancestors and of the node itself.
+
+        ``node`` defaults to the current selection. The list is ordered from the topmost
+        node down and is empty when there is no such node. It identifies a node without
+        holding on to any controller, so it stays valid across a repopulate. The dirty
+        marker is stripped because a node normally becomes clean between capturing the
+        path and restoring it."""
+        node = node if node is not None else self.GetSelection()
+        path = []
+        while node and node != self.root:
+            path.insert(0, self._undirty_label(self.GetItemText(node)))
+            node = self.GetItemParent(node)
+        return path
+
+    def select_node_by_label_path(self, path):
+        """Selects the node reached by following ``path``, a list of node labels.
+
+        Children are rendered on demand while descending. If the path cannot be
+        followed to its end, the deepest node that did match is selected, so a node
+        that was removed from the data leaves its parent selected."""
+        node = self.root
+        for label in path:
+            if node != self.root:
+                self._expand_and_render_children(node)
+            child = self._find_child_with_label(node, label)
+            if not child:
+                break
+            node = child
+        if node == self.root:
+            return None
+        self.EnsureVisible(node)
+        self.SelectItem(node)
+        return node
+
+    def _find_child_with_label(self, node, label):
+        item, cookie = self.GetFirstChild(node)
+        while item:
+            if utils.eq(self._undirty_label(self.GetItemText(item)), label):
+                return item
+            item, cookie = self.GetNextChild(node, cookie)
+        return None
+
+    @staticmethod
+    def _undirty_label(text):
+        return text[1:] if text.startswith('*') else text
 
     def select_user_keyword_node(self, uk):
         parent_node = self._get_datafile_node(uk.parent.parent)
