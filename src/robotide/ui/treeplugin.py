@@ -37,7 +37,6 @@ from ..publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged, RideIt
                        RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet, RideItemNameChanged,
                        RideSaving, RideSettingsChanged)
 from ..controller.ctrlcommands import MoveTo
-from ..controller.filecontrollers import TestDataDirectoryController
 from ..pluginapi import Plugin
 from ..action import ActionInfo
 from ..widgets import PopupCreator
@@ -273,6 +272,7 @@ class TreePlugin(Plugin):
             self._tree.tree_node_selected(message.item)
 
     def on_saving(self, message):
+        from ..controller.filecontrollers import TestDataDirectoryController
         if not isinstance(message.datafile, TestDataDirectoryController):
             return
         # Saving a directory's __init__.robot invalidates every controller, so the whole
