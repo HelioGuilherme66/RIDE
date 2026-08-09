@@ -17,7 +17,7 @@ six==1.17.0 --hash=sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be89
 uritemplate==4.2.0 --hash=sha256:962201ba1c4edcab02e60f9a0d3821e82dfc5d2d6662a21abd533879bdb8a686 # dependency from github3.py
 memory-profiler==0.61.0 --hash=sha256:400348e61031e3942ad4d4109d18753b2fb08c2f6fb8290671c5513a34182d84
 pylint==2.15.10 --hash=sha256:9df0d07e8948a1c3ffa3b6e2d7e6e63d9fb457c5da5b961ed63106594780cc7e
-astroid==4.0.0a0 --hash=sha256:52f39653876c7dec3e3afd4c2696920e05c83832b9737afc21928f2d2eb7a753 # dependency from pylint
+astroid==4.0.0a0 --hash=sha256:c73ad2752e4e47d93a280521125925f435173da481d5f43794783701243d9354 # dependency from pylint
 dill==0.4.1 --hash=sha256:1e1ce33e978ae97fcfcff5638477032b801c46c7c65cf717f95fbc2248f79a9d # dependency from pylint
 isort==8.0.1 --hash=sha256:28b89bc70f751b559aeca209e6120393d43fbe2490de0559662be7a9787e3d75 # dependency from pylint
 mccabe==0.7.0 --hash=sha256:6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e # dependency from pylint
