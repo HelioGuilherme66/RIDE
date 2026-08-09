@@ -46,7 +46,7 @@ pygments==2.20.0 --hash=sha256:81a9e26dd42fd28a23a2d169d86d7ac03b46e2f8b59ed4698
 pypubsub==4.0.7 --hash=sha256:89c3e274e634fea19de881bb45152815d9c1aaa0120215f85200ba56843372f4
 psutil==7.2.2 --hash=sha256:076a2d2f923fd4821644f5ba89f059523da90dc9014e85f8e45a5774ca5bc6f9
 packaging==26.3
-chardet==7.5.1 --hash=sha256:36843a0e9e3196142e317806d5ca29ab0bb714de2315897124a018438cc535a3
+chardet==7.5.1 --hash=sha256:9c378ccd8c0fab30171ed7c54d501f72c4294d9b98c71ea1ff7852aa9ccac399
 robotframework==7.4.2 --hash=sha256:6e80f84cdc997bdde2abb6b729ac3531457ecf6d2e41abfb87a541877ab367bf
 # To make a relase you need asciidoc3 (a2x3)
 # asciidoc3
