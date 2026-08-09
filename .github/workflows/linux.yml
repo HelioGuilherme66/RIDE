@@ -80,7 +80,7 @@ jobs:
           # sudo dnf downgrade -y mesa* --refresh
           git submodule update --init --recursive
           python -m pip install --only-binary :all: -U pip
-          pip install --require-hashes --only-binary :all: -r requirements-dev3.13.txt
+          pip install --require-hashes --only-binary :all: -r requirements-devF3.13.txt
           # pip install --require-hashes --only-binary :all: robotframework
       - name: Run tests
         run: |
