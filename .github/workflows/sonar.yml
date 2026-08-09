@@ -31,7 +31,7 @@ jobs:
         run: |
              minor=$(echo "${{ matrix.python-version }}" | cut -d . -f 2)
              git submodule update --init --recursive
-             python -m pip install --require-hashes --only-binary :all: -U pip
+             python -m pip install --only-binary :all: -U pip
              pip install --require-hashes --only-binary :all: -r requirements-dev3.$minor.txt
              # pip install --require-hashes --only-binary :all: robotframework
       - name: Run Xvfb
