@@ -26,8 +26,7 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Install invoke and any other packages
-        run: |
-             pip install --only-binary :all: coverage invoke pytest
+        run: pip install coverage invoke pytest
       - name: Install RIDE dependencies
         run: |
              minor=$(echo "${{ matrix.python-version }}" | cut -d . -f 2)
