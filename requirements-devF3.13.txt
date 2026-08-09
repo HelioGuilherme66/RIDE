@@ -25,7 +25,7 @@ tomlkit==0.15.1 --hash=sha256:177a05aece5a8ca5266fd3c448abb47b8d352f09d477d3ca83
 pytest==9.1.1 --hash=sha256:37a86b45efb9a47a61a36449063e8e18d0cab3161329fc099eb21783169c4f0c
 iniconfig==2.3.0 --hash=sha256:f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12 # dependency from pytest
 pluggy==1.6.0  --hash=sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746 # dependency from pytest
-coverage==7.15.4 --hash=sha256:12b59c90084e3234fb11184886bf4a40f4f16a8c8f867be2e087b81f8e8868d4 ; python_version == '3.13' 
+coverage==7.15.4 --hash=sha256:ff97a14362eef486483ed44042ca2027ea257df6ff768e62358ee0c9776925ac ; python_version == '3.13' 
 pytest-cov==7.1.0 --hash=sha256:a0461110b7865f9a271aa1b51e516c9a95de9d696734a2f71e3e78f46e1d4678
 pytest-html==4.2.0 --hash=sha256:ff5caf3e17a974008e5816edda61168e6c3da442b078a44f8744865862a85636
 jinja2==3.1.6 --hash=sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67 # dependency from pytest-html
