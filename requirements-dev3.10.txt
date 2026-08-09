@@ -40,6 +40,7 @@ trove_classifiers==2026.6.1.19 --hash=sha256:ab4c4ec93cc4a4e7815fa759906e05e6bb3
 hypothesis==6.165.2 --hash=sha256:e43bf234fd9b3c9f0e364e16048902c47b0e93e69e5f7bc4e05fd6c4da01d6ed ; python_version == '3.10' # dependency for isbinary unit tests
 sortedcontainers==2.4.0 --hash=sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0 # dependency from hypothesis
 pygments==2.20.0 --hash=sha256:81a9e26dd42fd28a23a2d169d86d7ac03b46e2f8b59ed4698fb4785f946d0176
+pypubsub==4.0.7
 robotframework==7.4.2 --hash=sha256:6e80f84cdc997bdde2abb6b729ac3531457ecf6d2e41abfb87a541877ab367bf
 # To make a relase you need asciidoc3 (a2x3)
 # asciidoc3
