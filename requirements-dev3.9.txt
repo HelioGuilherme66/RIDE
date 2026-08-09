@@ -16,7 +16,7 @@ python_dateutil==2.9.0 --hash=sha256:cbf2f1da5e6083ac2fbfd4da39a25f3431223011044
 six==1.17.0 --hash=sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274 # dependency from python_dateutil
 uritemplate==4.2.0 --hash=sha256:962201ba1c4edcab02e60f9a0d3821e82dfc5d2d6662a21abd533879bdb8a686 # dependency from github3.py
 memory-profiler==0.61.0 --hash=sha256:400348e61031e3942ad4d4109d18753b2fb08c2f6fb8290671c5513a34182d84
-pylint==4.0.6 --hash=sha256:d11a0e1fdb7b1cd46ec5d6fc78fee8b95f28695b2d6140e5809925f61e32ea54
+pylint==2.15.10 --hash=sha256:d11a0e1fdb7b1cd46ec5d6fc78fee8b95f28695b2d6140e5809925f61e32ea54
 astroid==4.0.4 --hash=sha256:52f39653876c7dec3e3afd4c2696920e05c83832b9737afc21928f2d2eb7a753 # dependency from pylint
 dill==0.4.1 --hash=sha256:1e1ce33e978ae97fcfcff5638477032b801c46c7c65cf717f95fbc2248f79a9d # dependency from pylint
 isort==8.0.1 --hash=sha256:28b89bc70f751b559aeca209e6120393d43fbe2490de0559662be7a9787e3d75 # dependency from pylint
