@@ -4,7 +4,7 @@ pyproject_hooks==1.2.0 --hash=sha256:9e5c6bfa8dcc30091c74b0cf803c81fdd29d94f0199
 mockito==2.0.4 --hash=sha256:04d7e6e9b9b7288e76235b894f9b3cbfdc9cfc631e548ed607933146ae9db1f5
 invoke==3.0.3 --hash=sha256:f11327165e5cbb89b2ad1d88d3292b5113332c43b8553b494da435d6ec6f5053
 urllib3==2.6.3 --hash=sha256:bf272323e553dfb2e87d9bfd225ca7b0f467b919d7bbd355436d3fd37cb0acd4 ; python_version < '3.10'
-zipp==3.23.1 --hash=sha256:25ad4e16390cd314347dd8f1de67a2ac538ae658ed4ab9db16029c07c188e97f # not directly required, pinned by Snyk to avoid a vulnerability
+zipp==3.23.1 --hash=sha256:0b3596c50a5c700c9cb40ba8d86d9f2cc4807e9bedb06bcdf7fac85633e444dc # not directly required, pinned by Snyk to avoid a vulnerability
 requests==2.32.5 --hash=sha256:2462f94637a34fd532264295e186976db0f5d453d1cdd31473c85a6a161affb6 ; python_version < '3.10'
 github3.py==4.0.1 --hash=sha256:a89af7de25650612d1da2f0609622bcdeb07ee8a45a1c06b2d16a05e4234e753
 pyjwt==2.13.0 --hash=sha256:66adcc2aff09b3f1bbd95fc1e1577df8ac8723c978552fd43304c8a290ac5728 # dependency from github3.py
@@ -40,6 +40,7 @@ trove_classifiers==2026.6.1.19 --hash=sha256:ab4c4ec93cc4a4e7815fa759906e05e6bb3
 hypothesis==6.165.2 --hash=sha256:f7c68a5684b2e2ad3c33500198a6073b3d04493fd7b1ef34937645ad092b797d ; python_version == '3.13' # dependency for isbinary unit tests
 sortedcontainers==2.4.0 --hash=sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0 # dependency from hypothesis
 pygments==2.20.0 --hash=sha256:81a9e26dd42fd28a23a2d169d86d7ac03b46e2f8b59ed4698fb4785f946d0176
+pypubsub==4.0.7
 robotframework==7.4.2 --hash=sha256:6e80f84cdc997bdde2abb6b729ac3531457ecf6d2e41abfb87a541877ab367bf
 # To make a relase you need asciidoc3 (a2x3)
 # asciidoc3
