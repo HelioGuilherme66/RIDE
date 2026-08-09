@@ -26,28 +26,31 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Install invoke and any other packages
-        run: pip install coverage invoke pytest
+        run: pip install --require-hashes --only-binary :all: coverage invoke pytest
       - name: Install RIDE dependencies
         run: |
+             minor=$(echo "${{ matrix.python-version }}" | cut -d . -f 2)
              git submodule update --init --recursive
-             python -m pip install -U pip
-             pip install -r requirements-dev.txt
-             pip install robotframework
+             python -m pip install --require-hashes --only-binary :all: -U pip
+             pip install --require-hashes --only-binary :all: -r requirements-dev3.$minor.txt
+             # pip install --require-hashes --only-binary :all: robotframework
       - name: Run Xvfb
         run: Xvfb :1 -noreset &
       - name: Test Install RIDE
         run: |
+             minor=$(echo "${{ matrix.python-version }}" | cut -d . -f 2)
              git submodule update --init --recursive
-             pip install -r requirements-dev.txt
-             pip install robotframework
-             pip install .
+             pip install --require-hashes --only-binary :all: -r requirements-dev3.$minor.txt
+             # pip install --require-hashes --only-binary :all: robotframework
+             pip install --only-binary :all: .
       - name: Run RIDE unit-tests
         run: |
           export DISPLAY=:1
+          minor=$(echo "${{ matrix.python-version }}" | cut -d . -f 2)
           git submodule update --init --recursive
-          pip install -r requirements-dev.txt
-          pip install robotframework
-          pip install .
+          pip install --require-hashes --only-binary :all: -r requirements-dev3.$minor.txt
+          # pip install --require-hashes --only-binary :all: robotframework
+          pip install --only-binary :all: .
           invoke test-ci
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarqube-scan-action@master

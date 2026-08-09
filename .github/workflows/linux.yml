@@ -79,21 +79,21 @@ jobs:
           sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip python3-tkinter psmisc
           # sudo dnf downgrade -y mesa* --refresh
           git submodule update --init --recursive
-          python -m pip install -U pip
-          pip install -r requirements-dev.txt
-          pip install robotframework
+          python -m pip install --require-hashes --only-binary :all: -U pip
+          pip install --require-hashes --only-binary :all: -r requirements-dev3.13.txt
+          # pip install --require-hashes --only-binary :all: robotframework
       - name: Run tests
         run: |
           Xvfb &
           export DISPLAY=:0
           export GITHUB_ACTIONS=True
           git submodule update --init --recursive
-          pip install .
+          pip install --only-binary :all: .
           invoke test-ci
       - name: Install and run
         run: |
           git submodule update --init --recursive
-          pip install .
+          pip install --only-binary :all: .
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
           sleep 10
           killall xvfb-run
@@ -123,25 +123,25 @@ jobs:
           sudo apt update -y 
           sudo apt-get install -y --no-install-recommends --no-install-suggests libsdl1.2debian libsdl2-2.0-0 libnotify4
           git submodule update --init --recursive
-          python -m pip install -U pip
+          python -m pip install --require-hashes --only-binary :all: -U pip
           minor=$(echo "${{ matrix.python-version }}" | cut -d . -f 2)
           if [ $minor -lt 10 ]; then
-              python -m pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.4-cp39-cp39-linux_x86_64.whl
+              python -m pip install --only-binary :all: https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.4-cp39-cp39-linux_x86_64.whl
           elif [ $minor -lt 11 ]; then
-              python -m pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp310-cp310-linux_x86_64.whl
+              python -m pip install --only-binary :all: https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp310-cp310-linux_x86_64.whl
           elif [ $minor -lt 12 ]; then
-              python -m pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp311-cp311-linux_x86_64.whl
+              python -m pip install --only-binary :all: https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp311-cp311-linux_x86_64.whl
           elif [ $minor -lt 13 ]; then
-              python -m pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp312-cp312-linux_x86_64.whl
+              python -m pip install --only-binary :all: https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp312-cp312-linux_x86_64.whl
           elif [ $minor -lt 14 ]; then
-              python -m pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp313-cp313-linux_x86_64.whl
+              python -m pip install --only-binary :all: https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp313-cp313-linux_x86_64.whl
           elif [ $minor -lt 15 ]; then
-              python -m pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp314-cp314-linux_x86_64.whl
+              python -m pip install --only-binary :all: https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp314-cp314-linux_x86_64.whl
           else
               sudo apt install python3-wxgtk4.0
           fi
-          pip install -r requirements-dev.txt
-          pip install robotframework
+          pip install --require-hashes --only-binary :all: -r requirements-dev3.$minor.txt
+          # pip install --require-hashes --only-binary :all: robotframework
       - name: Run tests
         run: |
           Xvfb &
@@ -160,10 +160,11 @@ jobs:
             .coverage-reports/htmlcov
       - name: Install and run
         run: |
+          minor=$(echo "${{ matrix.python-version }}" | cut -d . -f 2)
           git submodule update --init --recursive
-          pip install -r requirements-dev.txt
-          pip install robotframework
-          pip install .
+          pip install --require-hashes --only-binary :all: -r requirements-dev3.$minor.txt
+          # pip install --require-hashes --only-binary :all: robotframework
+          pip install --only-binary :all: .
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
           sleep 10
           killall xvfb-run
