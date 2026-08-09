@@ -19,7 +19,7 @@ memory-profiler==0.61.0 --hash=sha256:400348e61031e3942ad4d4109d18753b2fb08c2f6f
 pylint==2.15.10 --hash=sha256:9df0d07e8948a1c3ffa3b6e2d7e6e63d9fb457c5da5b961ed63106594780cc7e
 astroid==4.0.0a0 --hash=sha256:c73ad2752e4e47d93a280521125925f435173da481d5f43794783701243d9354 # dependency from pylint
 dill==0.4.1 --hash=sha256:1e1ce33e978ae97fcfcff5638477032b801c46c7c65cf717f95fbc2248f79a9d # dependency from pylint
-isort==8.0.1 --hash=sha256:28b89bc70f751b559aeca209e6120393d43fbe2490de0559662be7a9787e3d75 # dependency from pylint
+isort==6.1.0 --hash=sha256:28b89bc70f751b559aeca209e6120393d43fbe2490de0559662be7a9787e3d75 # dependency from pylint
 mccabe==0.7.0 --hash=sha256:6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e # dependency from pylint
 platformdirs==4.11.1 --hash=sha256:2efd27d363e8dd2e661639ffb398865a5e0a46442a11d266bf375a0e0c10e386 # dependency from pylint
 tomlkit==0.15.1 --hash=sha256:177a05aece5a8ca5266fd3c448abb47b8d352f09d477d3ca8332db4d89b24304 # dependency from pylint
