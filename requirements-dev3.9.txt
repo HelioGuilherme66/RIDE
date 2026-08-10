@@ -21,7 +21,7 @@ astroid==4.0.0a0 --hash=sha256:c73ad2752e4e47d93a280521125925f435173da481d5f4379
 dill==0.4.1 --hash=sha256:1e1ce33e978ae97fcfcff5638477032b801c46c7c65cf717f95fbc2248f79a9d # dependency from pylint
 isort==6.1.0 --hash=sha256:58d8927ecce74e5087aef019f778d4081a3b6c98f15a80ba35782ca8a2097784 # dependency from pylint
 mccabe==0.7.0 --hash=sha256:6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e # dependency from pylint
-platformdirs==4.4.0 --hash=sha256:2efd27d363e8dd2e661639ffb398865a5e0a46442a11d266bf375a0e0c10e386 # dependency from pylint
+platformdirs==4.4.0 --hash=sha256:abd01743f24e5287cd7a5db3752faf1a2d65353f38ec26d98e25a6db65958c85 # dependency from pylint
 tomlkit==0.15.1 --hash=sha256:177a05aece5a8ca5266fd3c448abb47b8d352f09d477d3ca8332db4d89b24304 # dependency from pylint
 pytest==9.1.1 --hash=sha256:37a86b45efb9a47a61a36449063e8e18d0cab3161329fc099eb21783169c4f0c
 iniconfig==2.3.0 --hash=sha256:f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12 # dependency from pytest
