@@ -6,13 +6,13 @@ invoke==3.0.3 --hash=sha256:f11327165e5cbb89b2ad1d88d3292b5113332c43b8553b494da4
 urllib3==2.7.0 --hash=sha256:9fb4c81ebbb1ce9531cce37674bbc6f1360472bc18ca9a553ede278ef7276897 ; python_version >= '3.10' # not directly required, pinned by Snyk to avoid a vulnerability
 zipp==4.1.0 --hash=sha256:25ad4e16390cd314347dd8f1de67a2ac538ae658ed4ab9db16029c07c188e97f # not directly required, pinned by Snyk to avoid a vulnerability
 requests==2.34.2 --hash=sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0 ; python_version >= '3.10'
-charset_normalizer==3.4.9 --hash=sha256:84fd18bcc17526fc2b3c1af7d2b9217d32c9c04448c16ec693b9b4f1985c3d33 # dependency from requests
+charset_normalizer==3.4.9 --hash=sha256:c25fe15c70c59eb7c5ce8c06a1f3fa1da0ecc5ea1e7a5922c40fd2fa9b0d5046 # dependency from requests
 idna==3.18 --hash=sha256:7f952cbe720b688055e3f87de14f5c3e5fdaa8bc3928985c4077ca689de849a2 # dependency from requests
 certifi==2026.7.22 --hash=sha256:62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775 # dependency from requests # dependency from requests
 github3.py==4.0.1 --hash=sha256:a89af7de25650612d1da2f0609622bcdeb07ee8a45a1c06b2d16a05e4234e753
 pyjwt==2.13.0 --hash=sha256:66adcc2aff09b3f1bbd95fc1e1577df8ac8723c978552fd43304c8a290ac5728 # dependency from github3.py
 cryptography==50.0.0 --hash=sha256:82148ec5bddac30b51a5b3c1945075f896fa022cb93f8e4a01e9f6ee95292c5f # dependency from pyjwt
-cffi==2.1.1 --hash=sha256:b0431303acaea1089ad4b3e9ce4e6518193def1118d4073ca848635ee4ea2e96 ; python_version == '3.13' # dependency from cryptography
+cffi==2.1.1 --hash=sha256:a931079504ecc49efed7744c476a5c343a92fabf66dec2db95edb1b2fdc770e2 ; python_version == '3.13' # dependency from cryptography
 pycparser==3.0 --hash=sha256:b727414169a36b7d524c1c3e31839a521725078d7b2ff038656844266160a992 # dependency from cffi
 python_dateutil==2.9.0 --hash=sha256:cbf2f1da5e6083ac2fbfd4da39a25f34312230110440f424a14c7558bb85d82e # dependency from github3.py
 # six==1.17.0 --hash=sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274 # dependency from python_dateutil
