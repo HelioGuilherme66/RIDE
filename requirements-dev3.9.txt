@@ -35,7 +35,7 @@ pytest_metadata==3.1.1 --hash=sha256:c8e0844db684ee1c798cfa38908d20d67d0463ecb61
 pytest-order==1.5.0 --hash=sha256:667ba2b7303fe2c529848663e0a41dfb0cc4d64f09f87272e4a9a1751efb52b2
 packaging==26.3 --hash=sha256:d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c
 hatch-fancy-pypi-readme==25.1.0 --hash=sha256:ce0134c40d63d874ac48f48ccc678b8f3b62b8e50e9318520d2bffc752eedaf3
-hatchling==1.31.0 --hash=sha256:aac80bec8b6fe35e8480f1c335be8910fa210a0e6f735a139be205dadcacb544 # dependency from hatch
+hatchling==1.27.0 --hash=sha256:d3a2f3567c4f926ea39849cdf924c7e99e6686c9c8e288ae1037c8fa2a5d937b # dependency from hatch
 pathspec==1.1.1 --hash=sha256:a00ce642f577bf7f473932318056212bc4f8bfdf53128c78bbd5af0b9b20b189 # dependency from hatchling
 trove_classifiers==2026.6.1.19 --hash=sha256:ab4c4ec93cc4a4e7815fa759906e05e6bb3f2fbd92ea0f897288c6a43efd15b3 # dependency from hatchling
 hypothesis==6.138.10 --hash=sha256:b7b1e18f7f81a7eb3530ba11bdbf7e0005e1ce9bfb0ef3bf1cf012335ce89f96  # dependency for isbinary unit tests
