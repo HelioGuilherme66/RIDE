@@ -67,13 +67,13 @@ jobs:
         python-version: [ "3.13" ]
     if: ${{ !contains(github.ref, '/debian/') }}
     container:
-      image: fedora:44
+      image: fedora:42
       options: --privileged
     steps:
       - name: Configure container environment
         run: |
           sudo dnf update -y
-          sudo dnf install -y git python3-tkinter
+          sudo dnf install -y git python3-tkinter-3.13.13
           git config --global --add safe.directory ${GITHUB_WORKSPACE}
       - uses: actions/checkout@v6
         with:
@@ -88,11 +88,11 @@ jobs:
           git submodule update --init --recursive
       - name: Setup environment
         run: |
-          sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip python3-tkinter psmisc
+          sudo -H dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip python3-tkinter-3.13.13 psmisc
           # sudo dnf downgrade -y mesa* --refresh
           git submodule update --init --recursive
-          python -m pip install --only-binary :all: -U pip
-          pip install --require-hashes --only-binary :all: -r requirements-devF3.13.txt
+          sudo -H python3.13 -m pip install --only-binary :all: -U pip
+          sudo -H python3.13 -m pip install --require-hashes --only-binary :all: -r requirements-devF3.13.txt
           # pip install --require-hashes --only-binary :all: robotframework
       - name: Run tests
         run: |
