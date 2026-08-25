@@ -107,6 +107,8 @@ jobs:
           Xvfb &
           export DISPLAY=:0
           export GITHUB_ACTIONS=True
+          export PYTHONHOME=/usr/local/lib/python3.13
+          export PYTHONPATH=/usr/local/lib/python3.13/site-packages
           git submodule update --init --recursive
           sudo -H python3.13 -m pip install --only-binary :all: .
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &

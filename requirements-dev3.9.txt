@@ -45,6 +45,7 @@ psutil==7.2.2 --hash=sha256:076a2d2f923fd4821644f5ba89f059523da90dc9014e85f8e45a
 packaging==26.3
 chardet==5.2.0 --hash=sha256:e1cf59446890a00105fe7b7912492ea04b6e6f06d4b742b2c788469e34c82970
 pypubsub==4.0.7 --hash=sha256:89c3e274e634fea19de881bb45152815d9c1aaa0120215f85200ba56843372f4
+importlib_metadata==8.7.1 --hash=sha256:f8e9a1d23b9c20a551a8a02ea3637b4642e22c2626e3a13a9a29cdea99eb
 robotframework==7.4.2 --hash=sha256:6e80f84cdc997bdde2abb6b729ac3531457ecf6d2e41abfb87a541877ab367bf
 # To make a release you need asciidoc3 (a2x3)
 # asciidoc3
