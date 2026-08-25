@@ -100,12 +100,12 @@ jobs:
           export DISPLAY=:0
           export GITHUB_ACTIONS=True
           git submodule update --init --recursive
-          pip install .
+          sudo -H python3.13 -m pip install --only-binary :all: .
           invoke test-ci
       - name: Install and run
         run: |
           git submodule update --init --recursive
-          python3.13 -m pip install --only-binary :all: .
+          sudo -H python3.13 -m pip install --only-binary :all: .
           xvfb-run --server-args="-screen 0, 1280x720x24" -a ride &
           sleep 10
           killall xvfb-run
