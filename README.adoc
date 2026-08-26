@@ -38,7 +38,7 @@ See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride
 
 **The current development version is based on 2.2.4, supports Python from 3.9 up to 3.14 (09th July 2026).**
 
-Currently, the unit tests are tested on Python 3.10, 3.11 and 3.14.
+Currently, the unit tests are tested on Python 3.9, 3.10, 3.11. 3.12, 3.13 and 3.14.
 We now have an experimental workflow on Fedora Linux 42, with wxPython 4.2.4 and Python 3.14.
 Likewise, the current version of wxPython, is 4.2.5, but RIDE is known to work with 4.0.7, 4.1.1, 4.2.2, 4.2.3, 4.2.4 and 4.2.5 versions.
 
@@ -46,7 +46,7 @@ Likewise, the current version of wxPython, is 4.2.5, but RIDE is known to work w
 
 `pip install -U robotframework-ride`
 
-(3.9 &lt;= python &lt;= 3.14) Install current development version (**2.2.5dev9**) with:
+(3.9 &lt;= python &lt;= 3.14) Install current development version (**2.2.5dev10**) with:
 
 `pip install -U https://github.com/robotframework/RIDE/archive/develop.zip`
 
@@ -62,7 +62,7 @@ Likewise, the current version of wxPython, is 4.2.5, but RIDE is known to work w
 == Unit testing statuses:
 
 // Linux (py36, py37, py38, py39): image:https://app.travis-ci.com/HelioGuilherme66/RIDE.svg?branch=master[Unit Tests, link=https://app.travis-ci.com/github/HelioGuilherme66/RIDE] 
-Linux (Fedora 42: py3.14, Ubuntu 22.04: py3.10): image:https://img.shields.io/github/actions/workflow/status/HelioGuilherme66/RIDE/linux.yml[Unit Tests, link=https://github.com/HelioGuilherme66/RIDE/actions/workflows/linux.yml]
+Linux (Fedora 41/42: py3.13, py3.14, Ubuntu 24.04: py3.9 .. py3.14): image:https://img.shields.io/github/actions/workflow/status/HelioGuilherme66/RIDE/linux.yml[Unit Tests, link=https://github.com/HelioGuilherme66/RIDE/actions/workflows/linux.yml]
 
 Windows (Python 3.11): image:https://ci.appveyor.com/api/projects/status/github/HelioGuilherme66/RIDE?branch=master&svg=true[Unit Tests, link=https://ci.appveyor.com/project/HelioGuilherme66/ride]
 

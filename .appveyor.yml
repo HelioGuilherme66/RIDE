@@ -11,6 +11,7 @@ branches:
   only:
     - master
     - develop
+    - devops
 
   # blacklist
   except:
