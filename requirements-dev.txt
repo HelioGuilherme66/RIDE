@@ -57,6 +57,7 @@ robotframework==7.4.2 --hash=sha256:6e80f84cdc997bdde2abb6b729ac3531457ecf6d2e41
 pypubsub==4.0.7 --hash=sha256:89c3e274e634fea19de881bb45152815d9c1aaa0120215f85200ba56843372f4 ; python_version == '3' # using win32 appveyor
 psutil==7.2.2 --hash=sha256:eb7e81434c8d223ec4a219b5fc1c47d0417b12be7ea866e24fb5ad6e84b3d988 ; python_version < '3.13' # using win32 appveyor
 chardet==7.6.0 --hash=sha256:360260d074d8712ac1e9048fcafb0fdde246f9d0b12555748ad0017c5ecee43d ; python_version == '3.11' # using win32 appveyor
+charset_normalizer==3.5.1 --hash=sha256:f9b1e28d0e8dbfa858abdba91d6b547beaf2df1a59bec6da6faae7b96a4991a9 ; python_version == '3.11' # using win32 appveyor
 # To make a relase you need asciidoc3 (a2x3)
 # asciidoc3
 # Include also normal project requirements.
