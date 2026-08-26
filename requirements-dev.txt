@@ -36,7 +36,8 @@ coverage==7.15.4 --hash=sha256:12b59c90084e3234fb11184886bf4a40f4f16a8c8f867be2e
 pytest-cov==7.1.0 --hash=sha256:a0461110b7865f9a271aa1b51e516c9a95de9d696734a2f71e3e78f46e1d4678
 pytest-html==4.2.0 --hash=sha256:ff5caf3e17a974008e5816edda61168e6c3da442b078a44f8744865862a85636
 jinja2==3.1.6 --hash=sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67 # dependency from pytest-html
-markupsafe==3.0.3 --hash=sha256:457a69a9577064c05a97c41f4e65148652db078a3a509039e64d3467b9e7ef97 # dependency from jinja2
+markupsafe==3.0.3 --hash=sha256:de8a88e63464af587c950061a5e6a67d3632e36df62b986892331d4620a35c01 ; python_version == '3.11' # dependency from jinja2 # using win32 appveyor
+markupsafe==3.0.3 --hash=sha256:457a69a9577064c05a97c41f4e65148652db078a3a509039e64d3467b9e7ef97 ; python_version != '3.11' # dependency from jinja2
 pytest_metadata==3.1.1 --hash=sha256:c8e0844db684ee1c798cfa38908d20d67d0463ecb6137c72e91f418558dd5f4b # dependency from pytest-html
 pytest-order==1.5.0 --hash=sha256:667ba2b7303fe2c529848663e0a41dfb0cc4d64f09f87272e4a9a1751efb52b2
 packaging==26.3 --hash=sha256:d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c
