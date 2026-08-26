@@ -54,7 +54,7 @@ pywin32==312 --hash=sha256:d11417d84412f859b722fad0841b3614459ed0047f7542d8362e7
 pygments==2.21.0 --hash=sha256:2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9 ; python_version == '3' # using win32 appveyor
 robotframework==7.4.2 --hash=sha256:6e80f84cdc997bdde2abb6b729ac3531457ecf6d2e41abfb87a541877ab367bf ; python_version == '3' # using win32 appveyor
 pypubsub==4.0.7 --hash=sha256:89c3e274e634fea19de881bb45152815d9c1aaa0120215f85200ba56843372f4 ; python_version == '3' # using win32 appveyor
-psutil==7.2.2 --hash=sha256:8c233660f575a5a89e6d4cb65d9f938126312bca76d8fe087b947b3a1aaac9ee ; python_version < '3.13' # using win32 appveyor
+psutil==7.2.2 --hash=sha256:eb7e81434c8d223ec4a219b5fc1c47d0417b12be7ea866e24fb5ad6e84b3d988 ; python_version < '3.13' # using win32 appveyor
 chardet==7.6.0 --hash=sha256:360260d074d8712ac1e9048fcafb0fdde246f9d0b12555748ad0017c5ecee43d ; python_version == '3.11' # using win32 appveyor
 # To make a relase you need asciidoc3 (a2x3)
 # asciidoc3
