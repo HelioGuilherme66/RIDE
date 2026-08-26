@@ -27,16 +27,18 @@ jobs:
           python-version: 3.13
       - name: Install RIDE dependencies
         run: |
-             git submodule update --init --recursive
-             python -m pip install --only-binary :all: -U pip
-             pip install --require-hashes --only-binary :all: -r requirements-dev3.13.txt
+          git fetch --prune --depth=1 --recurse-submodules
+          git submodule update --init --recursive
+          python -m pip install --only-binary :all: -U pip
+          python -m pip install --only-binary :all: https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp312-cp312-linux_x86_64.whl
+          pip install --require-hashes --only-binary :all: -r requirements-dev3.13.txt
       - name: Run Xvfb
         run: Xvfb :1 -noreset &
       - name: Test Install RIDE
         run: |
-             git submodule update --init --recursive
-             pip install --require-hashes --only-binary :all: -r requirements-dev3.13.txt
-             pip install --only-binary :all: .
+          git submodule update --init --recursive
+          pip install --require-hashes --only-binary :all: -r requirements-dev3.13.txt
+          pip install --only-binary :all: .
       - name: Run RIDE unit-tests
         run: |
           export DISPLAY=:1
