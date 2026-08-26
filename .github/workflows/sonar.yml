@@ -30,7 +30,7 @@ jobs:
           git fetch --prune --depth=1 --recurse-submodules
           git submodule update --init --recursive
           python -m pip install --only-binary :all: -U pip
-          python -m pip install --only-binary :all: https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp312-cp312-linux_x86_64.whl
+          python -m pip install --only-binary :all: https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.5-cp313-cp313-linux_x86_64.whl
           pip install --require-hashes --only-binary :all: -r requirements-dev3.13.txt
       - name: Run Xvfb
         run: Xvfb :1 -noreset &
