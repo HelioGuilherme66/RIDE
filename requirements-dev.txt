@@ -53,6 +53,7 @@ hypothesis==6.165.2 --hash=sha256:1bd8955bd5dd72bb9bd6f7243cef8a2bf8a264e23edbd2
 hypothesis==6.165.2 --hash=sha256:f7c68a5684b2e2ad3c33500198a6073b3d04493fd7b1ef34937645ad092b797d ; python_version != '3.11' # dependency for isbinary unit tests
 sortedcontainers==2.4.0 --hash=sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0 # dependency from hypothesis
 wxpython==4.2.5 --hash=sha256:508de82ac2b64aa575a543949c44dc7f83a734622bed01d8501474ab454f7bb7 ; python_version == '3.11' # using win32 appveyor
+numpy==2.4.6 --hash=sha256:1e254a00cdf42b1e4d5b3d68d33af63268d41340d8885df2ab6470f2e1500147 ; python_version == '3.11' # using win32 appveyor
 pywin32==312 --hash=sha256:d11417d84412f859b722fad0841b3614459ed0047f7542d8362e77884f6b6e8a ; python_version == '3.11' # using win32 appveyor
 pygments==2.21.0 --hash=sha256:2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9 ; python_version == '3' # using win32 appveyor
 robotframework==7.4.2 --hash=sha256:6e80f84cdc997bdde2abb6b729ac3531457ecf6d2e41abfb87a541877ab367bf ; python_version == '3' # using win32 appveyor
