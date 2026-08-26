@@ -81,7 +81,7 @@ Quality Gate Status: image:https://sonarcloud.io/api/project_badges/measure?proj
 
 '''
 
-== Stargazers over time ==
+// == Stargazers over time ==
 
-image:https://starchart.cc/robotframework/RIDE.svg[Stargazers over time, link=https://starchart.cc/robotframework/RIDE]
+// image:https://starchart.cc/robotframework/RIDE.svg[Stargazers over time, link=https://starchart.cc/robotframework/RIDE]
 
