@@ -193,7 +193,7 @@ class _RobotTableEditor(EditorPanel):
         self.EnableScrolling(True, True)
         self.Refresh()
         self.Parent.GetSizer().Layout()
-        self.Parent.EnableScrolling(True, True)
+        # self.Parent.EnableScrolling(True, True)
         self.Parent.Refresh()
         if event:
             event.Skip()

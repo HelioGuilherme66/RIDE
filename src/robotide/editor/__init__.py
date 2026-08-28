@@ -194,10 +194,10 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
         self._create_editor()
 
 
-class _EditorTab(wx.ScrolledWindow):
+class _EditorTab(wx.Panel):
 
     def __init__(self, plugin):
-        wx.ScrolledWindow.__init__(self, plugin.notebook, style=wx.SUNKEN_BORDER)
+        wx.Panel.__init__(self, parent=plugin.notebook, style=wx.SUNKEN_BORDER)
         self.plugin = plugin
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)

@@ -175,6 +175,7 @@ and changes.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed extra scrolling bars in Grid Editor.</li>
 <li>Fixed broken directory selection dialog when opening Test Suite directory on first RIDE execution after install.</li>
 <li>Fixed disappering Project Explorer tree elements, after editing directory elements (i.e. variable or keyword).</li>
 <li>Fixed blank Project Explorer panel when docking. Long time existing issue.</li>
