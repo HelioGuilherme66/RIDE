@@ -123,7 +123,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             self.on_focus_lost(event)
         elif key_code == wx.WXK_TAB:
             # self.on_focus_lost(event, True)
-            # print(f"DEBUG: contentassist.pt on_key_down PRESS TAB")
+            current_pos = self.GetInsertionPoint()
+            print(f"DEBUG: contentassist.pt on_key_down PRESS TAB {current_pos=}")
             self.fill_suggestion()  # accept value and continue editing
             self._popup.hide()
             self.reset()
@@ -318,17 +319,31 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         return value
 
     # DEBUG THIS IS BEING CALLED FROM kweditor and ContentAssistPopup
-    def fill_suggestion(self, value=None):
+    def fill_suggestion(self, value=None, hide=False):
         value = self._get_popup_suggestion(value)
-        # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion writting value={value}")
+        print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion writting value={value}")
         if value:
             wrapper_view = self.GetParent().GetParent()
             if hasattr(wrapper_view, 'open_cell_editor'):
                 # in grid cell, need to make sure cell editor is open
                 wrapper_view.open_cell_editor()
-            self.SetValue(value)
-            self.SetInsertionPoint(len(value))
-        self.hide()
+            content = self.GetValue()
+            cur_pos = 0
+            if content:
+                cur_pos = self.GetInsertionPoint()
+                replacer = content[:cur_pos].split()[-1]
+                if replacer.startswith(value):
+                    ins_pos = cur_pos - len(replacer)  # delete word
+                else:
+                    ins_pos = cur_pos
+                text = content[:ins_pos] + value + content[cur_pos:]
+            else:
+                text = value
+            cur_pos += len(value)
+            self.SetValue(text)
+            self.SetInsertionPoint(cur_pos)
+        if hide:
+            self.hide()
         # self.reset()
 
     def get_value(self):
@@ -354,17 +369,23 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self._showing_content_assist = False
 
     def show_content_assist(self):
-        # print(f"DEBUG: contentassist.py show_content_assist ENTER "
-        #       f"self._showing_content_assist={self._showing_content_assist}")
+        print(f"DEBUG: contentassist.py show_content_assist ENTER "
+              f"self._showing_content_assist={self._showing_content_assist}")
         if self._showing_content_assist:
+            cur_pos = self.GetInsertionPoint()
+            value = self.GetValue()
+            print(f"DEBUG: contentassist.py show_content_assist SHOWING, insertion point={cur_pos} "
+                  f"value={value} len={len(value)}")
+            self._populate_content_assist(value[:cur_pos])
             return
         if self._populate_content_assist():
             self._showing_content_assist = True
             self._show_content_assist()
 
-    def _populate_content_assist(self):
+    def _populate_content_assist(self, value=None):
         # DEBUG: Get partial content if not found in full
-        value = self.GetValue()
+        if not value:
+            value = self.GetValue()
         (self.gherkin_prefix, value) = self._remove_bdd_prefix(value)
         return self._popup.content_assist_for(value, row=self._row)
 
@@ -595,15 +616,22 @@ class ContentAssistPopup(object):
 
     def content_assist_for(self, value, row=None):
         self._choices = self._suggestions.get_for(value, row=row)
-        if not self._choices and ' ' in value:  # Find choices for last word
-            self._choices = self._suggestions.get_for(value.split()[-1], row=row)
-        # print(f"DEBUG: contentassist.py ContentAssistPopup content_assist_for  value={value} choices={self._choices}")
+        if not self._choices:  # and ' ' in value:  # Find choices for last word
+            values = value.split()
+            # self._choices = self._suggestions.get_for(value.split()[-1], row=row)
+            for val in values:
+                self._choices = self._suggestions.get_for(val, row=row)
+        print(f"DEBUG: contentassist.py ContentAssistPopup content_assist_for  value={value} choices={self._choices}")
         if not self._choices:
             self._list.ClearAll()
+            # print(f"DEBUG: contentassist.py ContentAssistPopup content_assist_for"
+            #       f"not choices, parent is {type(self._parent)}")
             if not isinstance(self._parent, GridEditor):
                 self._parent.hide()
             return False
         self._choices = list(set([c for c in self._choices if c is not None]))
+        if not self._choices:  # It was showing an empty list
+            return False
         # print(f"DEBUG: contentassist.py ContentAssistPopup content_assist_for CALL POPULATE Choices={self._choices}")
         self._list.populate(sorted(self._choices))
         return True

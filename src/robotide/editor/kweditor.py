@@ -765,14 +765,16 @@ class KeywordEditor(GridEditor, Plugin):
             cell_editor.EndEdit(self.selection.topleft.row, self.selection.topleft.col, self)
             value = cell_editor.get_value()
             if value:
+                print(f"DEBUG: kweditor.py KeyworkEditor save calling AFTER cell_value_edited show_content_assist"
+                      f" {value=} ")
                 wx.CallAfter(self.cell_value_edited, self.selection.topleft.row,
                              self.selection.topleft.col, value)
                 wx.CallAfter(self.show_content_assist)
         # RideItemStepsChanged(item=self._controller).publish()
 
     def show_content_assist(self):
-        # print(f"DEBUG: kweditor.py KeyworkEditor calling show_content_assist PARENT SECTION {self._parent.section}"
-        #       f" IsCellEditControlShown={self.IsCellEditControlShown()}")
+        print(f"DEBUG: kweditor.py KeyworkEditor calling show_content_assist "
+              f"IsCellEditControlShown={self.IsCellEditControlShown()}")
         if self.IsCellEditControlShown():
             self.GetCellEditor(*self.selection.cell).show_content_assist(self.selection.cell)
 
@@ -855,8 +857,8 @@ class KeywordEditor(GridEditor, Plugin):
 
     def _call_direct_function(self, event: wx.KeyEvent, keycode: int):
         if keycode == wx.WXK_TAB:
+            print(f"DEBUG: kweditor.py KeywordEditor _call_direct_function PRESSED TAB key={keycode}")
             if self.IsCellEditControlShown():
-                # print(f"DEBUG: kweditor.py KeywordEditor _call_direct_function PRESSED TAB key={keycode}")
                 self._get_cell_editor().update_from_suggestion_list()  # accept value and continue editing
                 self.save()
             else:
@@ -908,6 +910,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     def on_key_down(self, event):
         keycode = event.GetUnicodeKey() or event.GetKeyCode()
+        print(f"DEBUG: kweditor.py KeyworkEditor on_key_down ENTER {keycode=} ")
         if event.ControlDown():
             if event.ShiftDown():
                 skip = self._call_ctrl_shift_function(event, keycode)
