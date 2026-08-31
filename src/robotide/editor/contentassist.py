@@ -288,59 +288,65 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             self.Clear()
         self.hide()
 
-    def _get_popup_suggestion(self, in_value=None):
+    def _get_popup_suggestion(self, in_value=None, clean_prefix=False):
         initial_value = self.GetValue()
         if not in_value:
             popup_value = self._popup.get_value()
         else:
             popup_value = in_value
         if popup_value:
-            if popup_value.lower() in initial_value.lower():
-                initial_value = initial_value.replace(initial_value, '')
-            parts = initial_value.split()
-            # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase PARTS={parts[:]}\n ")
-            if parts:
-                for p in parts[::-1]:
-                    clean = p.strip('$@&%{[(}])\'\"').lower()
-                    # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase clean={clean}")
-                    if popup_value.strip('$@&%{[(}])\'\"').lower().startswith(clean):
-                        idx = initial_value.index(p)
-                        initial_value = initial_value[:idx]
-                        # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase INITIAL VALUE ={initial_value}")
+            if clean_prefix:
+                if '.' in popup_value:
+                    content = popup_value.split('.')
+                    popup_value = "".join(content[1:])
+            cur_pos = self.GetInsertionPoint() - 1
+            l = cur_pos
+            k = cur_pos
+            if cur_pos >= 0 and initial_value and initial_value[cur_pos] != ' ':
+                for k in range(cur_pos, -1, -1):
+                    if initial_value[k] == ' ':
                         break
+                for l in range(cur_pos, len(initial_value)):
+                    if initial_value[l] == ' ':
+                        break
+                ins_pos = k
+                con_pos = l
+                if ins_pos < con_pos < len(initial_value) - 1:
+                    remaining = ' ' + initial_value[con_pos:]
+                else:
+                    remaining = ''
+                print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase _get_popup_suggestion "
+                      f" initial_value={initial_value} {ins_pos=} {con_pos=}"
+                      f" {popup_value=}")
+                value = initial_value[:ins_pos] + popup_value + remaining
+            else:
+                value = popup_value
         else:
             popup_value = ''
-        if self.gherkin_prefix:
-            initial_value = initial_value.replace(self.gherkin_prefix, '')  # Should be left replace
-            value = self.gherkin_prefix + initial_value + popup_value  # or self.GetValue()
-        else:
-            value = initial_value + popup_value  # or self.GetValue()
-        # print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase _get_popup_suggestion RETURN value={value}")
-        return value
+            value = initial_value
+        print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase _get_popup_suggestion RETURN value={value}"
+              f" {popup_value=}")
+        return value.strip()
 
     # DEBUG THIS IS BEING CALLED FROM kweditor and ContentAssistPopup
-    def fill_suggestion(self, value=None, hide=False):
-        value = self._get_popup_suggestion(value)
+    def fill_suggestion(self, value=None, hide=False, clean_prefix=False):
+        value = self._get_popup_suggestion(value, clean_prefix=clean_prefix)
         print(f"DEBUG: contentassist.py ContentAssistTextCtrlBase fill_suggestion writting value={value}")
         if value:
             wrapper_view = self.GetParent().GetParent()
             if hasattr(wrapper_view, 'open_cell_editor'):
                 # in grid cell, need to make sure cell editor is open
                 wrapper_view.open_cell_editor()
-            content = self.GetValue()
-            cur_pos = 0
-            if content:
-                cur_pos = self.GetInsertionPoint()
-                replacer = content[:cur_pos].split()[-1]
-                if replacer.startswith(value):
-                    ins_pos = cur_pos - len(replacer)  # delete word
-                else:
-                    ins_pos = cur_pos
-                text = content[:ins_pos] + value + content[cur_pos:]
+            cur_pos = self.GetInsertionPoint()
+            """
+            replacer = content[:cur_pos].split()[-1]
+            if replacer.startswith(value):
+                ins_pos = cur_pos - len(replacer)  # delete word
             else:
-                text = value
-            cur_pos += len(value)
-            self.SetValue(text)
+                ins_pos = cur_pos
+            text = content[:ins_pos] + value + content[cur_pos:]
+            """
+            self.SetValue(value)
             self.SetInsertionPoint(cur_pos)
         if hide:
             self.hide()

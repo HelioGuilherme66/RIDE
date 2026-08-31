@@ -856,11 +856,15 @@ class KeywordEditor(GridEditor, Plugin):
         return True
 
     def _call_direct_function(self, event: wx.KeyEvent, keycode: int):
+        clean_prefix = event.ShiftDown()
         if keycode == wx.WXK_TAB:
             print(f"DEBUG: kweditor.py KeywordEditor _call_direct_function PRESSED TAB key={keycode}")
             if self.IsCellEditControlShown():
-                self._get_cell_editor().update_from_suggestion_list()  # accept value and continue editing
-                self.save()
+                tc = self._get_cell_editor()
+                # accept value and continue editing
+                tc.update_from_suggestion_list(hide=False, clean_prefix=clean_prefix)
+                tc.hide()
+                # self.save()
             else:
                 self.save()
                 self._move_grid_cursor(event, keycode)
@@ -872,11 +876,10 @@ class KeywordEditor(GridEditor, Plugin):
         elif keycode == wx.WXK_RETURN:
             if self.IsCellEditControlShown():
                 # fill auto-suggestion into cell when pressing enter
-                self._get_cell_editor().update_from_suggestion_list()
+                self._get_cell_editor().update_from_suggestion_list(hide=True, clean_prefix=clean_prefix)
                 self.save()
                 self._move_grid_cursor(event, keycode)
-            else:
-                self.open_cell_editor()
+            self.open_cell_editor()
             return False  # event must not be skipped in this case
         elif keycode == wx.WXK_F2:
             self.open_cell_editor()
@@ -910,7 +913,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     def on_key_down(self, event):
         keycode = event.GetUnicodeKey() or event.GetKeyCode()
-        print(f"DEBUG: kweditor.py KeyworkEditor on_key_down ENTER {keycode=} ")
+        # print(f"DEBUG: kweditor.py KeyworkEditor on_key_down ENTER {keycode=} ")
         if event.ControlDown():
             if event.ShiftDown():
                 skip = self._call_ctrl_shift_function(event, keycode)
@@ -1333,9 +1336,12 @@ class ContentAssistCellEditor(GridCellEditor):
         if self._tc:
             self._tc.show_content_assist()
 
-    def update_from_suggestion_list(self):
+    def update_from_suggestion_list(self, hide=False, clean_prefix=False):
         if self._tc and self._tc.is_shown():
-            self._tc.fill_suggestion()
+            self._tc.fill_suggestion(hide=hide, clean_prefix=clean_prefix)
+
+    def hide(self):
+        self._tc.hide()
 
     def execute_variable_creator(self, list_variable=False,
                                  dict_variable=False):
